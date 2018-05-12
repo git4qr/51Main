@@ -61,7 +61,6 @@ void JoystickProcess();
 int open_joystick(char *joystick_device);
 int read_joystick_event(joy_event *jse);
 
-
 public:
 	OSA_ThrHndl m_thrJoy;
 	static void *josEventFunc(void *context)
@@ -70,10 +69,16 @@ public:
 		while(JosStart){
 		User->JoystickProcess();
 		}
+		return  NULL;
 	}
 private:
+
+	void procJosEvent_Axis(UINT8  mjosNum );
+    void ProcJosEvent_Button(UINT8 njosNum);
 	joy_event *jse;
 	static bool JosStart;
+
+	bool isTrackIn;
 };
 
 #endif
