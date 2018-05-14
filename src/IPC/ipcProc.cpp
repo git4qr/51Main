@@ -173,9 +173,9 @@ int CIPCProc::ipcSecTrkCtrl(selectTrack *m_selcTrak)
 	//	cmd_sectrk.ImgPixelY =m_selcTrak->ImgPixelY;
 	//	memcpy(test.param, &cmd_sectrk, sizeof(cmd_sectrk));
     	//ipc_sendmsg(&test,IPC_TOIMG_MSG);
-		//printf("ImgPixelX = %d\n", m_selcTrak->ImgPixelX);
-	//printf("ImgPixelY = %d\n", m_selcTrak->ImgPixelY);
-	//printf("INFO : *********************************\r\n");
+		printf("ImgPixelX = %d\n", m_selcTrak->ImgPixelX);
+	printf("ImgPixelY = %d\n", m_selcTrak->ImgPixelY);
+	printf("INFO : *********************************\r\n");
 	}
 	return 0;
 }

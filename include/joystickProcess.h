@@ -57,10 +57,8 @@ void Run();
 void Stop();
 void Destroy();
 void JoystickProcess();
-
-int open_joystick(char *joystick_device);
-int read_joystick_event(joy_event *jse);
-
+int JosToWinX(int x);
+int JosToWinY(int y);
 public:
 	OSA_ThrHndl m_thrJoy;
 	static void *josEventFunc(void *context)
@@ -72,7 +70,8 @@ public:
 		return  NULL;
 	}
 private:
-
+	int open_joystick(char *joystick_device);
+	int read_joystick_event(joy_event *jse);
 	void procJosEvent_Axis(UINT8  mjosNum );
     void ProcJosEvent_Button(UINT8 njosNum);
 	joy_event *jse;

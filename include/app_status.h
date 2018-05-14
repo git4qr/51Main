@@ -17,4 +17,6 @@ typedef enum {
 	Trk_SizeMax 	= 0x03
 }eTrkAimSize;
 
+static int ShowDPI[2][2] = {{1920, 1080}, {1920, 1080}};
+
 #endif

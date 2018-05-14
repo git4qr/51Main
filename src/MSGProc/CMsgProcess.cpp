@@ -263,29 +263,9 @@ void CMsgProcess::MSGAPI_IPCInputCtrl_Axis()
 
 }
 
-#if  0
 void CMsgProcess::MSGAPI_ExtInputCtrl_AXIS()
 {
-		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickXInput, m_CurrStat.m_AxisXStat/32760.f);
-		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineXInput, m_CurrStat.m_AxisXStat/32760.f);
-		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickYInput, m_CurrStat.m_AxisYStat/32760.f);
-		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineYInput, m_CurrStat.m_AxisYStat/32760.f);
-		m_pltInput.iTrkAlgState= 1;
-		m_pltInput.fTargetBoresightErrorX=(float)0;
-		m_pltInput.fTargetBoresightErrorY=(float)0;
-		PlatformCtrl_TrackerInput(m_plt, &m_pltInput);
-		PlatformCtrl_TrackerOutput(m_plt, &m_pltOutput);
-		if(m_ptz != NULL){
-			m_ptz->m_iSetPanSpeed = m_ptzSpeed.GetPanSpeed((int)m_pltOutput.fPlatformDemandX);
-			m_ptz->m_iSetTiltSpeed = m_ptzSpeed.GetTiltSpeed((int)m_pltOutput.fPlatformDemandY);
-			m_ptz->Move();
-			}
-}
-
-#else
-void CMsgProcess::MSGAPI_ExtInputCtrl_AXIS()
-{
-	 if(!m_CurrStat.m_TrkStat ){
+	 if(!m_CurrStat.m_TrkStat &&! m_CurrStat.m_SecTrkStat ){
 	    m_pltInput.iTrkAlgState= m_CurrStat.m_TrkStat + 1;
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickXInput, m_CurrStat.m_AxisXStat/32760.f);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineXInput, m_CurrStat.m_AxisXStat/32760.f);
@@ -295,22 +275,12 @@ void CMsgProcess::MSGAPI_ExtInputCtrl_AXIS()
 		m_pltInput.fTargetBoresightErrorY=(float)0;
 	  }
 	 else{
-		     if(m_CurrStat.m_SecTrkStat){
-		 	    m_pltInput.iTrkAlgState= m_CurrStat.m_TrkStat;
-		 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickXInput, m_CurrStat.m_AxisXStat/32760.f);
-		 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineXInput, m_CurrStat.m_AxisXStat/32760.f);
-		 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickYInput, m_CurrStat.m_AxisYStat/32760.f);
-		 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineYInput, m_CurrStat.m_AxisYStat/32760.f);
-		 		m_pltInput.fTargetBoresightErrorX=(float)0;
-		 		m_pltInput.fTargetBoresightErrorY=(float)0;
-		 		goto  PLANTCTROL;;
-		     }
 		       m_pltInput.iTrkAlgState= this->m_ipc->trackstatus + 1;
 			  m_pltInput.fTargetBoresightErrorX=this->m_ipc->trackposx;
 			  m_pltInput.fTargetBoresightErrorY=this->m_ipc->trackposx;
 		}
 
-PLANTCTROL:
+
 		PlatformCtrl_TrackerInput(m_plt, &m_pltInput);
 		PlatformCtrl_TrackerOutput(m_plt, &m_pltOutput);
 		if(m_ptz != NULL){
@@ -319,4 +289,4 @@ PLANTCTROL:
 			m_ptz->Move();
 			}
 }
-#endif
+

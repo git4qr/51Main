@@ -1,5 +1,6 @@
 #include <sys/select.h>
 #include  <sys/time.h>
+#include <stdlib.h>
 #include "msgProssDef.h"
 #include "joystickProcess.h"
 #include "CMsgProcess.h"
@@ -25,6 +26,9 @@ Cmd_Mesg_Zoom,				//throttle
 extern CMsgProcess* sThis;
 extern CurrParaStat  m_CurrStat;
 extern  selectTrack 	m_selectPara;
+
+static int m_valuex;
+static int m_valuey;
 
 void usd_MSGAPI_ExtInpuCtrl_Track(long p)
 {
@@ -52,16 +56,45 @@ void usd_MSGAPI_ExtInpuCtrl_TrkBoxSize(long p)
 {
 	m_CurrStat.m_TrkBoxSizeStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_TrkBoxCtrl);
 }
+
+
 void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p)
 {
 	m_CurrStat.m_SecTrkStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_TrkSearch);
-	if (m_CurrStat.m_SecTrkStat==0){
-		m_CurrStat.m_AxisXStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
-		m_CurrStat.m_AxisYStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISY);
-		m_selectPara.SecAcqStat=m_CurrStat.m_SecTrkStat;
-		m_selectPara.ImgPixelX = m_CurrStat.m_AxisXStat;
-		m_selectPara.ImgPixelY=	m_CurrStat.m_AxisYStat;
-		sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
+	if(m_CurrStat.m_TrkStat){
+				if (m_CurrStat.m_SecTrkStat==0){
+						m_CurrStat.m_AxisXStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
+						m_CurrStat.m_AxisYStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISY);
+					 if( m_CurrStat.m_AxisXStat>=0)
+							       m_valuex =min(32640,m_CurrStat.m_AxisXStat);
+					 else  m_valuex =max(-32640,m_CurrStat.m_AxisXStat);
+					 if( m_CurrStat.m_AxisYStat>=0)
+							      m_valuey =min(32400,m_CurrStat.m_AxisYStat);
+				     else  m_valuey =max(-32400,m_CurrStat.m_AxisYStat);
+						  m_selectPara.SecAcqStat=m_CurrStat.m_SecTrkStat;
+						  m_selectPara.ImgPixelX = sThis->m_jos->JosToWinX(m_valuex);
+						  m_selectPara.ImgPixelY=	sThis->m_jos->JosToWinY(m_valuey);
+						   sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
+				}
+	   }
+	else {
+		if (m_CurrStat.m_SecTrkStat==0){
+							m_CurrStat.m_AxisXStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
+							m_CurrStat.m_AxisYStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISY);
+						 if( m_CurrStat.m_AxisXStat>=0)
+								       m_valuex =min(32640,m_CurrStat.m_AxisXStat);
+						 else  m_valuex =max(-32640,m_CurrStat.m_AxisXStat);
+						 if( m_CurrStat.m_AxisYStat>=0)
+								      m_valuey =min(32400,m_CurrStat.m_AxisYStat);
+					     else  m_valuey =max(-32400,m_CurrStat.m_AxisYStat);
+							  m_selectPara.SecAcqStat=m_CurrStat.m_SecTrkStat;
+							  m_selectPara.ImgPixelX = sThis->m_jos->JosToWinX(m_valuex);
+							  m_selectPara.ImgPixelY=	sThis->m_jos->JosToWinY(m_valuey);
+							   sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
+							   sThis->m_jos->JOS_Value[0]=1;
+							   sThis->m_ipc->ipcTrackCtrl(1);
+					}
+
 	}
 }
 void usd_MSGAPI_ExtInpuCtrl_IrisUp(long p)
@@ -104,21 +137,28 @@ void usd_MSGAPI_ExtInpuCtrl_AIMPOSY(long p)
 	m_CurrStat.m_AimPosYStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_AIMPOS_Y);
 }
 
+
+
+
+
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p)
 {
 	m_CurrStat.m_AxisXStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
 	m_CurrStat.m_AxisYStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISY);
 	sThis->MSGAPI_ExtInputCtrl_AXIS();
-	if(m_CurrStat.m_TrkStat){
-		if(m_CurrStat.m_SecTrkStat){
-			m_selectPara.SecAcqStat=m_CurrStat.m_SecTrkStat;
-			m_selectPara.ImgPixelX = m_CurrStat.m_AxisXStat;
-			m_selectPara.ImgPixelY=	m_CurrStat.m_AxisYStat;
-			sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
-		}
-	}
+	     if (m_CurrStat.m_SecTrkStat){
+	          if( m_CurrStat.m_AxisXStat>=0)
+	        	    m_valuex =min(32640,m_CurrStat.m_AxisXStat);
+	        	    else  m_valuex =max(-32640,m_CurrStat.m_AxisXStat);
+	          if( m_CurrStat.m_AxisYStat>=0)
+	        	    m_valuey =min(32400,m_CurrStat.m_AxisYStat);
+	        	    else  m_valuey =max(-32400,m_CurrStat.m_AxisYStat);
+		      m_selectPara.SecAcqStat=m_CurrStat.m_SecTrkStat;
+		      m_selectPara.ImgPixelX = sThis->m_jos->JosToWinX(m_valuex);
+		      m_selectPara.ImgPixelY=	sThis->m_jos->JosToWinY(m_valuey);
+		     sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
+	         }
 }
-
 void usd_MSGAPI_IPCInpuCtrl_AXIS(long p)
 {
 	sThis->MSGAPI_IPCInputCtrl_Axis();
