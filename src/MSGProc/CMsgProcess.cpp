@@ -11,6 +11,7 @@
 CMsgProcess* sThis =NULL;
 CurrParaStat  m_CurrStat;
 selectTrack 	m_selectPara;
+bool  InitSystem  = false;
 CMsgProcess::CMsgProcess()
 {
 	m_plt = NULL;
@@ -90,6 +91,7 @@ int CMsgProcess::Init()
 {
 	MSGAPI_initial();
 	m_jos->Init();
+
 	return 0 ;
 	
 }

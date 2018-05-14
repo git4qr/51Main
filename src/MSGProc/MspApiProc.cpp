@@ -26,7 +26,7 @@ Cmd_Mesg_Zoom,				//throttle
 extern CMsgProcess* sThis;
 extern CurrParaStat  m_CurrStat;
 extern  selectTrack 	m_selectPara;
-
+static  bool   InitSystem;
 static int m_valuex;
 static int m_valuey;
 
@@ -60,6 +60,7 @@ void usd_MSGAPI_ExtInpuCtrl_TrkBoxSize(long p)
 
 void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p)
 {
+	if(InitSystem){
 	m_CurrStat.m_SecTrkStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_TrkSearch);
 	if(m_CurrStat.m_TrkStat){
 				if (m_CurrStat.m_SecTrkStat==0){
@@ -74,7 +75,8 @@ void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p)
 						  m_selectPara.SecAcqStat=m_CurrStat.m_SecTrkStat;
 						  m_selectPara.ImgPixelX = sThis->m_jos->JosToWinX(m_valuex);
 						  m_selectPara.ImgPixelY=	sThis->m_jos->JosToWinY(m_valuey);
-						   sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
+						  sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
+
 				}
 	   }
 	else {
@@ -90,12 +92,14 @@ void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p)
 							  m_selectPara.SecAcqStat=m_CurrStat.m_SecTrkStat;
 							  m_selectPara.ImgPixelX = sThis->m_jos->JosToWinX(m_valuex);
 							  m_selectPara.ImgPixelY=	sThis->m_jos->JosToWinY(m_valuey);
-							   sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
-							   sThis->m_jos->JOS_Value[0]=1;
-							   sThis->m_ipc->ipcTrackCtrl(1);
+							  sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
+							  sThis->m_jos->JOS_Value[0]=1;
+							  m_CurrStat.m_TrkStat=1;
+							   sThis->m_ipc->ipcTrackCtrl(m_CurrStat.m_TrkStat);
 					}
-
+        	}
 	}
+	InitSystem =true;
 }
 void usd_MSGAPI_ExtInpuCtrl_IrisUp(long p)
 {
@@ -137,10 +141,6 @@ void usd_MSGAPI_ExtInpuCtrl_AIMPOSY(long p)
 	m_CurrStat.m_AimPosYStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_AIMPOS_Y);
 }
 
-
-
-
-
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p)
 {
 	m_CurrStat.m_AxisXStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
@@ -156,7 +156,7 @@ void usd_MSGAPI_ExtInpuCtrl_AXIS(long p)
 		      m_selectPara.SecAcqStat=m_CurrStat.m_SecTrkStat;
 		      m_selectPara.ImgPixelX = sThis->m_jos->JosToWinX(m_valuex);
 		      m_selectPara.ImgPixelY=	sThis->m_jos->JosToWinY(m_valuey);
-		     sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
+		      sThis->m_ipc->ipcSecTrkCtrl(&m_selectPara);
 	         }
 }
 void usd_MSGAPI_IPCInpuCtrl_AXIS(long p)
@@ -183,8 +183,8 @@ int  MSGAPI_initial()
      MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_OPTICZOOMLONGCTRL,usd_MSGAPI_ExtInpuCtrl_ZoomLong,0);
      MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_OPTICZOOMSHORTCTRL,usd_MSGAPI_ExtInpuCtrl_ZoomShort,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_PLATCTRL,usd_MSGAPI_ExtInpuCtrl_AXIS,0);
-
     //MSGDRIV_attachMsgFun(handle,MSGID_IPC_INPUT_TRACKCTRL,usd_MSGAPI_IPCInpuCtrl_AXIS,0);
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_INPUT_TRACKCTRL,usd_MSGAPI_ExtInpuCtrl_AXIS,0);
+
     return 0;
 }
