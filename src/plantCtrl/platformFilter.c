@@ -133,11 +133,10 @@ void PlatformFilter_CreateParams_Set(
     pPrm->G  = gain;
 }
 
-void PlatformFilter_CreateParams_Gettxt(
-    PlatformFilter_CreateParams *pPrm,PlatformFilter_CreateParams *pPrm2)
+void PlatformFilter_CreateParams_Gettxt(PlatformFilter_CreateParams *pPrm,PlatformFilter_CreateParams *pPrm2, PlatformFilter_InitParams *m_pPrm)
 {
-	FILE *fp=fopen("/home/ubuntu/Ryan/dssVT322/ptz.txt","rb");
-	fprintf(stdout,"INFO: read  ptz.txt\r\n");
+#if 0
+	FILE *fp=fopen("/home/ubuntu/ptz.txt","rb");
 	if(fp==NULL){
 			fprintf(stdout,"INFO: can not open ptz.txt\r\n");
 	}
@@ -190,24 +189,24 @@ void PlatformFilter_CreateParams_Gettxt(
 	fgets(buffer, 100, fp);
 	float gain2=atof(buffer);
 	memset(buffer,0,100);
+#endif
+	pPrm->P0 = m_pPrm->P0;
+	pPrm->P1 = m_pPrm->P1;
+	pPrm->P2 = m_pPrm->P2;
+	pPrm->L1 = m_pPrm->L1;
+	pPrm->L2 = m_pPrm->L2;
+	pPrm->G  = m_pPrm->G;
 
-	pPrm->P0 = p0;
-	pPrm->P1 = p1;
-	pPrm->P2 = p2;
-	pPrm->L1 = l1;
-	pPrm->L2 = l2;
-	pPrm->G  = gain;
+	pPrm2->P0 = m_pPrm->P02;
+	pPrm2->P1 = m_pPrm->P12;
+	pPrm2->P2 = m_pPrm->P22;
+	pPrm2->L1 = m_pPrm->L12;
+	pPrm2->L2 = m_pPrm->L22;
+	pPrm2->G  = m_pPrm->G2;
 
-	pPrm2->P0 = p02;
-	pPrm2->P1 = p12;
-	pPrm2->P2 = p22;
-	pPrm2->L1 = l12;
-	pPrm2->L2 = l22;
-	pPrm2->G  = gain2;
-
-	printf("xthe p0=%f  p1=%f p2=%f l1=%f l2=%f gain=%f\n",p0,p1,p2,l1,l2,gain);
-	printf("ythe p0=%f  p1=%f p2=%f l1=%f l2=%f gain=%f\n",p02,p12,p22,l12,l22,gain2);
-	free(buffer);
+	printf("xthe p0=%f  p1=%f p2=%f l1=%f l2=%f gain=%f\n",pPrm->P0,pPrm->P1,pPrm->P2,pPrm->L1,pPrm->L2,m_pPrm->G);
+	printf("ythe p0=%f  p1=%f p2=%f l1=%f l2=%f gain=%f\n",pPrm2->P0,pPrm2->P1,pPrm2->P2,pPrm2->L1,pPrm2->L2,pPrm2->G);
+	//free(buffer);
 
 
 #if 0

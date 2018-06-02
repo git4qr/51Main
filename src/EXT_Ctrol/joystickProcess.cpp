@@ -8,22 +8,24 @@ CJosStick::CJosStick()
 {
 	jse = NULL;
 	isTrackIn=false;
-	//JosStart = true;s
 }
 
 CJosStick::~CJosStick()
 {
 	Destroy();
 }
-void CJosStick::Init()
+int  CJosStick::Init()
 {
-
+	return 0;
 }
 
-void CJosStick::Create()
+int  CJosStick::Create()
 {
+	PreInit();
+	//preinitial();
 	 open_joystick(joystick_Dev);
 	 jse=(joy_event*)malloc (sizeof(joy_event));
+	 return 0;
 }
 
 int CJosStick::open_joystick(char *joystick_device)
@@ -41,9 +43,7 @@ int CJosStick::open_joystick(char *joystick_device)
 
 int CJosStick::read_joystick_event(joy_event *jse)
 {
-    int bytes;
-
-    bytes = read(joystick_fd, jse, sizeof(*jse));
+   int  bytes = read(joystick_fd, jse, sizeof(*jse));
 
     if (bytes == -1)
         return 0;
@@ -67,31 +67,32 @@ int CJosStick::JosToWinY(int y)
 	return m_WinY;
 }
 
-
-
-void CJosStick::Stop()
+int  CJosStick::Stop()
 {
     close(joystick_fd);
+    return 0;
 }
 
-void CJosStick::Destroy()
+int  CJosStick::Destroy()
 {
 	JosStart = false;
 	OSA_thrDelete(&m_thrJoy);
 	Stop();
+	return 0;
 }
 
-void CJosStick::Config()
+int  CJosStick::Config()
 {
-
+return 0;
 }
 
-void CJosStick::Run()
+int  CJosStick::Run()
 {
 	int iRet;
 	iRet = OSA_thrCreate(&m_thrJoy, josEventFunc , 0, 0, (void*)this);
 		if(iRet != 0)
 	fprintf(stdout,"josthread creat failed\n");
+	return 0;
 }
 
 void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
@@ -99,23 +100,47 @@ void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 	switch(mjosNum){
 
 			case MSGID_INPUT_AXISX:
-					JOS_Value[14] = jse->value;
+				EXT_Ctrl[14] = jse->value;
 					AXIS_X();
 					break;
 				case MSGID_INPUT_AXISY:
-					JOS_Value[15] = jse->value;
+					EXT_Ctrl[15] = jse->value;
 					AXIS_Y();
 					break;
 				case MSGID_INPUT__POVX:
-					if(!(jse->value == 0)){
-						JOS_Value[12] = jse->value;
+					if(jse->value == 0){
+						EXT_Ctrl[12] = 0;
 						AIMPOS_X();
 						}
+					else if(jse->value == -32767){
+						EXT_Ctrl[12] = 1;
+						AIMPOS_X();
+					}
+					else if(jse->value == 32767){
+						EXT_Ctrl[12] = 2;
+						AIMPOS_X();
+					}
 					break;
 				case MSGID_INPUT__POVY:
-					if(!(jse->value == 0)){
-						JOS_Value[13] = jse->value;
+					if(jse->value == 0){
+						EXT_Ctrl[13] = 0;
 						AIMPOS_Y();
+					}
+					else if(jse->value == -32767){
+						EXT_Ctrl[13] = 1;
+						AIMPOS_Y();
+					}
+					else if(jse->value == 32767){
+						EXT_Ctrl[13] = 2;
+						AIMPOS_Y();
+					}
+					break;
+				case MSGID_INPUT_ImgEnh:
+					if(jse->value < -32760){
+						EnableIMG();
+					}
+					else if(jse->value > 32760){
+						EnableIMG();
 					}
 					break;
 				default:
@@ -123,115 +148,109 @@ void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 	 }
 
 }
+
+
 void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
 {
-    switch (njosNum) {
 
+
+    switch (njosNum) {
     		case MSGID_INPUT_TrkCtrl:
     				if(jse->value == 1){
-    					if(JOS_Value[0] == 0){
-    						JOS_Value[0] = 1;
-    						EnableTrk(true);
-    					}
-    					else{
-    							JOS_Value[0] = 0;
-    							EnableTrk(false);
-    						}
+    							EnableTrk();
     				}
     				break;
-    		case MSGID_INPUT_SensorCtrl:
+    		case MSGID_INPUT_Mtd:
     				if(jse->value == 1){
-    					SensorStat = (SensorStat + 1)%eSen_Max;
-    					JOS_Value[1] = SensorStat;
-    					SelSensor();
+    			/*		if(JOS_Value[17] == 0)
+    					JOS_Value[17] = 1;
+    				else
+    					JOS_Value[17] = 0;
+    					PresetCtrl();
+    					*/
+    					EnableMtd();
     				}
     				break;
     		case MSGID_INPUT_ZoomLong:
     				if(jse->value == 1){
-    						JOS_Value[2] = 1;
+    					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 1;
     				}
-    				else
-    						JOS_Value[2] = 0;
+    				else{
+    					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 0;
     				ZoomLongCtrl();
+    				}
     				break;
     		case MSGID_INPUT_ZoomShort:
-    			if(jse->value == 1){
-    					JOS_Value[3] = 1;
-    			}
+    			if(jse->value == 1)
+    				EXT_Ctrl[MSGID_INPUT_ZoomShort ] = 1;
     			else
-    					JOS_Value[3] = 0;
+    				EXT_Ctrl[MSGID_INPUT_ZoomShort ] = 0;
     			ZoomShortCtrl();
     			break;
     		case MSGID_INPUT_TrkBoxCtrl:
     			if(jse->value == 1){
-    					AvtTrkAimSize = (AvtTrkAimSize +1)%Trk_SizeMax;
-    					JOS_Value[4] = AvtTrkAimSize;
     					TrkBoxCtrl();
     			}
     			break;
     		case MSGID_INPUT_TrkSearch:
     			if(jse->value == 1){
-    					JOS_Value[5] = 1;
-    					EnableTrkSearch(true);
+    					EnableTrkSearch();
+    					EXT_Ctrl[MSGID_INPUT_TrkSearch ] = 1;
     			}
     			else{
-    					JOS_Value[5] = 0;
-    					EnableTrkSearch(false);
+    				EnableTrkSearch();
+    				EXT_Ctrl[MSGID_INPUT_TrkSearch ] = 0;
     			}
     			break;
     		case MSGID_INPUT_IrisUp:
     			if(jse->value == 1){
-    					JOS_Value[6] = 1;
-    					IrisUp(true);
+    				EXT_Ctrl[MSGID_INPUT_IrisUp ] = 1;
+    					IrisUp();
     			}
     			else{
-    					JOS_Value[6] = 0;
-    					IrisUp(false);
+    				EXT_Ctrl[MSGID_INPUT_IrisUp] = 0;
+    					IrisUp();
     			}
     			break;
     		case MSGID_INPUT_IrisDown:
     				if(jse->value == 1){
-    					JOS_Value[7] = 1;
-    					IrisDown(true);
+    					EXT_Ctrl[MSGID_INPUT_IrisDown] = 1;
+    					IrisDown();
     				}
     				else{
-    					JOS_Value[7] = 0;
-    					IrisDown(false);
+    					EXT_Ctrl[MSGID_INPUT_IrisDown] = 0;
+    					IrisDown();
     				}
     				break;
     		case MSGID_INPUT_FocusFar:
     			if(jse->value == 1){
-    					JOS_Value[8] = 1;
-    					FocusUp(true);
+    				EXT_Ctrl[MSGID_INPUT_FocusFar ] = 1;
+    					FocusUp();
     			}
     			else{
-    				JOS_Value[8] = 0;
-    				FocusUp(false);
+    				EXT_Ctrl[MSGID_INPUT_FocusFar] = 0;
+    				FocusUp();
     			}
     			break;
     		case MSGID_INPUT_FocusNear:
     			if(jse->value == 1){
-    					JOS_Value[9] = 1;
-    					FocusDown(true);
+    				EXT_Ctrl[MSGID_INPUT_FocusNear] = 1;
+    					FocusDown();
     			}
     			else{
-    					JOS_Value[9] = 0;
-    					FocusDown(false);
+    				EXT_Ctrl[MSGID_INPUT_FocusNear] = 0;
+    					FocusDown();
     			}
     			break;
-    		case MSGID_INPUT_IMG:
+    		case MSGID_INPUT_SensorCtrl:
     				if(jse->value == 1){
-    						if(JOS_Value[10] == 0){
-    							JOS_Value[10] = 1;
-    							EnableIMG(true);
-    				}
-    				else{
-    						JOS_Value[10] = 0;
-    						EnableIMG(false);
-    					}
+						SwitchSerson();
     				}
     				break;
-    			case MSGID_INPUT_unable:
+    			case MSGID_INPUT_Mmt:
+    				if(jse->value == 1){
+    						EnableMmt();
+    				}
     				break;
     			default:
     				break;
@@ -257,4 +276,290 @@ void CJosStick::JoystickProcess()
     }
 }
 
+
+
+#if 0
+
+
+
+void CJosStick::ProcEvent_Button(int  EventBtnNum, int EventValue)
+{
+    switch (EventBtnNum) {
+    		case MSGID_INPUT_TrkCtrl:
+    				if(EventValue == 1){
+    							EnableTrk();
+    				}
+    				break;
+    		case MSGID_INPUT_Mtd:
+    				if(EventValue == 1){
+    			/*		if(JOS_Value[17] == 0)
+    					JOS_Value[17] = 1;
+    				else
+    					JOS_Value[17] = 0;
+    					PresetCtrl();
+    					*/
+    					EnableMtd();
+    				}
+    				break;
+    		case MSGID_INPUT_ZoomLong:
+    				if(EventValue == 1){
+    					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 1;
+    				}
+    				else{
+    					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 0;
+    				ZoomLongCtrl();
+    				}
+    				break;
+    		case MSGID_INPUT_ZoomShort:
+    			if(EventValue == 1)
+    				EXT_Ctrl[MSGID_INPUT_ZoomShort ] = 1;
+    			else
+    				EXT_Ctrl[MSGID_INPUT_ZoomShort ] = 0;
+    			ZoomShortCtrl();
+    			break;
+    		case MSGID_INPUT_TrkBoxCtrl:
+    			if(EventValue == 1){
+    					TrkBoxCtrl();
+    			}
+    			break;
+    		case MSGID_INPUT_TrkSearch:
+    			if(EventValue== 1){
+    					EnableTrkSearch();
+    					EXT_Ctrl[MSGID_INPUT_TrkSearch ] = 1;
+    			}
+    			else{
+    				EnableTrkSearch();
+    				EXT_Ctrl[MSGID_INPUT_TrkSearch ] = 0;
+    			}
+    			break;
+    		case MSGID_INPUT_IrisUp:
+    			if(EventValue == 1){
+    				EXT_Ctrl[MSGID_INPUT_IrisUp ] = 1;
+    					IrisUp();
+    			}
+    			else{
+    				EXT_Ctrl[MSGID_INPUT_IrisUp] = 0;
+    					IrisUp();
+    			}
+    			break;
+    		case MSGID_INPUT_IrisDown:
+    				if(EventValue == 1){
+    					EXT_Ctrl[MSGID_INPUT_IrisDown] = 1;
+    					IrisDown();
+    				}
+    				else{
+    					EXT_Ctrl[MSGID_INPUT_IrisDown] = 0;
+    					IrisDown();
+    				}
+    				break;
+    		case MSGID_INPUT_FocusFar:
+    			if(EventValue== 1){
+    				EXT_Ctrl[MSGID_INPUT_FocusFar ] = 1;
+    					FocusUp();
+    			}
+    			else{
+    				EXT_Ctrl[MSGID_INPUT_FocusFar] = 0;
+    				FocusUp();
+    			}
+    			break;
+    		case MSGID_INPUT_FocusNear:
+    			if(EventValue == 1){
+    				EXT_Ctrl[MSGID_INPUT_FocusNear] = 1;
+    					FocusDown();
+    			}
+    			else{
+    				EXT_Ctrl[MSGID_INPUT_FocusNear] = 0;
+    					FocusDown();
+    			}
+    			break;
+    		case MSGID_INPUT_SensorCtrl:
+    				if(EventValue == 1){
+						SwitchSerson();
+    				}
+    				break;
+    			case MSGID_INPUT_Mmt:
+    				if(EventValue == 1){
+    						EnableMmt();
+    				}
+    				break;
+    			default:
+    				break;
+    }
+#if 0
+    switch (EventBtnNum) {
+
+    		case MSGID_INPUT_TrkCtrl:
+    				if(EventValue == 1){
+    					if(ExtInputCtrl[0] == 0){
+    						ExtInputCtrl[0] = 1;
+    						EnableTrk();
+    					}
+    					else{
+    						ExtInputCtrl[0] = 0;
+    							EnableTrk();
+    						}
+    				}
+    				break;
+    		case MSGID_INPUT_SensorCtrl:
+    				if(EventValue == 1){
+    					SensorStat = (SensorStat + 1)%eSen_Max;
+    					ExtInputCtrl[1] = SensorStat;
+    					SelSensor();
+    				}
+    				break;
+    		case MSGID_INPUT_ZoomLong:
+    				if(EventValue == 1){
+    					ExtInputCtrl[2] = 1;
+    				}
+    				else
+    					ExtInputCtrl[2] = 0;
+    				ZoomLongCtrl();
+    				break;
+    		case MSGID_INPUT_ZoomShort:
+    			if(EventValue == 1){
+    				ExtInputCtrl[3] = 1;
+    			}
+    			else
+    				ExtInputCtrl[3] = 0;
+    			ZoomShortCtrl();
+    			break;
+    		case MSGID_INPUT_TrkBoxCtrl:
+    			if(EventValue == 1){
+    					AvtTrkAimSize = (AvtTrkAimSize +1)%Trk_SizeMax;
+    					ExtInputCtrl[4] = AvtTrkAimSize;
+    					TrkBoxCtrl();
+    			}
+    			break;
+    		case MSGID_INPUT_TrkSearch:
+    			if(EventValue == 1){
+    				ExtInputCtrl[5] = 1;
+    					EnableTrkSearch();
+    			}
+    			else{
+    				ExtInputCtrl[5] = 0;
+    					EnableTrkSearch();
+    			}
+    			break;
+    		case MSGID_INPUT_IrisUp:
+    			if(EventValue== 1){
+    				ExtInputCtrl[6] = 1;
+    					IrisUp();
+    			}
+    			else{
+    				ExtInputCtrl[6] = 0;
+    					IrisUp();
+    			}
+    			break;
+    		case MSGID_INPUT_IrisDown:
+    				if(EventValue== 1){
+    					ExtInputCtrl[7] = 1;
+    					IrisDown();
+    				}
+    				else{
+    					ExtInputCtrl[7] = 0;
+    					IrisDown();
+    				}
+    				break;
+    		case MSGID_INPUT_FocusFar:
+    			if(EventValue == 1){
+    				ExtInputCtrl[8] = 1;
+    					FocusUp();
+    			}
+    			else{
+    				ExtInputCtrl[8] = 0;
+    				FocusUp();
+    			}
+    			break;
+    		case MSGID_INPUT_FocusNear:
+    			if(EventValue == 1){
+    				ExtInputCtrl[9] = 1;
+    					FocusDown();
+    			}
+    			else{
+    				ExtInputCtrl[9] = 0;
+    					FocusDown();
+    			}
+    			break;
+    		case MSGID_INPUT_IMG:
+    				if(EventValue == 1){
+    						if(ExtInputCtrl[10] == 0){
+    							ExtInputCtrl[10] = 1;
+    							EnableIMG();
+    				}
+    				else{
+    					ExtInputCtrl[10] = 0;
+    						EnableIMG();
+    					}
+    				}
+    				break;
+    			case MSGID_INPUT_unable:
+    				break;
+    			default:
+    				break;
+    }
+#endif
+}
+
+
+void CJosStick::Button_Event(u_int8_t  btnNum)
+{
+	int   idFlg;
+	ExtEvent   btnEvent;
+    btnEvent.eventValue =jse->value;
+    printf("INFO: get btn info num%d---value%d\r\n",btnNum+1,btnEvent.eventValue);
+    idFlg=finderMapKey(btnNum+1);
+    printf("INFO: idFlag ---%d\r\n",idFlg);
+    ProcEvent_Button(idFlg,  btnEvent.eventValue );
+}
+
+void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
+{
+	switch(mjosNum){
+
+			case MSGID_INPUT_AXISX:
+				ExtInputCtrl[14] = jse->value;
+					AXIS_X();
+					break;
+				case MSGID_INPUT_AXISY:
+					ExtInputCtrl[15] = jse->value;
+					AXIS_Y();
+					break;
+				case MSGID_INPUT__POVX:
+					if(!(jse->value == 0)){
+						ExtInputCtrl[12] = jse->value;
+						AIMPOS_X();
+						}
+					break;
+				case MSGID_INPUT__POVY:
+					if(!(jse->value == 0)){
+						ExtInputCtrl[13] = jse->value;
+						AIMPOS_Y();
+					}
+					break;
+				default:
+					break;
+	 }
+}
+
+void CJosStick::JoystickProcess()
+{
+    int rc;
+    if (rc = read_joystick_event(jse) == 1) {
+        jse->type &= ~JS_EVENT_INIT; /* ignore synthetic events */
+        switch(jse->type){
+        		case   JS_EVENT_AXIS:
+        			     procJosEvent_Axis(jse->number);
+        			    //  processEventBtn(jse->number);
+                          break;
+        		case   JS_EVENT_BUTTON:
+        			 //  ProcJosEvent_Button(jse->number);
+        			  Button_Event(jse->number);
+        				break;
+        		default:
+        		     printf("INFO: ERROR Jos Event, Can not excute here!!!\r\n");
+
+           }
+    }
+}
+#endif
 

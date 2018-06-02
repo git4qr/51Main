@@ -12,6 +12,36 @@ extern "C" {
 /* ����ƽ̨�˲������ */
 typedef void * HPLTFILTER;
 
+typedef struct
+{
+	int iIndex;
+
+	float P0;
+
+	float P1;
+
+	float P2;
+
+	float L1;
+
+	float L2;
+
+	float G;
+
+	float P02;
+
+	float P12;
+
+	float P22;
+
+	float L12;
+
+	float L22;
+
+	float G2;
+
+}PlatformFilter_InitParams;
+
 /* ����ƽ̨�˲�����ʼ������ṹ */
 typedef struct
 {
@@ -108,7 +138,7 @@ void PlatformFilter_CreateParams_Get(
 
 
 void PlatformFilter_CreateParams_Gettxt(
-    PlatformFilter_CreateParams *pPrm,PlatformFilter_CreateParams *pPrm2);
+    PlatformFilter_CreateParams *pPrm,PlatformFilter_CreateParams *pPrm2, PlatformFilter_InitParams *m_pPrm);
 #ifdef __cplusplus
 }
 #endif

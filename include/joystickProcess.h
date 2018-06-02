@@ -16,16 +16,11 @@
 #include "msg_id.h"
 #include "app_status.h"
 #include "UserProcess.h"
-
-
 //static bool JosStart = true;
-
 #define joystick_Dev 	"/dev/input/js0"
 #define JS_EVENT_BUTTON 0x01 
 #define JS_EVENT_AXIS 0x02 
 #define JS_EVENT_INIT 0x80 
-
-
 
 typedef int	INT32;
 typedef short	INT16;
@@ -50,12 +45,12 @@ class CJosStick : public CUserBase
 public:
 	CJosStick();
 ~CJosStick();
-void Create();
-void Init();
-void Config();
-void Run();
-void Stop();
-void Destroy();
+int Create();
+int  Init();
+int  Config();
+int  Run();
+int  Stop();
+int  Destroy();
 void JoystickProcess();
 int JosToWinX(int x);
 int JosToWinY(int y);
@@ -74,6 +69,9 @@ private:
 	int read_joystick_event(joy_event *jse);
 	void procJosEvent_Axis(UINT8  mjosNum );
     void ProcJosEvent_Button(UINT8 njosNum);
+   void  ProcEvent_Button(int  EventBtnNum, int EventValue);
+    void Button_Event(u_int8_t  btnNum);
+    void EventAixs(u_int8_t  axisNum);
 	joy_event *jse;
 	static bool JosStart;
 

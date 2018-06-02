@@ -3,14 +3,20 @@
 
 #pragma once
 #include "osa_thr.h"
+#include "osa_sem.h"
 #include  "PTZ_control.h"
 #include "platformControl.h"
 #include "iMessageQUE.h"
 #include "PTZ_speedTransfer.h"
 #include "joystickProcess.h"
+#include "UartProcess.h"
+#include "NetProcess.h"
 #include <iostream>
 #include "ipcProc.h"
+#include "Ipcctl.h"
+#include "opencv2/core/core.hpp"
 
+using namespace cv;
 using namespace std;
 
 typedef struct _main_thr_obj{
@@ -19,6 +25,8 @@ typedef struct _main_thr_obj{
 	bool			 initFlag;
 	void 		 *pParent;
 }MAIN_ProcThrObj;
+
+//OSA_SemHndl *m_semHndl;
 
 typedef struct {
 		int  m_TrkStat;
@@ -31,10 +39,12 @@ typedef struct {
 		int m_IrisDownStat;
 		int m_FoucusFarStat;
 		int m_FoucusNearStat;
+		int m_PresetStat;
 		int m_ImgEnhanceStat;
-		int m_unable;
-		int m_AimPosXStat;
-		int m_AimPosYStat;
+		int m_MmtStat;
+		int m_MmtSelectNum;
+		volatile unsigned char m_AimPosXStat;
+		volatile unsigned char m_AimPosYStat;
 		int m_AxisXStat;
 		int m_AxisYStat;
 }CurrParaStat,*PCurrParaStat;
@@ -49,27 +59,43 @@ class CMsgProcess{
 		      int Run();
 		      void MSGAPI_ExtInputCtrl_ZoomLong();
 		      void MSGAPI_ExtInputCtrl_ZoomShort();
-		      void MSGAPI_ExtInputCtrl_unable();
 		      void MSGAPI_ExtInputCtrl_FocusFar();
 		      void MSGAPI_ExtInputCtrlFocusNear();
 		      void MSGAPI_ExtInputCtrl_IrisUp();
 		      void MSGAPI_ExtInputCtrl_IrisDown();
+		      void MSGAPI_ExtInputCtrl_Preset();
 		      void MSGAPI_ExtInputCtrl_AXIS();
 		      void MSGAPI_IPCInputCtrl_Axis();
 		      int GetExtIputCtrlValue(int msg);
+		  	 void realtime_avtStatus();
              CMsgProcess *pThis;
          	 CJosStick *m_jos;
+         	 CUartProcess *m_uart;
          	 CPTZControl *m_ptz;
-         	CIPCProc  *m_ipc;
+         	 CIPCProc  *m_ipc;
+        public:
+         	char m_SetRealTime, m_CurRealTime;
+         	bool m_ChangeRealTime;
+         	typedef struct {
+         		int val;
+         	}test;
+         	test aa;
+         	test *ptest;
+        private:
+         	int *cfg_value;
 private:
 	MAIN_ProcThrObj	  mainProcThrObj;
 	//OSA_MutexHndl    m_mutex;
 	void main_proc_func();
 	int MAIN_threadCreate(void);
+	int Config_threadCreate();
 	int MAIN_threadDestroy(void);
 	void main_thread_proc();
 	void processMsg(int msg);
 	void PlantTrackerInputPara(void);
+	int configAvtFromFile();
+	void modifierAVTProfile(int block, int field, int value);
+	int updataProfile();
 //	int MSGAPI_initial();
 //static 	void app_PlantCtrl(long lParam );
  protected:
@@ -77,6 +103,8 @@ private:
 	HPLTCTRL   m_plt;
 	CPTZSpeedTransfer  m_ptzSpeed;
 	PlatformCtrl_CreateParams m_pltParams;
+	configPlatParam_InitParams m_cfgPlatParam;
+	PlatformFilter_InitParams m_cfgPlatFilter;
 	PLATFORMCTRL_TrackerInput m_pltInput;
 	PLATFORMCTRL_Output m_pltOutput;
 	static void *mainProcTsk(void *context)
@@ -86,8 +114,16 @@ private:
 		MAIN_ProcThrObj  * pObj= (MAIN_ProcThrObj*) context;
 		CMsgProcess *ctxHdl = (CMsgProcess *) pObj->pParent;
 		ctxHdl->main_thread_proc();
+
 		return NULL;
 	}
+
+    OSA_ThrHndl m_thrRead;
+    static void *readCfgParamFunc(void * context){
+    	CMsgProcess *user = (CMsgProcess *) context;
+    	user->configAvtFromFile();
+    	return NULL;
+    }
 };
 
 

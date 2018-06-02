@@ -19,6 +19,11 @@ public:
 		    int  ipcImageEnhanceCtrl(volatile unsigned char ImgEnhStat); //1open 0close
 		    int ipcMoveTatgetDetecCtrl(volatile unsigned char ImgMtdStat);
 		    int ipcSecTrkCtrl(selectTrack *m_selcTrak);
+		    int IpcSensorSwitch(volatile unsigned char ImgSenchannel);
+		    int IpcpinpCtrl(volatile unsigned char ImgPipStat);
+		    int IpcTrkDoorCtrl(volatile unsigned char TrkDoorStat);
+		    int IpcTrkPosMoveCtrl(POSMOVE * avtMove);
+		    IMGSTATUS  *getsharedmemstat();
 			  	unsigned int trackstatus;
 			  	int trackposx;
 			  	int trackposy;
@@ -29,6 +34,10 @@ public:
 			  	CMD_MMT fr_img_cmd_mmt;
 			  	CMD_MMTSELECT fr_img_cmd_mmtsel;
 			  	CMD_TRKDOOR fr_img_cmd_trkdoor;
+
+
+			    IMGSTATUS *ipc_status;
+			    OSD_Param *ipc_OSD;
 #if 0
 		      static Void  *IPCShamThrdFxn(Void * prm){
 		    	  CIPCProc *pThis = (CIPCProc*)prm;

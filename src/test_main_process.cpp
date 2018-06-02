@@ -18,11 +18,12 @@ int main(int argc, char **argv)
 	    CMsgProcess  mProc;
 	    fprintf(stdout, "start!!!!\r\n");
         Ipc_init();
-        Ipc_create();
+        Ipc_create(shm_rdonly);
         mProc.Create();
         fprintf(stdout, "Create sucess!\r\n");
         mProc.Init();
         mProc.Run();
+
         while(testRun){
         		char *pstr;
         		pstr=fgets(stdInCtrl,10,stdin);

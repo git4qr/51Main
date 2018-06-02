@@ -37,6 +37,7 @@ class CPTZControl
     		select(0, NULL, NULL, NULL, &tmp);
         	pThis->MoveSync();
         	pThis->MoveSpecialSync();
+        	//pThis->MovePreset();
     	}
     	pThis->exitThreadMove = FALSE;
     };
@@ -55,14 +56,15 @@ public:
 	int circle();
 
 	unsigned char m_byAddr;
-	int m_iSetPanSpeed, m_iSetTiltSpeed, m_iSetZoomSpeed,m_iSetIrisSpeed,m_iSetFocusNearSpeed, m_iSetFocusFarSpeed;
+	int m_iSetPanSpeed, m_iSetTiltSpeed, m_iSetZoomSpeed,m_iSetIrisSpeed,m_iSetFocusNearSpeed, m_iSetFocusFarSpeed, m_iSetPreset;
 
 protected:
 
 	unsigned char m_cmd1Code, m_cmd2Code, m_data1Code, m_data2Code;
-	int m_iCurPanSpeed, m_iCurTiltSpeed, m_iCurZoomSpeed,m_iCurIrisSpeed,m_iCurFocusNearSpeed, m_iCurFocusFarSpeed;
+	int m_iCurPanSpeed, m_iCurTiltSpeed, m_iCurZoomSpeed,m_iCurIrisSpeed,m_iCurFocusNearSpeed, m_iCurFocusFarSpeed,m_iCurPreset;
 
-	BOOL m_bChangePanSpeed, m_bChangeTiltSpeed, m_bChangeZoomSpeed,m_bChangeIrisSpeed,m_bChangeFocusNearSpeed, m_bChangeFocusFarSpeed;
+	BOOL m_bChangePanSpeed, m_bChangeTiltSpeed, m_bChangeZoomSpeed,m_bChangeIrisSpeed,
+	m_bChangeFocusNearSpeed, m_bChangeFocusFarSpeed, m_bChangePreset;
 	BOOL m_bStopZoom;
 	int	m_iPanPos, m_iTiltPos, m_iZoomPos, m_iIrisPos,m_iMagnification, m_iFocusPos;
 	BOOL m_bQuryZoomPos;
@@ -84,6 +86,7 @@ protected:
 	void RecvByte(unsigned char byRecv);
 	int MoveSync();
 	int MoveSpecialSync();
+	int MovePreset();
 
 	OSA_MutexHndl m_mutex;
 	OSA_SemHndl m_sem;

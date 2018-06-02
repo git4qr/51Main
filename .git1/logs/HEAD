@@ -1,0 +1,6 @@
+0000000000000000000000000000000000000000 516bff6088229d85b6b6bcb22c97fc40fe0ef8a5 tr <tr@126.com> 1526018726 +0800	commit (initial): 主进程已实现基本功能
+516bff6088229d85b6b6bcb22c97fc40fe0ef8a5 38cebd11054f557784a7b91c546abdfbd0efcab6 tr <tr@126.com> 1526110092 +0800	commit: dfdfdfdfd dfdd dfdfgfgfdrdf
+38cebd11054f557784a7b91c546abdfbd0efcab6 24a4e9679d4c6a6d2be9fa3478f3b42f318f4610 tr <tr@126.com> 1526110761 +0800	commit: 1、修改了手柄处理：增加两个函数，使手柄处理更直观、清晰；2、重新写了跟搜函数，使系统功能更合理；3、修正了主进程占用CPU高的问题；4、增加了处理互斥，使得平台控制更合理
+24a4e9679d4c6a6d2be9fa3478f3b42f318f4610 7ac444b5bab58127ca864febaf2191d052f4520e tr <tr@126.com> 1526269540 +0800	commit: 1、重新实现的跟搜功能；2、实现搜跟功能
+7ac444b5bab58127ca864febaf2191d052f4520e ea64b84cb0cf618a33f0a276097d41062272ed8f tr <tr@126.com> 1526272799 +0800	commit: 修正一个启动的应用程序会向子进程发数据的bug
+ea64b84cb0cf618a33f0a276097d41062272ed8f 384e9fc08a039f9709598231e17ad3f7f7e5ad2e tr <tr@126.com> 1526898762 +0800	commit: 网络服务器端框架已完成

@@ -1,13 +1,16 @@
 #include "ipcProc.h"
 #include "msg_id.h"
+#include <sys/time.h>
+#include <assert.h>
 
+struct timeval recv;
 extern selectTrack 	m_selectPara;
 
 CIPCProc::CIPCProc()
 {
 	pthread_mutex_init(&mutex,NULL);
 	CMD_AUTOCHECK fr_img_cmd_autocheck = {0,0,0,0};
-	CMD_SENSOR fr_img_cmd_sensor={ipc_eSen_TV};
+	CMD_SENSOR fr_img_cmd_sensor={1};
 	CMD_PinP fr_img_cmd_pinp = {0,0,0};
 	CMD_TRK fr_img_cmd_trk = {0,0};
 	CMD_SECTRK fr_img_cmd_sectrk = {0};
@@ -15,7 +18,7 @@ CIPCProc::CIPCProc()
 	CMD_MTD fr_img_cmd_mtd = {0};
 	CMD_MMT fr_img_cmd_mmt = {0};
 	CMD_MMTSELECT fr_img_cmd_mmtsel = {0};
-	CMD_TRKDOOR fr_img_cmd_trkdoor = {0,1};
+	CMD_TRKDOOR fr_img_cmd_trkdoor = {1};
 	CMD_SYNC422 fr_img_cmd_sync422 = {0};
 	CMD_ZOOM fr_img_cmd_zoom = {0};
 	SENDST fr_img_test = {0};	trackstatus = 0;
@@ -24,6 +27,9 @@ CIPCProc::CIPCProc()
 	exitThreadIPCRcv = false;
 	exitGetShamDatainThrd = false;
 	pThis = this ;
+	//ipc_status = NULL;
+	//ipc_status = getsharedmemstat();
+	//ipc_status = ipc_getimgstatus_p();
 }
 CIPCProc::~CIPCProc()
 {
@@ -46,6 +52,12 @@ int CIPCProc::Destroy()
 	exitThreadIPCRcv=true;
 	OSA_thrJoin(&thrHandlPCRcv);
 	return 0;
+}
+IMGSTATUS * CIPCProc::getsharedmemstat()
+{
+	ipc_status = ipc_getimgstatus_p();
+	assert(ipc_status != NULL);
+	return ipc_status;
 }
 void CIPCProc::getIPCMsgProc()
 {
@@ -81,6 +93,11 @@ void CIPCProc::getIPCMsgProc()
             case read_shm_trkpos:
         		ipc_gettrack(&trackstatus,&trackposx,&trackposy);//get value from shared_memory
         		Work_quePut(Cmd_IPC_TrkCtrl);
+        		//gettimeofday(&recv, NULL);
+        		//printf("------recv pos------  %d  ,%d \n", recv.tv_sec, recv.tv_usec);
+        		//printf("trackstatus = %d\n", trackstatus);
+        	//	printf("trackposx = %d, trackposy = %d\n", trackposx, trackposy);
+
                 break;
             default:
                 break;
@@ -115,10 +132,11 @@ int  CIPCProc::ipcMutilTargetDetecCtrl(volatile unsigned char ImgMmtStat)//1:ope
 {
       memset(test.param,0,PARAMLEN);
 	test.cmd_ID = mmt;
-	if(ImgMmtStat != fr_img_cmd_mmt.ImgMmtStat)
+
 	{
 		test.param[0]=ImgMmtStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	    	//printf("mmt = %d \n", test.param[0]);
 	}
 
 		return 0;
@@ -128,10 +146,11 @@ int  CIPCProc::ipcMutilTargetSelectCtrl(volatile unsigned char ImgMmtSelect)
 {
       memset(test.param,0,PARAMLEN);
 	test.cmd_ID = mmtselect;
-	if(ImgMmtSelect != fr_img_cmd_mmtsel.ImgMmtSelect)
+	//if(ImgMmtSelect != fr_img_cmd_mmtsel.ImgMmtSelect)
 	{
 		test.param[0]=ImgMmtSelect;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	    //	printf("MMTSelect = %d\n",ImgMmtSelect );
 	}
 
 		return 0;
@@ -153,10 +172,10 @@ int CIPCProc::ipcMoveTatgetDetecCtrl(volatile unsigned char ImgMtdStat)
 {
       memset(test.param,0,PARAMLEN);
 	test.cmd_ID = mtd;
-	if(ImgMtdStat != fr_img_cmd_mtd.ImgMtdStat)
 	{
 		test.param[0]=ImgMtdStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	    	printf("MTDStat = %d\n", test.param[0]);
 	}
 
 		return 0;
@@ -169,13 +188,71 @@ int CIPCProc::ipcSecTrkCtrl(selectTrack *m_selcTrak)
 	test.cmd_ID = sectrk;
 	{
 		cmd_sectrk.SecAcqStat = m_selcTrak->SecAcqStat;
-	//	cmd_sectrk.ImgPixelX =m_selcTrak->ImgPixelX;
-	//	cmd_sectrk.ImgPixelY =m_selcTrak->ImgPixelY;
-	//	memcpy(test.param, &cmd_sectrk, sizeof(cmd_sectrk));
-    	//ipc_sendmsg(&test,IPC_TOIMG_MSG);
-		printf("ImgPixelX = %d\n", m_selcTrak->ImgPixelX);
-	printf("ImgPixelY = %d\n", m_selcTrak->ImgPixelY);
-	printf("INFO : *********************************\r\n");
+	cmd_sectrk.ImgPixelX =m_selcTrak->ImgPixelX;
+	cmd_sectrk.ImgPixelY =m_selcTrak->ImgPixelY;
+	memcpy(test.param, &cmd_sectrk, sizeof(cmd_sectrk));
+    ipc_sendmsg(&test,IPC_TOIMG_MSG);
+    	//printf("cmd_sectrk.SecAcqStat = %d\n", cmd_sectrk.SecAcqStat );
+		//printf("ImgPixelX = %d\n", cmd_sectrk.ImgPixelX );
+		//printf("ImgPixelY = %d\n", cmd_sectrk.ImgPixelY);
 	}
 	return 0;
 }
+
+int CIPCProc::IpcSensorSwitch(volatile unsigned char ImgSenchannel)
+{
+	memset(test.param, 0, PARAMLEN);
+	test.cmd_ID = sensor;
+	{
+		test.param[0] = ImgSenchannel;
+		ipc_sendmsg(&test, IPC_TOIMG_MSG);
+		printf("sensorchannel = %d\n", test.param[0]);
+	}
+	return 0;
+}
+
+int CIPCProc::IpcpinpCtrl(volatile unsigned char ImgPipStat)
+{
+	CMD_PinP cmd_pip;
+	memset(test.param, 0, PARAMLEN);
+	test.cmd_ID = pinp;
+	{
+		cmd_pip.ImgPicp = ImgPipStat;
+		cmd_pip.PicpSensorStat = 1; //*****************************
+		cmd_pip.PicpZoomStat = 1;
+		memcpy(test.param, &cmd_pip, sizeof(cmd_pip));
+		ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	}
+	return 0;
+}
+
+int CIPCProc::IpcTrkDoorCtrl(volatile unsigned char TrkDoorStat)
+{
+	memset(test.param, 0, PARAMLEN);
+	test.cmd_ID = trkdoor;
+	{
+		test.param[0] = TrkDoorStat;
+		ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	}
+	return 0;
+}
+
+int CIPCProc::IpcTrkPosMoveCtrl(POSMOVE * avtMove)
+{
+	CMD_POSMOVE cmd_posMove;
+	test.cmd_ID = posmove;
+	{
+		cmd_posMove.AvtMoveX = avtMove->AvtMoveX;
+		cmd_posMove.AvtMoveY = avtMove->AvtMoveY;
+	//	printf("AvtMoveX = %d         ----------      AvtMoveY = %d\r\n", cmd_posMove.AvtMoveX, cmd_posMove.AvtMoveY);
+		memcpy(test.param, &cmd_posMove, sizeof(cmd_posMove));
+		ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	}
+	return 0;
+}
+
+
+
+
+
+

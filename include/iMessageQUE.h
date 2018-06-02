@@ -94,6 +94,12 @@ typedef struct{
      int ImgPixelX; //SecTrk X
      int ImgPixelY; //SecTrk  Y
 }selectTrack;
+
+typedef struct{
+	volatile unsigned char AvtMoveX;// eTrkRefine (axis or aim) x
+	volatile unsigned char AvtMoveY;// eTrkRefine (axis or aim) y
+}POSMOVE;
+
 #pragma pack()
 
 #define MES_ERROR(...) \

@@ -1,0 +1,8 @@
+[core]
+	repositoryformatversion = 0
+	filemode = true
+	bare = false
+	logallrefupdates = true
+[remote "origin"]
+	url = git@192.168.1.2:VT322/VT322-app/VT322_main_Ryan
+	fetch = +refs/heads/*:refs/remotes/origin/*

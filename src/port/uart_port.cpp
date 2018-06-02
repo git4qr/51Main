@@ -60,12 +60,7 @@ Int32 uart_port_create(port_handle **ppHdl)
 
 	if(ppHdl != NULL){
 		*ppHdl = (port_handle*)&uartPort->Hdl;
-		//OSA_printf("%s: open func[%p]", __func__, (*ppHdl)->open);
 	}
-
-	//OSA_printf("%s: open func[%p]", __func__, uartPort->Hdl.open);
-	//OSA_printf("%s: OK!", __func__);
-
 	return OSA_SOK;
 }
 
@@ -91,20 +86,11 @@ static Int32 uart_port_open(struct _port_handle *Hdl, void *openParams)
 	OSA_assert(openParams != NULL);
 	uart_open_params *uartOpenParams = (uart_open_params*)openParams;
 	uart_port_handle *port = (uart_port_handle*)Hdl->context;
-
-	OSA_printf("%s: device %s %d,%d,%c,%d", __func__, uartOpenParams->device,
-			uartOpenParams->baudrate, uartOpenParams->databits, uartOpenParams->parity, uartOpenParams->stopbits);
-
 	memcpy(&port->openParams, uartOpenParams, sizeof(uart_open_params));
-
 	OSA_assert(sizeof(port->openParams) == sizeof(uart_open_params));
-
-	OSA_printf("%s: device %s %d,%d,%c,%d", __func__, port->openParams.device,
+	OSA_printf("%s: device %s %d,%d,%c,%d\r\n", __func__, port->openParams.device,
 			port->openParams.baudrate, port->openParams.databits, port->openParams.parity, port->openParams.stopbits);
-
 	port->Hdl.fd = open( uartOpenParams->device, O_RDWR| O_NOCTTY | O_NDELAY );
-	
-	//OSA_printf("%s: device %s ... %d", __func__, uartOpenParams->device, port->Hdl.fd);
 	if (-1 == port->Hdl.fd)
 	{ 
 		perror(" ERROR:: Can't Open Serial Port");
@@ -120,11 +106,7 @@ static Int32 uart_port_close(struct _port_handle *Hdl)
 	OSA_assert(Hdl != NULL);
 	if(Hdl == NULL || port->Hdl.fd < 0)
 		return OSA_EFAIL;
-	
 	close(port->Hdl.fd);
-
-	OSA_printf("%s:: dev %s  fd %d !!!\n", __func__, port->openParams.device, port->Hdl.fd);
-
 	port->Hdl.fd = -1;
 
 	return OSA_SOK;
@@ -162,7 +144,6 @@ static Int32 uart_port_recv(struct _port_handle *Hdl, UInt8 *buffer, UInt32 size
 		return OSA_EFAIL;
 
 	nread =  read(port->Hdl.fd, buffer, size);
-
 	if(nread > 0){
 		port->Hdl.cntRecv++;
 		port->Hdl.cntRecvBytes += nread;
@@ -186,7 +167,7 @@ static Int32 uart_port_set(uart_port_handle *port)
 
 	speed = port->openParams.baudrate;
 
-	OSA_printf("%s: %d,%d,%c,%d", __func__, speed, databits, parity, stopbits);
+	//OSA_printf("%s: %d,%d,%c,%d", __func__, speed, databits, parity, stopbits);
 
 	if(speed <= 0 || speed == 115200)
 		speed = B115200;

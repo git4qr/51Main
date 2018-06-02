@@ -212,6 +212,7 @@ typedef VirtualDevice_CreateParams VirtualDeviceParam;
 typedef DeviceUser_CreateParams DeviceUserParam;
 /* ����ƽ̨�˲������� */
 typedef PlatformFilter_CreateParams PlatformFilterParam;
+typedef PlatformFilter_InitParams 	m_PlatformFilterParam;
 /* �����ֱ��ٶ�������� */
 typedef struct {
 	float fOffset_X;
@@ -230,6 +231,52 @@ typedef struct {
 	float fPlatformIntegratingDecayGain;
 }JoystickRateDemandParam;
 
+typedef struct
+{
+	/* ��Ƶ���������� */
+	SensorParams sensorParams[SENSOR_COUNT];
+	/* �����豸���� */
+	AnalogDeviceParam	analogDeviceParams[ANALOG_DEVICE_COUNT];
+	/* �����豸���� */
+	VirtualDeviceParam	virtualDeviceParams[VIRTUAL_DEVICE_COUNT];
+	/* �豸�û����� */
+	DeviceUserParam deviceUsrParam[DevUsr_MAX];
+	/* �˲������� */
+	PlatformFilterParam platformFilterParam[2][2];
+	m_PlatformFilterParam m__cfg_platformFilterParam;
+	/* �ֱ��ٶ�������� */
+	JoystickRateDemandParam joystickRateDemandParam;
+
+	/* ƽ̨��������ϵ�� */
+	float scalarX;
+	float scalarY;
+	float demandMaxX;
+	float demandMinX;
+	float demandMaxY;
+	float demandMinY;
+	float deadbandX;
+	float deadbandY;
+	float driftX;
+	float driftY;
+
+	/* ƽ̨Bleedģʽ */
+	int bleedUsed;
+	float bleedX;
+	float bleedY;
+
+	/* ��ǰ��Ƶ������ */
+	int iSensorInit;
+
+	/* ��ǰ�ӳ� */
+	float fFov[SENSOR_COUNT];
+
+	/* ����ģʽƽ̨������� */
+	eAcqOutputType acqOutputType;
+
+	/* ���ٴ����˲�ʹ�� */
+	int bTrkWinFilter;
+
+}configPlatParam;
 
 /* ����ƽ̨���Ƴ�ʼ������ṹ */
 typedef struct
@@ -244,6 +291,7 @@ typedef struct
 	DeviceUserParam deviceUsrParam[DevUsr_MAX];
 	/* �˲������� */
 	PlatformFilterParam platformFilterParam[2][2];
+	m_PlatformFilterParam m__cfg_platformFilterParam;
 	/* �ֱ��ٶ�������� */
 	JoystickRateDemandParam joystickRateDemandParam;
 
@@ -279,7 +327,7 @@ typedef struct
 }PlatformCtrlParam;
 
 typedef PlatformCtrlParam PlatformCtrl_CreateParams;
-
+typedef configPlatParam	configPlatParam_InitParams;
 
 /**
     ��������Ĭ�ϲ���
@@ -288,7 +336,7 @@ typedef PlatformCtrlParam PlatformCtrl_CreateParams;
 
 	���أ���
 */
-__INLINE void PlatformCtrl_CreateParams_Init(PlatformCtrl_CreateParams *pPrm)
+__INLINE void PlatformCtrl_CreateParams_Init(PlatformCtrl_CreateParams *pPrm, configPlatParam_InitParams *m_Prm)
 {
 	int i;
 
@@ -325,28 +373,53 @@ __INLINE void PlatformCtrl_CreateParams_Init(PlatformCtrl_CreateParams *pPrm)
 	PlatformFilter_CreateParams_Init(&pPrm->platformFilterParam[1][0]);
 	PlatformFilter_CreateParams_Init(&pPrm->platformFilterParam[1][1]);
 
-	PlatformFilter_CreateParams_Gettxt(&pPrm->platformFilterParam[0][0],&pPrm->platformFilterParam[0][1]);
+	PlatformFilter_CreateParams_Gettxt(&pPrm->platformFilterParam[0][0],&pPrm->platformFilterParam[0][1], &m_Prm->m__cfg_platformFilterParam);
 
-	pPrm->scalarX = 1/(50.0*PI/180.0*5.0*9/PI);
-	pPrm->scalarY = 1/(200.0*PI/180.0*4.5*9/PI);
+/*	pPrm->scalarX = 1/(100*PI/180.0*5.0*9/PI);
+	pPrm->scalarY = 1/(400*PI/180.0*4.5*9/PI);
 	pPrm->demandMaxX = 9999.0f;
 	pPrm->demandMinX = -9999.0f;
 	pPrm->demandMaxY = 9999.0f;
 	pPrm->demandMinY = -9999.0f;
 
 	pPrm->bleedUsed  = Bleed_BrosightError;
-	pPrm->bleedX     = 160;
-	pPrm->bleedY     = 90;
+	pPrm->bleedX     =320;
+	pPrm->bleedY     = 180;
+	*/
+
+	pPrm->scalarX = m_Prm->scalarX;
+	pPrm->scalarY = m_Prm->scalarY;
+
+	printf("X = %f\n", pPrm->scalarX);
+	printf("Y = %f\n", pPrm->scalarY);
+
+	pPrm->demandMaxX = m_Prm->demandMaxX;
+	printf("platfromContorl===> demandMaxX = %f\n", pPrm->demandMaxX);
+	pPrm->demandMinX = m_Prm->demandMinX;
+	printf("platfromContorl===> demandMinX = %f\n", pPrm->demandMinX);
+	pPrm->demandMaxY = m_Prm->demandMaxY;
+	printf("platfromContorl===> demandMaxY = %f\n", pPrm->demandMaxY);
+	pPrm->demandMinY = m_Prm->demandMinY;
+	printf("platfromContorl===> demandMinY = %f\n", pPrm->demandMinY);
+
+	pPrm->bleedUsed = m_Prm->bleedUsed;
+	printf("platfromContorl===> bleedUsed = %d\n", pPrm->bleedUsed);
+	pPrm->bleedX = m_Prm->bleedX;
+	printf("platfromContorl===> bleedX = %f\n", pPrm->bleedX);
+	pPrm->bleedY = m_Prm->bleedY;
+	printf("platfromContorl===> bleedY = %f\n", pPrm->bleedY);
+
 	pPrm->acqOutputType = AcqOutputType_ShapedAndGained;
 
-	pPrm->joystickRateDemandParam.fCutpoint = 0.4f;
-	pPrm->joystickRateDemandParam.fInputGain_X = 1.50;
-	pPrm->joystickRateDemandParam.fInputGain_Y = 1.50;
-	pPrm->joystickRateDemandParam.fDeadband = 0.010;
+	pPrm->joystickRateDemandParam.fCutpoint = 0.5f;
+	pPrm->joystickRateDemandParam.fInputGain_X = 1.43;
+	pPrm->joystickRateDemandParam.fInputGain_Y = 1.43;
+	pPrm->joystickRateDemandParam.fDeadband = 0.15;
 	pPrm->joystickRateDemandParam.fPlatformAcquisitionModeGain_X = 14.0f;
 	pPrm->joystickRateDemandParam.fPlatformAcquisitionModeGain_Y = 12.0f;
 
 	pPrm->bTrkWinFilter = 1;
+
 }
 
 /* ����ģ��ʵ��أ�ʵ���� */

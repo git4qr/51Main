@@ -81,8 +81,8 @@ typedef struct
 __INLINE void SensorComp_CreateParams_Init(SensorComp_CreateParams *pPrm)
 {
 	memset(pPrm, 0, sizeof(SensorComp_CreateParams));
-	pPrm->nWidth = 720;
-	pPrm->nHeight = 576;
+	pPrm->nWidth = 1920;
+	pPrm->nHeight = 1080;
 	pPrm->defaultBoresightPos_x = (pPrm->nWidth>>1);
 	pPrm->defaultBoresightPos_y = (pPrm->nHeight>>1);
 	pPrm->fFovMin = 3.0f;

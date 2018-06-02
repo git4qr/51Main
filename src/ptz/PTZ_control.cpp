@@ -14,9 +14,10 @@ CPTZControl::CPTZControl():m_port(NULL)
 	m_bStopZoom = FALSE;
 	m_circle = 0;
 
-	m_iCurPanSpeed = m_iCurTiltSpeed = m_iCurZoomSpeed = m_iCurIrisSpeed = m_iCurFocusNearSpeed = m_iCurFocusFarSpeed = 0;
-	m_iSetPanSpeed = m_iSetTiltSpeed = m_iSetZoomSpeed = m_iSetIrisSpeed =m_iSetFocusNearSpeed =  m_iSetFocusFarSpeed =  0;
-	m_bChangePanSpeed = m_bChangeTiltSpeed = m_bChangeZoomSpeed = m_bChangeIrisSpeed = m_bChangeFocusNearSpeed = m_bChangeFocusFarSpeed = FALSE;
+	m_iCurPanSpeed = m_iCurTiltSpeed = m_iCurZoomSpeed = m_iCurIrisSpeed = m_iCurFocusNearSpeed = m_iCurFocusFarSpeed = m_iSetPreset = 0;
+	m_iSetPanSpeed = m_iSetTiltSpeed = m_iSetZoomSpeed = m_iSetIrisSpeed =m_iSetFocusNearSpeed =  m_iSetFocusFarSpeed = m_iSetPreset =  0;
+	m_bChangePanSpeed = m_bChangeTiltSpeed = m_bChangeZoomSpeed = m_bChangeIrisSpeed =
+	m_bChangeFocusNearSpeed = m_bChangeFocusFarSpeed = m_bChangePreset = FALSE;
 	m_iPanPos = m_iTiltPos = m_iZoomPos = m_iIrisPos= m_iFocusPos = 0;
 
 	m_bQuryZoomPos = FALSE;
@@ -63,7 +64,7 @@ int CPTZControl::Create()
     OSA_semCreate(&m_sem, 1, 0);
 
 	uiCurRecvLen = 0;
-	m_tResponse = PELCO_RESPONSE_Null;
+	m_tResponse =PELCO_RESPONSE_General;// PELCO_RESPONSE_Null;
 	m_nWait = 0;
     exitDataInThread = FALSE;
     //OSA_printf("%s: thrHandleDataIn create call... \n", __func__);
@@ -143,11 +144,9 @@ void CPTZControl::dataInThrd()
         {
             rlen =  m_port->recv(m_port, buffer, 1024);
             OSA_assert(rlen > 0);
-
-            //OSA_printf("%s: rlen = %d. [%02x %02x %02x %02x]",__func__, rlen, buffer[0], buffer[1], buffer[2], buffer[3]);
             for(i=0; i<rlen; i++)
             	RecvByte(buffer[i]);
-
+          //  OSA_printf("%s: rlen = %d. [%02x %02x %02x %02x %02x %02x %02x]",__func__, rlen, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
         }
     }
     free(buffer);
@@ -160,6 +159,7 @@ void CPTZControl::dataInThrd()
 void CPTZControl::RecvByte(unsigned char byRecv)
 {
 	if(uiCurRecvLen == 0){
+
 		if(byRecv == 0xFF){
 			if(m_tResponse == PELCO_RESPONSE_Null)
 				return ;
@@ -187,16 +187,19 @@ void CPTZControl::RecvByte(unsigned char byRecv)
 				m_iPanPos = recvBuffer[4];
 				m_iPanPos <<= 8;
 				m_iPanPos += recvBuffer[5];
+				//fprintf(stdout, "INFO: m_iPanPos is %d",m_iPanPos);
 				break;
 			case 0x5B:
 				m_iTiltPos = recvBuffer[4];
 				m_iTiltPos <<= 8;
 				m_iTiltPos += recvBuffer[5];
+				//printf("INFO: m_iTiltPos is %d",m_iTiltPos);
 				break;
 			case 0x5D:
 				m_iZoomPos = recvBuffer[4];
 				m_iZoomPos <<= 8;
 				m_iZoomPos += recvBuffer[5];
+			//	printf("INFO: zoompos is %d",m_iZoomPos);
 				break;
 			case 0x63:
 				m_iMagnification = recvBuffer[4];
@@ -238,6 +241,25 @@ int CPTZControl::SendCmd(LPPELCO_D_REQPKT pCmd, PELCO_RESPONSE_t tResp /* = PELC
 	if( iRet != OSA_SOK ){
 		OSA_printf("PTZ send msg time out!\n");
 		iRet = -1;
+	}
+	OSA_mutexUnlock(&m_mutex);
+
+	return iRet;
+}
+
+int CPTZControl::MovePreset()
+{
+	int iRet = 0;
+	OSA_mutexLock(&m_mutex);
+	m_cmd1Code = 0;
+	if(m_bChangePreset){
+		if(m_iCurPreset > 0){
+			int type = 0x07;
+			int value = 0x01;
+			//Preset(type, value);
+		}
+		m_bChangePreset = false;
+		printf("Preset success!!!\n");
 	}
 	OSA_mutexUnlock(&m_mutex);
 
@@ -288,6 +310,7 @@ int CPTZControl::MoveSync()
 		int Iris = abs((int)m_iCurIrisSpeed);
 		int FocusNear = abs((int)m_iCurFocusNearSpeed);
 
+		m_cmd1Code=0;
 		m_cmd2Code = 0;
 
 
@@ -301,9 +324,9 @@ int CPTZControl::MoveSync()
 				else if(m_iCurPanSpeed<0)
 					m_cmd2Code |= 0x04;
 
-				if(m_iCurTiltSpeed < 0)
+				if(m_iCurTiltSpeed > 0)
 					m_cmd2Code |= 0x10;
-				else if(m_iCurTiltSpeed > 0)
+				else if(m_iCurTiltSpeed < 0)
 					m_cmd2Code |= 0x08;
 
 				if(m_iCurZoomSpeed > 0){		//Tele
@@ -325,7 +348,6 @@ int CPTZControl::MoveSync()
 				m_data1Code = min(Pan, 63);
 				m_data2Code = min(Tilt, 63);
 
-				m_cmd1Code=0;
 
 
 				IPelcoDFormat::PktFormat(m_pReqMove, m_cmd1Code, m_cmd2Code, m_data1Code, m_data2Code, m_byAddr);
@@ -352,7 +374,8 @@ int CPTZControl::Move()
 		&& m_iCurZoomSpeed == m_iSetZoomSpeed
 		&& m_iCurIrisSpeed == m_iSetIrisSpeed
 		&& m_iCurFocusNearSpeed == m_iSetFocusNearSpeed
-		&&m_iCurFocusFarSpeed == m_iSetFocusFarSpeed)
+		&&m_iCurFocusFarSpeed == m_iSetFocusFarSpeed
+		&&m_iCurPreset == m_iSetPreset)
 	{
 		//TRACE("Speed no change !\n");
 		OSA_mutexUnlock(&m_mutex);
@@ -368,12 +391,14 @@ int CPTZControl::Move()
 	m_bChangeIrisSpeed =((int)m_iCurIrisSpeed != (int)m_iSetIrisSpeed);
 	m_bChangeFocusNearSpeed =((int)m_iCurFocusNearSpeed != (int)m_iSetFocusNearSpeed);
 	m_bChangeFocusFarSpeed =((int)m_iCurFocusFarSpeed != (int)m_iSetFocusFarSpeed);
+	m_bChangePreset = ((int)m_iCurPreset != (int)m_iSetPreset);
 	m_iCurPanSpeed = m_iSetPanSpeed;
 	m_iCurTiltSpeed = m_iSetTiltSpeed;
 	m_iCurZoomSpeed = m_iSetZoomSpeed;
 	m_iCurIrisSpeed = m_iSetIrisSpeed;
 	m_iCurFocusFarSpeed = m_iSetFocusFarSpeed;
 	m_iCurFocusNearSpeed = m_iSetFocusNearSpeed;
+	m_iCurPreset = m_iSetPreset;
 
 	OSA_mutexUnlock(&m_mutex);
 

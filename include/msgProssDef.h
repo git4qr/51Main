@@ -45,7 +45,7 @@ typedef enum _sys_msg_id_ {
     MSGID_SYS_INIT  = 0,           ///< internal cmd system init.
     MSGID_SYS_RESET,
     MSGID_EXT_INPUT_TRACKCTRL,
-    MSGID_EXT_INPUT_SENSWITCHCTRL,
+    MSGID_EXT_INPUT_MTDCTRL,
     MSGID_EXT_INPUT_OPTICZOOMLONGCTRL,
     MSGID_EXT_INPUT_OPTICZOOMSHORTCTRL,
     MSGID_EXT_INPUT_TRCKBOXSIZECTRL,
@@ -55,12 +55,18 @@ typedef enum _sys_msg_id_ {
     MSGID_EXT_INPUT_FOCUSFARCHCTRL,
     MSGID_EXT_INPUT_FOCUSNEARCTRL,
     MSGID_EXT_INPUT_IMGENHCTRL,
-    MSGID_EXT_INPUT_unable,
+    MSGID_EXT_INPUT_MMTCRTL,
     MSGID_EXT_INPUT_AIMPOSXCTRL,
     MSGID_EXT_INPUT_AIMPOSYCTRL,
     MSGID_EXT_INPUT_PLATCTRL,
+    MSGID_EXT_INPUT_SwitchSensor,
+    MSGID_EXT_INPUT_PresetCtrl,
 
-    MSGID_IPC_INPUT_TRACKCTRL
+    MSGID_IPC_INPUT_TRACKCTRL,
+    MSGID_IPC_INPUT_MTDCTRL,
+    MSGID_IPC_INPUT_MMTCRTL,
+    MSGID_IPC_INPUT_IMGENHCTRL,
+    MSGID_IPC_INPUT_TRCKBOXSIZECTRL
 }eSysMsgId, MSG_PROC_ID;
 
 int  MSGAPI_initial();
@@ -68,7 +74,7 @@ int  MSGAPI_initial();
 void MSGAPI_unInitial(MSGDRIV_Handle handle);
 //void MSGAPI_init_device(LPARAM lParam       /*=NULL*/);
 void usd_MSGAPI_ExtInpuCtrl_Track(long p);
-void usd_MSGAPI_ExtInpuCtrl_SwichSenr(long p);
+void usd_MSGAPI_ExtInpuCtrl_Mtd(long p);
 void usd_MSGAPI_ExtInpuCtrl_TrkBoxSize(long p);
 void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p);
 void usd_MSGAPI_ExtInpuCtrl_IrisUp(long p);
@@ -76,15 +82,17 @@ void usd_MSGAPI_ExtInpuCtrl_IrisDwon(long p);
 void usd_MSGAPI_ExtInpuCtrl_FocusFar(long p);
 void usd_MSGAPI_ExtInpuCtrl_FocusNear(long p);
 void usd_MSGAPI_ExtInpuCtrl_ImgEnh(long p);
-void usd_MSGAPI_ExtInpuCtrl_unable(long p);
+void usd_MSGAPI_ExtInpuCtrl_Mmt(long p);
+void MSGAPI_ExtInputCtrl_MmtSelect(int msg);
 void usd_MSGAPI_ExtInpuCtrl_AIMPOSX(long p);
 void usd_MSGAPI_ExtInpuCtrl_AIMPOSY(long p);
 void usd_MSGAPI_ExtInpuCtrl_ZoomLong(long p);
 void usd_MSGAPI_ExtInpuCtrl_AXISX(long p);
 void usd_MSGAPI_ExtInpuCtrl_AXISY(long p);
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p);
-
-void usd_MSGAPI_IPCInpuCtrl_AXIS(long p);
+void usd_MSGAPI_EXTINPUTCtrl_Sensor(long p);
+void usd_MSGAPI_EXTINPUTCtrl_Preset(long p);
+void  MSGAPI_StatusConvertFunc(int msg);
 
 
 
