@@ -311,6 +311,55 @@ public:
 			 {
 				 SendMsg(Cmd_Mesg_MainElectronicZoom);
 			 }
+			 void EnablesaveAxis()
+			 {
+				 SendMsg(Cmd_Mesg_saveAxis);
+			 }
+
+			 void EnablePicp()
+			 {
+				 SendMsg(Cmd_Mesg_Picp);
+			 }
+			 void EnableswitchVideoChannel()
+			 {
+				 SendMsg(Cmd_Mesg_switchVideoChannel);
+			 }
+			 void frameCtrl()
+			 {
+				 SendMsg(Cmd_Mesg_frameCtrl);
+			 }
+			 void compression_quality()
+			 {
+				 SendMsg(Cmd_Mesg_compression_quality);
+			 }
+			 void wordColor()
+			 {
+				 SendMsg(Cmd_Mesg_wordColor);
+			 }
+			 void wordType()
+			 {
+				 SendMsg(Cmd_Mesg_wordType);
+			 }
+			 void wordSize()
+			 {
+				 SendMsg(Cmd_Mesg_wordSize);
+			 }
+			 void WordDisEnable()
+			 {
+				 SendMsg(Cmd_Mesg_wordDisEnable);
+			 }
+			 void Config_Write_Save()
+			 {
+				 SendMsg(Cmd_Mesg_config_Write_Save);
+			 }
+			 void Config_Read()
+			 {
+				 SendMsg(Cmd_Mesg_config_Read);
+			 }
+			 void Jos_kboard()
+			 {
+				 SendMsg(Cmd_Mesg_jos_kboard);
+			 }
 
 		int finderMapKey(int mVal);
 

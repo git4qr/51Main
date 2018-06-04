@@ -418,7 +418,7 @@ int  CMsgProcess::configAvtFromFile()
 
 				m_ipc->ipc_OSD->ch5_aim_width = (int)fr["cfg_avt_222"];
 
-				m_ipc->ipc_OSD->ch6_aim_width = (int)fr["cfg_avt_223"];
+				m_ipc->ipc_OSD->ch0_aim_height = (int)fr["cfg_avt_223"];
 
 				m_ipc->ipc_OSD->ch1_aim_height = (int)fr["cfg_avt_224"];
 
@@ -888,7 +888,7 @@ void CMsgProcess::modifierAVTProfile(int block, int field, int value)
 		m_ipc->ipc_OSD->ch5_aim_width = value;
 		break;
 	case 223:
-		m_ipc->ipc_OSD->ch6_aim_width = value;
+		m_ipc->ipc_OSD->ch0_aim_height = value;
 		break;
 	case 224:
 		m_ipc->ipc_OSD->ch1_aim_height = value;

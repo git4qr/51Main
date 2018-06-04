@@ -40,6 +40,7 @@ void  MSGAPI_StatusConvertFunc(int msg)
 	switch(msg){
 	case Cmd_Mesg_TrkCtrl:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->AvtTrkStat);
+		printf("AvtStatus = %d\n", sThis->m_ipc->ipc_status->AvtTrkStat);
 		break;
 	case Cmd_Mesg_Mtd:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->MtdState[0]);
@@ -206,9 +207,9 @@ void usd_MSGAPI_IPCProfile(long p)
 
 void usd_MSGAPI_IPCConfigWrite(long p)
 {
-	int block = sThis->m_uart->Host_Ctrl[config_block];
-	int field = sThis->m_uart->Host_Ctrl[config_field];
-	int value = sThis->m_uart->Host_Ctrl[config_value];
+	int block = sThis->m_uart->Host_Ctrl[config_Wblock];
+	int field = sThis->m_uart->Host_Ctrl[config_Wfield];
+	int value = sThis->m_uart->Host_Ctrl[config_Wvalue];
 	printf("block = %d, field = %d, value = %d\n", block, field, value);
 	sThis->modifierAVTProfile(block, field, value);
 }

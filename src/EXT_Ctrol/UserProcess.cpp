@@ -363,9 +363,9 @@ void  CUserBase::configSetting()
 		tempbuf[m-6]=rcvBufQue.at(m);
 	memcpy(&avtSetting.confitData,tempbuf,sizeof(int));
 	printf("INFO:  Block=%d, filed=%d, value=%d\r\n",avtSetting.cmdBlock,avtSetting.cmdFiled,avtSetting.confitData);
-	Host_Ctrl[config_block]=avtSetting.cmdBlock;
-    Host_Ctrl[config_field]=avtSetting.cmdFiled;
-    Host_Ctrl[config_value]=avtSetting.confitData;
+	Host_Ctrl[config_Wblock]=avtSetting.cmdBlock;
+    Host_Ctrl[config_Wfield]=avtSetting.cmdFiled;
+    Host_Ctrl[config_Wvalue]=avtSetting.confitData;
 	Enableconfig();
 }
 
