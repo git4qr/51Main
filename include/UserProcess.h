@@ -136,7 +136,7 @@ public:
 	virtual int  Create(){return 0;};
 	virtual int Init(){return 0;};
 	virtual int  Config(){return 0;};
-	virtual void PreInit();
+	void PreInit();
 	virtual int Run(){return 0;};
 	virtual int  Stop(){return 0;};
 	int process_ExtInputData( u_int8_t *data_buf, uint data_len);
@@ -148,7 +148,7 @@ public:
 	systemSetting avtSetting;
 
 	virtual int  Destroy(){
-		delete EXT_Ctrl;;
+		delete EXT_Ctrl;
 		return 0;
 	};
 		void Enableconfig()

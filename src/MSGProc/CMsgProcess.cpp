@@ -63,6 +63,9 @@ int CMsgProcess::Create()
 	  // IPC communication
 	 m_ipc = new CIPCProc();
       m_ipc->Create();
+      //Jos Create
+   	m_jos = new CJosStick();
+   	m_jos->Create();
   	//uart Create
   	m_uart = new CUartProcess();
   	m_uart->Create();
@@ -76,9 +79,7 @@ int CMsgProcess::Create()
 	configAvtFromFile();
 	PlatformCtrl_CreateParams_Init(&m_pltParams, &m_cfgPlatParam);
 	printf("PlatCtrl is OK !!!\n");
-    //Jos Create
- 	m_jos = new CJosStick();
- 	m_jos->Create();
+
 	//OSA_semCreate(m_semHndl, 1, 0);
 	PlantTrackerInputPara();
 	OSA_assert(m_plt == NULL);

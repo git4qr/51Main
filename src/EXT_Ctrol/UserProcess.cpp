@@ -6,7 +6,6 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
 #include "UserProcess.h"
-#include "ExtFunc.h"
 #include "finder.h"
 
 using namespace cv;
@@ -18,8 +17,8 @@ using namespace std;
 static int  cfg_blk_val[16];
 CUserBase  *Sthis =NULL;
 static u_int8_t  frame_head[]={0xEB, 0x53};
-static  pExtEventFunc  funcArray[]={NULL,track,SelSensor,TrkBoxCtrl,TrkSearch,upIris,downIris,focusUp,FocusDown,imgEnhance,autoIsriFocus,
-																aimposx,aimposy,zoomlong, zoomshort, axisXctrl,axisYctrl };
+//static  pExtEventFunc  funcArray[]={NULL,track,SelSensor,TrkBoxCtrl,TrkSearch,upIris,downIris,focusUp,FocusDown,imgEnhance,autoIsriFocus,
+															//	aimposx,aimposy,zoomlong, zoomshort, axisXctrl,axisYctrl };
 
 void CUserBase::getReadLocalJosCfgSettingFile(void)
 {
@@ -53,7 +52,6 @@ void CUserBase::getReadLocalJosCfgSettingFile(void)
 
 CUserBase::CUserBase()
 {
-	PreInit();
 	ExtInputCtrl = new int[20];
 	ExtInputCtrlValue.assign(128,0);
 	rcvbufofft=0;
@@ -63,6 +61,14 @@ CUserBase::CUserBase()
  	memset(&extCtrl,0,sizeof(extCtrl));
  	memset(&avtSetting,0,sizeof(avtSetting));
  	ptr=&procbufque[0];
+	if(EXT_Ctrl == NULL){
+	EXT_Ctrl = new int[50];
+	memset(EXT_Ctrl, 0, sizeof(int) * 50);
+	}
+	if(Host_Ctrl == NULL){
+	Host_Ctrl = new int[30];
+	memset(Host_Ctrl, 0, sizeof(int) * 30);
+	}
 }
 
 CUserBase::~CUserBase()
@@ -72,14 +78,7 @@ CUserBase::~CUserBase()
 
 void CUserBase::PreInit()
 {
-	if(EXT_Ctrl == NULL){
-	EXT_Ctrl = new int[50];
-	memset(EXT_Ctrl, 0, sizeof(int) * 50);
-	}
-	if(Host_Ctrl == NULL){
-	Host_Ctrl = new int[30];
-	memset(Host_Ctrl, 0, sizeof(int) * 30);
-	}
+
 }
 
 int CUserBase::preinitial()

@@ -220,5 +220,4 @@ src/EXT_Ctrol/UserProcess.o : ../src/EXT_Ctrol/UserProcess.cpp \
     ../include/msg_id.h \
     ../include/app_status.h \
     ../include/Ipcctl.h \
-    ../include/ExtFunc.h \
     ../include/finder.h

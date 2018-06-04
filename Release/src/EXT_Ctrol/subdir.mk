@@ -5,7 +5,6 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 CPP_SRCS += \
 ../src/EXT_Ctrol/CConnect.cpp \
-../src/EXT_Ctrol/ExtFunc.cpp \
 ../src/EXT_Ctrol/NetProcess.cpp \
 ../src/EXT_Ctrol/UartProcess.cpp \
 ../src/EXT_Ctrol/UserProcess.cpp \
@@ -13,7 +12,6 @@ CPP_SRCS += \
 
 OBJS += \
 ./src/EXT_Ctrol/CConnect.o \
-./src/EXT_Ctrol/ExtFunc.o \
 ./src/EXT_Ctrol/NetProcess.o \
 ./src/EXT_Ctrol/UartProcess.o \
 ./src/EXT_Ctrol/UserProcess.o \
@@ -21,7 +19,6 @@ OBJS += \
 
 CPP_DEPS += \
 ./src/EXT_Ctrol/CConnect.d \
-./src/EXT_Ctrol/ExtFunc.d \
 ./src/EXT_Ctrol/NetProcess.d \
 ./src/EXT_Ctrol/UartProcess.d \
 ./src/EXT_Ctrol/UserProcess.d \
