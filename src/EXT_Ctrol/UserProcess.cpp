@@ -53,6 +53,7 @@ void CUserBase::getReadLocalJosCfgSettingFile(void)
 
 CUserBase::CUserBase()
 {
+	PreInit();
 	ExtInputCtrl = new int[20];
 	ExtInputCtrlValue.assign(128,0);
 	rcvbufofft=0;
@@ -71,10 +72,14 @@ CUserBase::~CUserBase()
 
 void CUserBase::PreInit()
 {
+	if(EXT_Ctrl == NULL){
 	EXT_Ctrl = new int[50];
 	memset(EXT_Ctrl, 0, sizeof(int) * 50);
+	}
+	if(Host_Ctrl == NULL){
 	Host_Ctrl = new int[30];
 	memset(Host_Ctrl, 0, sizeof(int) * 30);
+	}
 }
 
 int CUserBase::preinitial()

@@ -46,7 +46,6 @@ public:
 	CJosStick();
 ~CJosStick();
 int Create();
-int  Init();
 int  Config();
 int  Run();
 int  Stop();

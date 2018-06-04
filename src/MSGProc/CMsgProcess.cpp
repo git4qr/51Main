@@ -116,7 +116,6 @@ int CMsgProcess::Destroy()
 int CMsgProcess::Init()
 {
 	MSGAPI_initial();
-	m_jos->Init();
 
 	return 0 ;
 	
@@ -356,6 +355,7 @@ int  CMsgProcess::configAvtFromFile()
 				m_ipc->ipc_OSD->OSD_text_show = (int)fr["cfg_avt_194"];
 
 				m_ipc->ipc_OSD->OSD_text_color = (int)fr["cfg_avt_195"];
+				printf("OSD_text_color %x\n", m_ipc->ipc_OSD->OSD_text_color);
 
 				m_ipc->ipc_OSD->OSD_text_alpha = (int)fr["cfg_avt_196"];
 
@@ -422,6 +422,7 @@ int  CMsgProcess::configAvtFromFile()
 				m_ipc->ipc_OSD->ch4_aim_height = (int)fr["cfg_avt_227"];
 
 				m_ipc->ipc_OSD->ch5_aim_height = (int)fr["cfg_avt_228"];
+				printf("ch5_aim_height %d\n", m_ipc->ipc_OSD->ch5_aim_height);
 				}//osd
 
 				{ //UTC_TRK

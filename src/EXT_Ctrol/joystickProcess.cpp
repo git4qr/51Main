@@ -14,10 +14,8 @@ CJosStick::~CJosStick()
 {
 	Destroy();
 }
-int  CJosStick::Init()
-{
-	return 0;
-}
+
+
 
 int  CJosStick::Create()
 {
