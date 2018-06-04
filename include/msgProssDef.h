@@ -68,6 +68,7 @@ typedef enum _sys_msg_id_ {
     MSGID_IPC_INPUT_MMTCRTL,
     MSGID_IPC_INPUT_IMGENHCTRL,
     MSGID_IPC_INPUT_TRCKBOXSIZECTRL,
+    MSGID_IPC_MainElectronicZoom,
     MSGID_IPC_Config,
     MSGID_IPC_OSD,
     MSGID_IPC_UTC,
@@ -102,6 +103,7 @@ void usd_MSGAPI_IPCConfigWrite(long p);
 void usd_MSGAPI_IPCReadOSD(long p);
 void usd_MSGAPI_IPCReadUTC(long p);
 void usd_MSGAPI_IPCReadCamera(long p);
+void usd_MSGAPI_IPCElectronicZoom(long p);
 void  MSGAPI_StatusConvertFunc(int msg);
 
 

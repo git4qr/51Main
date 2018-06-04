@@ -93,7 +93,7 @@ Cmd_Mesg_EnhMode,
 }Cmd_Mesg_ID_Gather;
 
 typedef enum {
-	elfTest = 0,
+	selfTest = 0,
 	mainVideo,
 	Channel_binding,
 	moveAxis,

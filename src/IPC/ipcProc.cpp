@@ -265,7 +265,7 @@ int CIPCProc::IpcTrkPosMoveCtrl(POSMOVE * avtMove)
 	{
 		cmd_posMove.AvtMoveX = avtMove->AvtMoveX;
 		cmd_posMove.AvtMoveY = avtMove->AvtMoveY;
-	//	printf("AvtMoveX = %d         ----------      AvtMoveY = %d\r\n", cmd_posMove.AvtMoveX, cmd_posMove.AvtMoveY);
+		printf("AvtMoveX = %d         ----------      AvtMoveY = %d\r\n", cmd_posMove.AvtMoveX, cmd_posMove.AvtMoveY);
 		memcpy(test.param, &cmd_posMove, sizeof(cmd_posMove));
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
 	}
@@ -305,4 +305,10 @@ int CIPCProc::IPCConfigCamera()
 	return 0;
 }
 
-
+int CIPCProc::IpcElectronicZoom(int zoom)
+{
+	test.cmd_ID = elecZoom;
+	test.param[0] = zoom;
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	return 0;
+}

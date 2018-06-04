@@ -357,8 +357,8 @@ void  CUserBase::configSetting()
 {
 	uint8_t  tempbuf[4];
 	memset(&avtSetting,0,sizeof(avtSetting));
-	avtSetting.cmdBlock=rcvBufQue.at(4) ;
-	avtSetting.cmdFiled=rcvBufQue.at(5) ;
+	avtSetting.cmdBlock=rcvBufQue.at(4);
+	avtSetting.cmdFiled=rcvBufQue.at(5);
 	for(int m=6;m<10;m++)
 		tempbuf[m-6]=rcvBufQue.at(m);
 	memcpy(&avtSetting.confitData,tempbuf,sizeof(int));

@@ -34,6 +34,7 @@ typedef enum
     read_shm_osd,
     read_shm_utctrk,
     read_shm_camera,
+    elecZoom,
     exit_img,
     invalid
 }CMD_ID;

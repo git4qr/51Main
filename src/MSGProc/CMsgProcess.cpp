@@ -244,6 +244,9 @@ void CMsgProcess::processMsg(int msg)
 						case Cmd_Mesg_config_Write:
 							MSGDRIV_send(MSGID_EXT_INPUT_configWrite, 0);
 							break;
+						case Cmd_Mesg_MainElectronicZoom:
+							MSGDRIV_send(MSGID_IPC_MainElectronicZoom,0);
+							break;
 						default:
 							fprintf(stdout,"INFO: can not excute here\r\n");
 					}
@@ -367,10 +370,13 @@ int  CMsgProcess::configAvtFromFile()
 				m_ipc->ipc_OSD->OSD_draw_show = (int)fr["cfg_avt_199"];
 
 				m_ipc->ipc_OSD->OSD_draw_color = (int)fr["cfg_avt_200"];
+				printf("CMsgProcess===>OSD_draw_color %x\n", m_ipc->ipc_OSD->OSD_draw_color);
 
 				m_ipc->ipc_OSD->CROSS_AXIS_WIDTH = (int)fr["cfg_avt_201"];
+				printf("CMsgProcess===>CROSS_AXIS_WIDTH %d\n", m_ipc->ipc_OSD->CROSS_AXIS_WIDTH);
 
 				m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT = (int)fr["cfg_avt_202"];
+				printf("CMsgProcess===>CROSS_AXIS_HEIGHT %d\n", m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT);
 
 				m_ipc->ipc_OSD->Picp_CROSS_AXIS_WIDTH = (int)fr["cfg_avt_203"];
 
@@ -534,66 +540,87 @@ void CMsgProcess::modifierAVTProfile(int block, int field, int value)
 	{
 	case 2:
 		m_cfgPlatParam.scalarX = value;
+		printf("CMsgProcess======>scalarX = %f \n", m_cfgPlatParam.scalarX);
 		break;
 	case 3:
 		m_cfgPlatParam.scalarY = value;
+		printf("CMsgProcess======>scalarY = %f \n", m_cfgPlatParam.scalarY);
 		break;
 	case 4:
 		m_cfgPlatParam.demandMaxX = value;
+		printf("CMsgProcess======>demandMaxX = %f \n", m_cfgPlatParam.demandMaxX);
 		break;
 	case 5:
 		m_cfgPlatParam.demandMinX = value;
+		printf("CMsgProcess======>demandMinX = %f \n", m_cfgPlatParam.demandMinX);
 		break;
 	case 6:
 		m_cfgPlatParam.demandMaxY = value;
+		printf("CMsgProcess======>demandMaxY = %f \n", m_cfgPlatParam.demandMaxY);
 		break;
 	case 7:
 		m_cfgPlatParam.demandMinY = value;
+		printf("CMsgProcess======>demandMinY = %f \n", m_cfgPlatParam.demandMinY);
 		break;
 	case 12:
 		m_cfgPlatParam.bleedUsed = value;
+		printf("CMsgProcess======>bleedUsed = %d \n", m_cfgPlatParam.bleedUsed);
 		break;
 	case 13:
 		m_cfgPlatParam.bleedX = value;
+		printf("CMsgProcess======>bleedX = %f \n", m_cfgPlatParam.bleedX);
 		break;
 	case 14:
 		m_cfgPlatParam.bleedY = value;
+		printf("CMsgProcess======>bleedY = %f \n", m_cfgPlatParam.bleedY);
 		break;
 	case 17:
 		m_cfgPlatParam.m__cfg_platformFilterParam.P0 = value;
+		printf("CMsgProcess======>P0 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P0);
 		break;
 	case 18:
 		m_cfgPlatParam.m__cfg_platformFilterParam.P1 = value;
+		printf("CMsgProcess======>P1 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P1);
 		break;
 	case 19:
 		m_cfgPlatParam.m__cfg_platformFilterParam.P2 = value;
+		printf("CMsgProcess======>P2 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P2);
 		break;
 	case 20:
 		m_cfgPlatParam.m__cfg_platformFilterParam.L1 = value;
+		printf("CMsgProcess======>L1 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.L1);
 		break;
 	case 21:
 		m_cfgPlatParam.m__cfg_platformFilterParam.L2 = value;
+		printf("CMsgProcess======>L2 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.L2);
 		break;
 	case 22:
 			m_cfgPlatParam.m__cfg_platformFilterParam.G = value;
+			printf("CMsgProcess======>G = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.G);
 		break;
 	case 23:
 		m_cfgPlatParam.m__cfg_platformFilterParam.P02 = value;
+		printf("CMsgProcess======>P02 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P02);
 		break;
 	case 24:
 		m_cfgPlatParam.m__cfg_platformFilterParam.P12 = value;
+		printf("CMsgProcess======>P12 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P12);
 		break;
 	case 25:
 		m_cfgPlatParam.m__cfg_platformFilterParam.P22 = value;
+		printf("CMsgProcess======>P22 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P22);
 		break;
 	case 26:
 		m_cfgPlatParam.m__cfg_platformFilterParam.L12 = value;
+		printf("CMsgProcess======>L12 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.L12);
 		break;
 	case 27:
 		m_cfgPlatParam.m__cfg_platformFilterParam.L22 = value;
+		printf("CMsgProcess======>L22 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.L22);
 		break;
 	case 28:
 			m_cfgPlatParam.m__cfg_platformFilterParam.G2 = value;
+			printf("CMsgProcess======>G2 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.G2);
 		break;
 	case 128:
 		m_ipc->ipc_UTC->occlusion_thred = value;

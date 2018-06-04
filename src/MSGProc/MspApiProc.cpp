@@ -215,6 +215,8 @@ void usd_MSGAPI_IPCConfigWrite(long p)
 
 void usd_MSGAPI_IPCReadOSD(long p)
 {
+	printf("MspApiProc======>CROSS_AXIS_HEIGHT = %d\n",sThis->m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT);
+	printf("MspApiProc======>CROSS_AXIS_WIDTH = %d\n",sThis->m_ipc->ipc_OSD->CROSS_AXIS_WIDTH);
 	sThis->m_ipc->IpcConfigOSD();
 }
 
@@ -227,6 +229,12 @@ void usd_MSGAPI_IPCReadCamera(long p)
 {
 	sThis->m_ipc->IPCConfigCamera();
 }
+
+void usd_MSGAPI_IPCElectronicZoom(long p)
+{
+	sThis->m_ipc->IpcElectronicZoom(sThis->m_uart->Host_Ctrl[ElectronicZoom]);
+}
+
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p)
 {
 	m_CurrStat.m_AxisXStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
@@ -274,5 +282,6 @@ int  MSGAPI_initial()
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_OSD,usd_MSGAPI_IPCReadOSD ,0);
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_UTC,usd_MSGAPI_IPCReadUTC,0);
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_Camera,usd_MSGAPI_IPCReadCamera, 0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_MainElectronicZoom, usd_MSGAPI_IPCElectronicZoom, 0);
     return 0;
 }

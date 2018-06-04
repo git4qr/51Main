@@ -294,29 +294,39 @@ static int PlatformCtrl_PlatformCompensation(PlatformCtrl_Obj *pObj)
 
     if(fTmp > pObj->params.demandMaxX)
         fTmp = pObj->params.demandMaxX;
+    //printf("pObj->params.demandMaxX = %f\n", pObj->params.demandMaxX);
 
     if(fTmp < pObj->params.demandMinX)
         fTmp = pObj->params.demandMinX;
+    //printf("pObj->params.demandMinX = %f\n", pObj->params.demandMinX);
 
     if(fTmp > EPSINON)
         fTmp += pObj->params.deadbandX;
+    //printf("pObj->params.deadbandX = %f\n", pObj->params.deadbandX);
 
     if(fTmp < (-1)*EPSINON)
         fTmp -= pObj->params.deadbandX;
 
+
     fTmp += pObj->params.driftX;
     pObj->inter.output.fPlatformDemandX = fTmp;
+    //printf("pObj->params.driftX = %f\n", pObj->params.driftX);
+
 
     fTmp = pObj->privates.curRateDemandY / pObj->params.scalarY;
+    //printf("pObj->params.scalarY = %f\n", pObj->params.scalarY);
 
     if(fTmp > pObj->params.demandMaxY)
         fTmp = pObj->params.demandMaxY;
+    //printf("pObj->params.demandMaxY = %f\n", pObj->params.demandMaxY);
 
     if(fTmp < pObj->params.demandMinY)
         fTmp = pObj->params.demandMinY;
+    //printf("pObj->params.demandMinY = %f\n", pObj->params.demandMinY);
 
     if(fTmp > EPSINON)
         fTmp += pObj->params.deadbandY;
+    //printf("pObj->params.deadbandY = %f\n", pObj->params.deadbandY);
 
     if(fTmp < (-1)*EPSINON)
         fTmp -= pObj->params.deadbandY;

@@ -307,6 +307,10 @@ public:
 			 {
 				 SendMsg(Cmd_IPC_Camera);
 			 }
+			 void EnableElectronicZoom()
+			 {
+				 SendMsg(Cmd_Mesg_MainElectronicZoom);
+			 }
 
 		int finderMapKey(int mVal);
 

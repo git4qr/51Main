@@ -23,6 +23,7 @@ public:
 		    int IpcpinpCtrl(volatile unsigned char ImgPipStat);
 		    int IpcTrkDoorCtrl(volatile unsigned char TrkDoorStat);
 		    int IpcTrkPosMoveCtrl(POSMOVE * avtMove);
+		    int IpcElectronicZoom(int zoom);
 		    int IpcConfig();
 		    int IpcConfigOSD();
 		    int IpcConfigUTC();
