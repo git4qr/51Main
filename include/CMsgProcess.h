@@ -68,6 +68,7 @@ class CMsgProcess{
 		      void MSGAPI_IPCInputCtrl_Axis();
 		      int GetExtIputCtrlValue(int msg);
 		  	 void realtime_avtStatus();
+		  	 void Change_avtStatus();
              CMsgProcess *pThis;
          	 CJosStick *m_jos;
          	 CUartProcess *m_uart;
@@ -81,6 +82,7 @@ class CMsgProcess{
          	}test;
          	test aa;
          	test *ptest;
+         	void modifierAVTProfile(int block, int field, int value);
         private:
          	int *cfg_value;
 private:
@@ -94,7 +96,7 @@ private:
 	void processMsg(int msg);
 	void PlantTrackerInputPara(void);
 	int configAvtFromFile();
-	void modifierAVTProfile(int block, int field, int value);
+
 	int updataProfile();
 //	int MSGAPI_initial();
 //static 	void app_PlantCtrl(long lParam );
@@ -117,13 +119,14 @@ private:
 
 		return NULL;
 	}
-
+#if 0
     OSA_ThrHndl m_thrRead;
     static void *readCfgParamFunc(void * context){
     	CMsgProcess *user = (CMsgProcess *) context;
     	user->configAvtFromFile();
     	return NULL;
     }
+#endif
 };
 
 

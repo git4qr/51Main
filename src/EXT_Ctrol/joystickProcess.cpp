@@ -21,7 +21,6 @@ int  CJosStick::Init()
 
 int  CJosStick::Create()
 {
-	PreInit();
 	//preinitial();
 	 open_joystick(joystick_Dev);
 	 jse=(joy_event*)malloc (sizeof(joy_event));

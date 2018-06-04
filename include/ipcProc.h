@@ -23,7 +23,13 @@ public:
 		    int IpcpinpCtrl(volatile unsigned char ImgPipStat);
 		    int IpcTrkDoorCtrl(volatile unsigned char TrkDoorStat);
 		    int IpcTrkPosMoveCtrl(POSMOVE * avtMove);
+		    int IpcConfig();
+		    int IpcConfigOSD();
+		    int IpcConfigUTC();
+		    int IPCConfigCamera();
 		    IMGSTATUS  *getsharedmemstat();
+		    OSDSTATUS *getOSDSharedMem();
+		    UTCTRKSTATUS *getUTCSharedMem();
 			  	unsigned int trackstatus;
 			  	int trackposx;
 			  	int trackposy;
@@ -37,7 +43,8 @@ public:
 
 
 			    IMGSTATUS *ipc_status;
-			    OSD_Param *ipc_OSD;
+			    OSDSTATUS *ipc_OSD;
+			    UTCTRKSTATUS *ipc_UTC;
 #if 0
 		      static Void  *IPCShamThrdFxn(Void * prm){
 		    	  CIPCProc *pThis = (CIPCProc*)prm;

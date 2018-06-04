@@ -2,8 +2,11 @@
 #include "msg_id.h"
 #include <sys/time.h>
 #include <assert.h>
+#include "CMsgProcess.h"
 
-struct timeval recv;
+extern CMsgProcess* sThis;
+
+struct timeval ipcProc;
 extern selectTrack 	m_selectPara;
 
 CIPCProc::CIPCProc()
@@ -27,9 +30,7 @@ CIPCProc::CIPCProc()
 	exitThreadIPCRcv = false;
 	exitGetShamDatainThrd = false;
 	pThis = this ;
-	//ipc_status = NULL;
-	//ipc_status = getsharedmemstat();
-	//ipc_status = ipc_getimgstatus_p();
+
 }
 CIPCProc::~CIPCProc()
 {
@@ -39,6 +40,7 @@ CIPCProc::~CIPCProc()
 
 int CIPCProc::Create()
 {
+	printf("CIPCProc====>Create!\n");
 	OSA_thrCreate(&thrHandlPCRcv,
 			IPC_childdataRcvn,
 	                  0,
@@ -58,6 +60,18 @@ IMGSTATUS * CIPCProc::getsharedmemstat()
 	ipc_status = ipc_getimgstatus_p();
 	assert(ipc_status != NULL);
 	return ipc_status;
+}
+OSDSTATUS *CIPCProc::getOSDSharedMem()
+{
+	ipc_OSD =ipc_getosdstatus_p();
+	assert(ipc_OSD != NULL);
+	return ipc_OSD;
+}
+UTCTRKSTATUS *CIPCProc::getUTCSharedMem()
+{
+	ipc_UTC = ipc_getutstatus_p();
+	assert(ipc_UTC != NULL);
+	return ipc_UTC;
 }
 void CIPCProc::getIPCMsgProc()
 {
@@ -125,6 +139,7 @@ int  CIPCProc::ipcTrackCtrl(volatile unsigned char AvtTrkStat)
 		test.param[0]=AvtTrkStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	}
+	sThis->Change_avtStatus();
 		return 0;
 }
 
@@ -136,6 +151,7 @@ int  CIPCProc::ipcMutilTargetDetecCtrl(volatile unsigned char ImgMmtStat)//1:ope
 	{
 		test.param[0]=ImgMmtStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	    	sThis->Change_avtStatus();
 	    	//printf("mmt = %d \n", test.param[0]);
 	}
 
@@ -164,6 +180,7 @@ int CIPCProc::ipcImageEnhanceCtrl(volatile unsigned char ImgEnhStat) //1open 0cl
 	{
 		test.param[0]=ImgEnhStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	    	sThis->Change_avtStatus();
 	}
 		return 0;
 }
@@ -175,7 +192,9 @@ int CIPCProc::ipcMoveTatgetDetecCtrl(volatile unsigned char ImgMtdStat)
 	{
 		test.param[0]=ImgMtdStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	    	sThis->Change_avtStatus();
 	    	printf("MTDStat = %d\n", test.param[0]);
+
 	}
 
 		return 0;
@@ -206,6 +225,7 @@ int CIPCProc::IpcSensorSwitch(volatile unsigned char ImgSenchannel)
 	{
 		test.param[0] = ImgSenchannel;
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
+		sThis->Change_avtStatus();
 		printf("sensorchannel = %d\n", test.param[0]);
 	}
 	return 0;
@@ -233,6 +253,7 @@ int CIPCProc::IpcTrkDoorCtrl(volatile unsigned char TrkDoorStat)
 	{
 		test.param[0] = TrkDoorStat;
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
+		sThis->Change_avtStatus();
 	}
 	return 0;
 }
@@ -251,8 +272,37 @@ int CIPCProc::IpcTrkPosMoveCtrl(POSMOVE * avtMove)
 	return 0;
 }
 
+int CIPCProc::IpcConfig()
+{
+	test.cmd_ID = read_shm_config;
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	printf("IPCProc=====>send config!\n");
+	gettimeofday(&ipcProc, NULL);
+	printf("-----send config------  %d  ,%d \n", ipcProc.tv_sec, ipcProc.tv_usec);
+	return 0;
+}
 
+int CIPCProc::IpcConfigOSD()
+{
+	test.cmd_ID = read_shm_osd;
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	printf("IPCProc=====>send OSD!\n");
+	return 0;
+}
 
+int CIPCProc::IpcConfigUTC()
+{
+	test.cmd_ID = read_shm_utctrk;
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	printf("IPCProc=====>send UTC!\n");
+	return 0;
+}
 
+int CIPCProc::IPCConfigCamera()
+{
+	test.cmd_ID = read_shm_camera;
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	return 0;
+}
 
 

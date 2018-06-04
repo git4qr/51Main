@@ -17,8 +17,12 @@ int main(int argc, char **argv)
 	   int Ret;
 	    CMsgProcess  mProc;
 	    fprintf(stdout, "start!!!!\r\n");
+	    int shm_perm[IPC_MAX];
+	    shm_perm[IPC_SHA] = shm_rdonly;
+	    shm_perm[IPC_OSD_SHA] = shm_rdwr;
+	    shm_perm[IPC_UTCTRK_SHA] = shm_rdwr;
         Ipc_init();
-        Ipc_create(shm_rdonly);
+        Ipc_create(shm_perm);
         mProc.Create();
         fprintf(stdout, "Create sucess!\r\n");
         mProc.Init();

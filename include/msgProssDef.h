@@ -61,12 +61,17 @@ typedef enum _sys_msg_id_ {
     MSGID_EXT_INPUT_PLATCTRL,
     MSGID_EXT_INPUT_SwitchSensor,
     MSGID_EXT_INPUT_PresetCtrl,
+    MSGID_EXT_INPUT_configWrite,
 
     MSGID_IPC_INPUT_TRACKCTRL,
     MSGID_IPC_INPUT_MTDCTRL,
     MSGID_IPC_INPUT_MMTCRTL,
     MSGID_IPC_INPUT_IMGENHCTRL,
-    MSGID_IPC_INPUT_TRCKBOXSIZECTRL
+    MSGID_IPC_INPUT_TRCKBOXSIZECTRL,
+    MSGID_IPC_Config,
+    MSGID_IPC_OSD,
+    MSGID_IPC_UTC,
+    MSGID_IPC_Camera
 }eSysMsgId, MSG_PROC_ID;
 
 int  MSGAPI_initial();
@@ -92,7 +97,13 @@ void usd_MSGAPI_ExtInpuCtrl_AXISY(long p);
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p);
 void usd_MSGAPI_EXTINPUTCtrl_Sensor(long p);
 void usd_MSGAPI_EXTINPUTCtrl_Preset(long p);
+void usd_MSGAPI_IPCProfile(long p);
+void usd_MSGAPI_IPCConfigWrite(long p);
+void usd_MSGAPI_IPCReadOSD(long p);
+void usd_MSGAPI_IPCReadUTC(long p);
+void usd_MSGAPI_IPCReadCamera(long p);
 void  MSGAPI_StatusConvertFunc(int msg);
+
 
 
 

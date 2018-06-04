@@ -141,6 +141,8 @@ public:
 	virtual int  Stop(){return 0;};
 	int process_ExtInputData( u_int8_t *data_buf, uint data_len);
 	int *EXT_Ctrl;
+	int *Host_Ctrl;
+	int feedback;
 	IMGSTATUS  avt_status;
 	int errorOutPut[2];
 	systemSetting avtSetting;
@@ -149,208 +151,162 @@ public:
 		delete EXT_Ctrl;;
 		return 0;
 	};
-#if 0
-	virtual void EnableTrk()
+		void Enableconfig()
 		{
-			SendMsg(Cmd_Mesg_TrkCtrl);
+			SendMsg(Cmd_Mesg_config_Write);
 		};
-	 virtual  void SelSensor()
-		{
-			SendMsg(Cmd_Mesg_SensorCtrl);
-		};
-		virtual void TrkBoxCtrl()
-		{
-			SendMsg(Cmd_Mesg_TrkBoxCtrl);
-		};
-		virtual void EnableTrkSearch()
-		{
-			SendMsg(Cmd_Mesg_TrkSearch);
-		};
-		virtual void IrisUp()
-		{
-			SendMsg(Cmd_Mesg_IrisUp);
-		};
-		virtual void IrisDown()
-		{
-			SendMsg(Cmd_Mesg_IrisDown);
-		};
-		virtual void FocusUp()
-		{
-			SendMsg(Cmd_Mesg_FocusFar);
-		};
-		virtual void FocusDown()
-		{
-			SendMsg(Cmd_Mesg_FocusNear);
-		};
-		virtual void EnableIMG()
-		{
-			SendMsg(Cmd_Mesg_ImgEnh);
-		};
-		virtual void EnableAuto_Iris_Focus()  //预留
-		{
-			SendMsg(Cmd_Mesg_unable);
-		};
-		virtual void AIMPOS_X()
-		{
-			SendMsg(Cmd_Mesg_AIMPOS_X);
-		};
-		virtual void AIMPOS_Y()
-		{
-			SendMsg(Cmd_Mesg_AIMPOS_Y);
-		};
-		virtual void ZoomLongCtrl()
-		{
-			SendMsg(Cmd_Mesg_ZoomLong);
-		};
-		virtual void ZoomShortCtrl()
-		{
-			SendMsg(Cmd_Mesg_ZoomShort);
-		};
-		virtual void AXIS_X()
-		{
-			SendMsg(Cmd_Mesg_AXISX);
-		};
-		virtual void AXIS_Y()
-		{
-			SendMsg(Cmd_Mesg_AXISY);
-		};
-#endif
 		void EnableTrk( )
 			{
 				SendMsg(Cmd_Mesg_TrkCtrl);
 			};
-			virtual void EnableMtd()
+			void EnableMtd()
 			{
 				SendMsg(Cmd_Mesg_Mtd);
 			};
-			virtual void TrkBoxCtrl()
+			void TrkBoxCtrl()
 			{
 				SendMsg(Cmd_Mesg_TrkBoxCtrl);
 			};
-			virtual void EnableTrkSearch( )
+			 void EnableTrkSearch( )
 			{
 				SendMsg(Cmd_Mesg_TrkSearch);
 			};
-			virtual void IrisUp()
+			 void IrisUp()
 			{
 				SendMsg(Cmd_Mesg_IrisUp);
 			};
-			virtual void IrisDown( )
+			 void IrisDown( )
 			{
 				SendMsg(Cmd_Mesg_IrisDown);
 			};
-			virtual void FocusUp( )
+			 void FocusUp( )
 			{
 				SendMsg(Cmd_Mesg_FocusFar);
 			};
-			virtual void FocusDown( )
+			 void FocusDown( )
 			{
 				SendMsg(Cmd_Mesg_FocusNear);
 			};
-			virtual void EnableIMG( )
+			 void EnableIMG( )
 			{
 				SendMsg(Cmd_Mesg_ImgEnh);
 			};
-			virtual void EnableMmt()
+			 void EnableMmt()
 			{
 				SendMsg(Cmd_Mesg_Mmt);
 			};
-			virtual void AIMPOS_X()
+			 void AIMPOS_X()
 			{
 				SendMsg(Cmd_Mesg_AIMPOS_X);
 			};
-			virtual void AIMPOS_Y()
+			 void AIMPOS_Y()
 			{
 				SendMsg(Cmd_Mesg_AIMPOS_Y);
 			};
-			virtual void ZoomLongCtrl()
+			 void ZoomLongCtrl()
 			{
 				SendMsg(Cmd_Mesg_ZoomLong);
 			};
-			virtual void ZoomShortCtrl()
+			 void ZoomShortCtrl()
 			{
 				SendMsg(Cmd_Mesg_ZoomShort);
 			};
-			virtual void AXIS_X()
+			 void AXIS_X()
 			{
 				SendMsg(Cmd_Mesg_AXISX);
 			};
-			virtual void AXIS_Y()
+			 void AXIS_Y()
 			{
 				SendMsg(Cmd_Mesg_AXISY);
 			};
-			virtual void SwitchSerson()
+			void SwitchSerson()
 			{
 				SendMsg(Cmd_Mesg_SensorCtrl);
 			};
-			virtual void PresetCtrl()
+			 void PresetCtrl()
 			{
 				SendMsg(Cmd_Mesg_PresetCtrl);
 			}
-			virtual void PALImgEnh()
+			void PALImgEnh()
 			{
-				SendMsg(Cmd_Mesg_PALImgEnh);
+				//SendMsg(Cmd_Mesg_PALImgEnh);
 			}
-			virtual void EnableSelfTest()
+			 void EnableSelfTest()
 			{
 				SendMsg(Cmd_Mesg_SelfTest);
 			}
-			virtual void AxisMove()
+			 void AxisMove()
 			{
 				SendMsg(Cmd_Mesg_AxisMove);
 			}
-			virtual void MainElectronicZoom()
+			 void MainElectronicZoom()
 			{
 				SendMsg(Cmd_Mesg_MainElectronicZoom);
 			}
-			virtual void PipElectronicZoom()
+			 void PipElectronicZoom()
 			{
 				SendMsg(Cmd_Mesg_PipElectronicZoom);
 			}
-			virtual void WorkMode()
+			 void WorkMode()
 			{
 				SendMsg(Cmd_Mesg_WorkMode);
 			}
-			virtual void EnableOsd()
+			 void EnableOsd()
 			{
 				SendMsg(Cmd_Mesg_Osd);
 			}
-			virtual void SensorMode()
+			 void SensorMode()
 			{
 				SendMsg(Cmd_Mesg_SensorMode);
 			}
-			virtual void TVFov()
+			 void TVFov()
 			{
 				SendMsg(Cmd_Mesg_TVFov);
 			}
-			virtual void PALFov()
+			 void PALFov()
 			{
 				SendMsg(Cmd_Mesg_PALFov);
 			}
-			virtual void Pan()
+			 void Pan()
 			{
 				SendMsg(Cmd_Mesg_Pan);
 			}
-			virtual void Tilt()
+			void Tilt()
 			{
 				SendMsg(Cmd_Mesg_Tilt);
 			}
-			virtual void VideoCompression()
+			 void VideoCompression()
 			{
 				SendMsg(Cmd_Mesg_VideoCompression);
 			}
-			virtual void TrkMode()
+			 void TrkMode()
 			{
 				SendMsg(Cmd_Mesg_TrkMode);
 			}
-			virtual void CheckMode()
+			 void CheckMode()
 			{
 				SendMsg(Cmd_Mesg_CheckMode);
 			}
-			virtual void EnhMode()
+			 void EnhMode()
 			{
 				SendMsg(Cmd_Mesg_EnhMode);
 			}
+			 void ReadProfile()
+			 {
+				 SendMsg(Cmd_IPC_Config);
+			 }
+			 void ReadShmOSD()
+			 {
+				 SendMsg(Cmd_IPC_OSD);
+			 }
+			 void ReadShmUTC()
+			 {
+				 SendMsg(Cmd_IPC_UTC);
+			 }
+			 void ReadShmCamera()
+			 {
+				 SendMsg(Cmd_IPC_Camera);
+			 }
 
 		int finderMapKey(int mVal);
 
@@ -377,17 +333,34 @@ protected:
 	MAP_KYENUM_TO_PUTBUFFID  keyNumToID;
 
 private:
-	int  startSelfCheak();
-	int  mainVedioChannelSel();
-	int channelBind();
-	int trackEnCmd();
-	int mutileTagartNotice();
-	int mutileTagartSelect();
-	int   imageEnhance();
-	int trackFineuning();
-	int confirmAxisInfo();
-	int ElectronicZoom();
-	int AVTsetting();
+	    void   startSelfCheak();
+		void  mainVedioChannelSel();
+		void  channelBind();
+		void trackEnCmd();
+		void  mutileTagartNotice();
+		void  mutileTagartSelect();
+		void    imageEnhance();
+		void  trackFineuning();
+		void  confirmAxisInfo();
+		void  ElectronicZoom();
+		void trackSearch();
+		void confirmAxisSave();
+		void  moveTargetDetected();
+		void pictrueInPicture();
+	   void  selectVedisTransChannel();
+	   void  frameFrequenceCtrl();
+	   void  vedioCompressQuality();
+	   void  opticalZoomCtrl();
+	   void irisCtrl();
+	   void foucsCtrl();
+	   void fontColor();
+	   void fontStyle();
+	   void fontSize();
+	   void  fontDisplayCtrl();
+	   void configSetting();
+	   void readCurrentSetting();
+	   void extExtraInputCtrl();
+
 	static int SendMsg(int MsgId)
 	{
 		Work_quePut(MsgId);

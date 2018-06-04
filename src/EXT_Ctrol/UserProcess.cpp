@@ -71,8 +71,10 @@ CUserBase::~CUserBase()
 
 void CUserBase::PreInit()
 {
-	EXT_Ctrl = new int[35];
-	memset(EXT_Ctrl, 0, sizeof(int) * 35);
+	EXT_Ctrl = new int[50];
+	memset(EXT_Ctrl, 0, sizeof(int) * 50);
+	Host_Ctrl = new int[30];
+	memset(Host_Ctrl, 0, sizeof(int) * 30);
 }
 
 int CUserBase::preinitial()
@@ -144,68 +146,76 @@ u_int8_t  CUserBase::check_sum(uint len_t)
 	return  cksum;
 }
 
-int CUserBase::startSelfCheak()
+void CUserBase::startSelfCheak()
 {
-
+	int startCheck=rcvBufQue.at(4);
 }
-int CUserBase:: mainVedioChannelSel()
+void CUserBase:: mainVedioChannelSel()
 {
-
-}
-
-int CUserBase::channelBind()
-{
+	int mainVedioChannel=rcvBufQue.at(4);
 
 }
 
-int CUserBase::trackEnCmd()
+void CUserBase::channelBind()
+{
+	int channelBind=rcvBufQue.at(4);
+
+}
+
+void CUserBase::trackEnCmd()
 {
 	printf("INFO: track\r\n");
-  if(0x1==rcvBufQue.at(4)){
-	  ExtInputCtrl[0]=0;
-  }else  ExtInputCtrl[0]=1;
+	int trackEnCmd= rcvBufQue.at(4);
 	EnableTrk();
-	return 1;
 }
 
-int CUserBase::mutileTagartNotice()
+void CUserBase::mutileTagartNotice()
 {
-	  if(0x1==rcvBufQue.at(4)){
-		  ExtInputCtrl[0]=0;
-	  }else  ExtInputCtrl[0]=1;
-		EnableTrk();
-		return 1;
-
+    printf("INFO: enable mutile target!!\r\n");
+    int mutiltargetNotice=rcvBufQue.at(4);
+	   EnableMmt();
 }
 
 
-int CUserBase::mutileTagartSelect()
+void CUserBase::mutileTagartSelect()
 {
-      switch(rcvBufQue.at(4)){
-      	  	  	  	  	  case  0x01:
-      	  	  	  	  		              break;
-      	  	  	  	  	  case  0x02:
-      	  	  	  	  		              break;
-      	  	  	  	  	  case  0x03:
-      	  	  	  	  		               break;
-      	  	  	  	  	  case  0x04:
-      	  	  	  	  		              break;
-      	  	  	  	  	  case  0x05:
-      	  	  	  	  		               break;
-      }
-	return 1;
+	int mutileTargetSel=rcvBufQue.at(4);
 }
 
-int   CUserBase::imageEnhance()
+void   CUserBase::imageEnhance()
 {
-	  if(0x1==rcvBufQue.at(4)){
-		  ExtInputCtrl[0]=0;
-	  }else  ExtInputCtrl[0]=1;
+	  printf("INFO: image enhance \r\n");
+	  int imageEnhance=rcvBufQue.at(4);
 	  EnableIMG();
-		return 1;
 }
 
-int CUserBase::trackFineuning()
+void CUserBase::trackFineuning()
+{
+    switch(rcvBufQue.at(4) ){
+            case   0x1:
+            	         EXT_Ctrl[12]=1;
+            	             AIMPOS_X();
+            	             break;
+            case   0x2:
+            	            EXT_Ctrl[12]=1;
+	                          AIMPOS_X();
+            default:
+            	            EXT_Ctrl[12]=0;
+         }
+    switch(rcvBufQue.at(5) ){
+    		case   0x1:
+    						EXT_Ctrl[13]=0;
+    								AIMPOS_Y();
+    									break;
+    		case   0x2:
+    						EXT_Ctrl[13]=0;
+                    			AIMPOS_Y();
+    		default:
+    						EXT_Ctrl[13]=0;
+    }
+}
+
+void CUserBase::confirmAxisInfo()
 {
     switch(rcvBufQue.at(4) ){
             case   0x1:
@@ -229,37 +239,9 @@ int CUserBase::trackFineuning()
     		default:
                 			ExtInputCtrl[0]=0;
     }
-		return 1;
 }
 
-int CUserBase::confirmAxisInfo()
-{
-    switch(rcvBufQue.at(4) ){
-            case   0x1:
-            	             ExtInputCtrl[0]=0;
-            	             AIMPOS_X();
-            	             break;
-            case   0x2:
-	                        ExtInputCtrl[0]=0;
-	                          AIMPOS_X();
-            default:
-                        	ExtInputCtrl[0]=0;
-         }
-    switch(rcvBufQue.at(5) ){
-    		case   0x1:
-    							ExtInputCtrl[0]=0;
-    								AIMPOS_Y();
-    									break;
-    		case   0x2:
-                    		ExtInputCtrl[0]=0;
-                    			AIMPOS_Y();
-    		default:
-                			ExtInputCtrl[0]=0;
-    }
-		return 1;
-}
-
-int CUserBase::ElectronicZoom()
+void CUserBase::ElectronicZoom()
 {
     switch(rcvBufQue.at(4) ){
             case   0x1:
@@ -278,11 +260,119 @@ int CUserBase::ElectronicZoom()
          }
 }
 
-int  CUserBase::AVTsetting()
+void CUserBase::trackSearch()
 {
+	int trakSearchx,trackSearchy;
+	trakSearchx=trackSearchy=0;
+	trakSearchx=  (rcvBufQue.at(5)<<8|rcvBufQue.at(6));
+	trackSearchy=  (rcvBufQue.at(7)<<8|rcvBufQue.at(8));
+	   switch(rcvBufQue.at(4)){
+	  	  	  	  	  case  0x01:
+	  	  	  	  		  	  	  	//  EXT_Ctrl[11]=1;
+	  	  	  	  		              break;
+	  	  	  	  	  case  0x02:
+	  	  	  	  		  	  	  	 // EXT_Ctrl[11]=0;
+	  	  	  	  		              break;
+	       }
+}
+
+void CUserBase::confirmAxisSave()
+{
+
+}
+
+void CUserBase::moveTargetDetected()
+{
+	   switch(rcvBufQue.at(4)){
+	  	  	  	  	  case  0x01:
+	  	  	  	  		  	  	  	//  EXT_Ctrl[11]=1;
+	  	  	  	  		              break;
+	  	  	  	  	  case  0x02:
+	  	  	  	  		  	  	  	 // EXT_Ctrl[11]=0;
+	  	  	  	  		              break;
+	       }
+}
+void CUserBase::pictrueInPicture()
+{
+	 int channelNum=rcvBufQue.at(5);
+	   switch(rcvBufQue.at(4)){
+	  	  	  	  	  case  0x01:
+	  	  	  	  		  	  	  	//  EXT_Ctrl[11]=1;
+	  	  	  	  		              break;
+	  	  	  	  	  case  0x02:
+	  	  	  	  		  	  	  	 // EXT_Ctrl[11]=0;
+	  	  	  	  		              break;
+	       }
+}
+
+void CUserBase::selectVedisTransChannel()
+{
+     int  selTransChannel=rcvBufQue.at(4);
+}
+
+void CUserBase::frameFrequenceCtrl()
+{
+
+}
+
+void CUserBase::vedioCompressQuality()
+{
+
+}
+void CUserBase::opticalZoomCtrl()
+{
+
+}
+
+void  CUserBase::irisCtrl()
+{
+
+}
+
+void CUserBase::foucsCtrl()
+{
+
+}
+void CUserBase::fontColor()
+{
+
+}
+void CUserBase::fontStyle()
+{
+
+}
+void CUserBase::fontSize()
+{
+
+}
+void  CUserBase::fontDisplayCtrl()
+{
+
+}
+void  CUserBase::configSetting()
+{
+	uint8_t  tempbuf[4];
+	memset(&avtSetting,0,sizeof(avtSetting));
 	avtSetting.cmdBlock=rcvBufQue.at(4) ;
 	avtSetting.cmdFiled=rcvBufQue.at(5) ;
-	avtSetting.confitData=(int)(rcvBufQue.at(6)| rcvBufQue.at(7)<<8| rcvBufQue.at(8)<<16| rcvBufQue.at(9)<<24);
+	for(int m=6;m<10;m++)
+		tempbuf[m-6]=rcvBufQue.at(m);
+	memcpy(&avtSetting.confitData,tempbuf,sizeof(int));
+	printf("INFO:  Block=%d, filed=%d, value=%d\r\n",avtSetting.cmdBlock,avtSetting.cmdFiled,avtSetting.confitData);
+	Host_Ctrl[config_block]=avtSetting.cmdBlock;
+    Host_Ctrl[config_field]=avtSetting.cmdFiled;
+    Host_Ctrl[config_value]=avtSetting.confitData;
+	Enableconfig();
+}
+
+void CUserBase::readCurrentSetting()
+{
+
+}
+
+void   CUserBase::extExtraInputCtrl()
+{
+
 }
 
 int  CUserBase::prcRcvFrameBufQue()
@@ -307,77 +397,94 @@ int  CUserBase::prcRcvFrameBufQue()
 	{
        switch(rcvBufQue.at(3)){
                 case    0x01:
-                							ret=startSelfCheak();
+                							startSelfCheak();
                 	       break;
                 case  0x02:
-                	                       ret =mainVedioChannelSel();
+                	                       mainVedioChannelSel();
                             break;
                 case    0x03:
-                							ret=channelBind();
+                							channelBind();
                 	       break;
                 case  0x04:
-                							ret=trackEnCmd();
+                							trackEnCmd();
                             break;
                 case    0x05:
-                							ret=mutileTagartNotice();
+                							mutileTagartNotice();
                 	       break;
                 case  0x06:
-                	                        ret=mutileTagartSelect();
+                	                        mutileTagartSelect();
                             break;
                 case    0x07:
-                	                        ret=imageEnhance();
+                	                        imageEnhance();
                 	       break;
                 case  0x08:
-                	                        ret=trackFineuning();
+                	                        trackFineuning();
                             break;
                 case    0x09:
-                							ret=confirmAxisInfo();
+                							confirmAxisInfo();
                 	       break;
                 case    0x0a:
-                	                       ret=ElectronicZoom();
+                	                       ElectronicZoom();
                 	       break;
                 case  0x0b:
+                							trackSearch();
                             break;
                 case    0x0c:
+                							confirmAxisSave();
                 	       break;
                 case  0x0d:
+                							moveTargetDetected();
                             break;
                 case    0x0e:
+                							pictrueInPicture();
                 	       break;
                 case    0x0f:
+                							selectVedisTransChannel();
                             break;
                 case    0x10:
+                							 frameFrequenceCtrl();
                 	       break;
                 case  0x11:
+                                             vedioCompressQuality();
                             break;
                 case    0x12:
+                	                         opticalZoomCtrl();
                             break;
                 case    0x13:
+                					          irisCtrl();
                 	       break;
                 case   0x14:
+                							  foucsCtrl();
                             break;
                 case    0x20:
+                							  fontColor();
                 	       break;
                 case  0x21:
+                							  fontStyle();
                             break;
                 case    0x22:
+                							 fontSize();
                 	       break;
                 case  0x24:
+                		                     fontDisplayCtrl();
                             break;
                 case    0x30:
-                	                 ret=AVTsetting();
+                	                         configSetting();
                 	       break;
                 case  0x31:
+                                             readCurrentSetting();
+                            break;
+                case  0x32:
+                							extExtraInputCtrl();
                             break;
                 default:
                 	        printf("INFO: Unknow  Cmd, please check!!!\r\n ");
                 	 	 	ret =0;
                             break;
-       }
-
-	}
+             }
+	  }
 	 rcvBufQue.erase(rcvBufQue.begin(),rcvBufQue.begin()+cmdLength);  //  analysis complete erase bytes
-       return ret;
+       return 1;
 }
 
 #if 0

@@ -1,17 +1,12 @@
 #ifndef __IPCCTL_H_
 #define __IPCCTL_H_
 
-#if 0
-#define _PATH0_ "/trackmsg0"
-#define _PATH1_ "/trackmsg1"
-#define _PATH2_ "/trackmsg2"
-#define _PATH3_ "/trackmsg3"
-#else
 #define _PATH0_ "/"
 #define _PATH1_ "/"
 #define _PATH2_ "/"
 #define _PATH3_ "/"
-#endif
+#define _PATH4_ "/"
+#define _PATH5_ "/"
 
 #define SHMEMSTATUSSIZE 200
 #define SHMEMFRAMESIZE 10485760
@@ -35,6 +30,10 @@ typedef enum
     mmtselect,/*11*/
     axismove,/*12*/
     read_shm_trkpos,/*13*/
+    read_shm_config,
+    read_shm_osd,
+    read_shm_utctrk,
+    read_shm_camera,
     exit_img,
     invalid
 }CMD_ID;
@@ -68,7 +67,9 @@ typedef enum
 {
     IPC_TOIMG_MSG,  		// SERVER TO CLIENT
     IPC_FRIMG_MSG,		// CLIENT TO SERCER
-    IPC_SHA,		
+    IPC_SHA,
+    IPC_OSD_SHA,
+    IPC_UTCTRK_SHA,
     IPC_SEM,
     IPC_MAX
 }IPC_MTYPE;
@@ -424,7 +425,7 @@ typedef struct
 } IMGSTATUS;
 
 typedef struct {
-	int MAIN_Sensor;					//13--0
+	int MAIN_Sensor;	//13--0
 	int Timedisp_9;
 	bool OSD_text_show;
 	int OSD_text_color;
@@ -439,8 +440,8 @@ typedef struct {
 	int Picp_CROSS_AXIS_HEIGHT;
 	int ch0_acqRect_width;
 	int ch1_acqRect_width;
-	int ch2_acqRect_width;			//13--15
-	int ch3_acqRect_width;			// 14 -- 0
+	int ch2_acqRect_width;	//13--15
+	int ch3_acqRect_width;	// 14 -- 0
 	int ch4_acqRect_width;
 	int ch5_acqRect_width;
 	int ch0_acqRect_height;
@@ -449,17 +450,84 @@ typedef struct {
 	int ch3_acqRect_height;
 	int ch4_acqRect_height;
 	int ch5_acqRect_height;
-	int bomen1_width;
-	int bomen2_width;
-	int bomen3_width;
-	int bomen4_width;
-	int bomen5_width;
-	int bomen1_height;
-	int bomen2_height;				// 14 -- 15
-	int bomen3_height;				// 15 -- 0
-	int bomen4_height;
-	int bomen5_height;
-}OSD_Param;
+	int ch0_aim_width;
+	int ch1_aim_width;
+	int ch2_aim_width;
+	int ch3_aim_width;
+	int ch4_aim_width;
+	int ch5_aim_width;
+	int ch6_aim_width;	// 14 -- 15
+	int ch1_aim_height;	// 15 -- 0
+	int ch2_aim_height;
+	int ch3_aim_height;
+	int ch4_aim_height;
+	int ch5_aim_height;
+}OSDSTATUS;
+
+typedef struct {
+	float occlusion_thred;//9--0
+	float retry_acq_thred;
+	float up_factor;
+	int res_distance;
+	int res_area;
+	int gapframe;
+	bool enhEnable;
+	float cliplimit;
+	bool dictEnable;
+	int moveX;
+	int moveY;
+	int moveX2;
+	int moveY2;
+	int segPixelX;
+	int segPixelY;
+	bool  algOsdRect_Enable;  //9--15
+	
+	int	ScalerLarge;//10--0
+	int	ScalerMid; 
+	int	ScalerSmall;
+	int	Scatter;
+	float	ratio;
+	bool	FilterEnable;
+	bool	BigSecEnable;
+	int	SalientThred;
+	bool	ScalerEnable;
+	bool	DynamicRatioEnable;
+	int	acqSize_width;
+	int	acqSize_height;
+	bool	TrkAim43_Enable;
+	bool	SceneMVEnable;
+	bool	BackTrackEnable;
+	int	bAveTrkPos; //10--15
+
+	float	fTau; //11--0
+	int	buildFrms;
+	int	LostFrmThred;
+	float	histMvThred;
+	int	detectFrms;
+	int	stillFrms;
+	float	stillThred;
+	bool	bKalmanFilter;
+	float	xMVThred;
+	float	yMVThred;
+	float	xStillThred;
+	float	yStillThred;
+	float	slopeThred;
+	float	kalmanHistThred;
+	float	kalmanCoefQ;
+	float	kalmanCoefR; //11--15
+
+	int Enhmod_0; //12--0
+	float Enhparm_1;
+	int Mmtdparm_2;
+	int Mmtdparm_3;
+	int Mmtdparm_4;
+	int Mmtdparm_5;
+	int Mmtdparm_6;
+	float Mmtdparm_7;
+	int Mmtdparm_8; //12--8
+
+}UTCTRKSTATUS;
+
 
 
 typedef struct out_frame_angle
@@ -527,12 +595,14 @@ void* recv_msg(SENDST *RS422);
 int send_msg(SENDST *RS422);
 int  send_msgpth(SENDST * RS422);
 void Ipc_init();
-void Ipc_create(int shm_perm);
+void Ipc_create(int *shm_perm);
 void Ipc_uninit();
 void  ipc_status_P();
 void  ipc_status_V();
 IMGSTATUS *ipc_getimgstatus_p();
 IMGSTATUS ipc_getimgstatus();
+OSDSTATUS *ipc_getosdstatus_p();
+UTCTRKSTATUS *ipc_getutstatus_p();
 
 
 #endif

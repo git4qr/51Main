@@ -51,26 +51,67 @@ Cmd_Mesg_ImgEnh,
 Cmd_Mesg_PresetCtrl,        //18
 //ipc
 Cmd_IPC_TrkCtrl,
+Cmd_IPC_Config,
+Cmd_IPC_OSD,
+Cmd_IPC_UTC,
+Cmd_IPC_Camera,
 
 //network
-Cmd_Mesg_PALImgEnh,					//20
 Cmd_Mesg_SelfTest,
+Cmd_Mesg_mainVideoSwitch,
+Cmd_Mesg_Channel_binding,
 Cmd_Mesg_AxisMove,
 Cmd_Mesg_MainElectronicZoom,
 Cmd_Mesg_PipElectronicZoom,
+Cmd_Mesg_saveAxis,
+Cmd_Mesg_Picp,
+Cmd_Mesg_switchVideoChannel,
+Cmd_Mesg_frameCtrl,
+Cmd_Mesg_compression_quality,
+Cmd_Mesg_wordColor,
+Cmd_Mesg_wordType,
+Cmd_Mesg_wordSize,
+Cmd_Mesg_wordDisEnable,
+Cmd_Mesg_config_Write,
+Cmd_Mesg_config_Write_Save,
+Cmd_Mesg_config_Read,
+Cmd_Mesg_jos_kboard,
 Cmd_Mesg_WorkMode,
 Cmd_Mesg_Osd,
 Cmd_Mesg_SensorMode,
 Cmd_Mesg_TVFov,
 Cmd_Mesg_PALFov,
-Cmd_Mesg_Pan,							//30
+Cmd_Mesg_Pan,
 Cmd_Mesg_Tilt,
 Cmd_Mesg_VideoCompression,
 Cmd_Mesg_TrkMode,
 Cmd_Mesg_CheckMode,
-Cmd_Mesg_EnhMode
+Cmd_Mesg_EnhMode,
+
 //com 
 //local
 }Cmd_Mesg_ID_Gather;
+
+typedef enum {
+	elfTest = 0,
+	mainVideo,
+	Channel_binding,
+	moveAxis,
+	ElectronicZoom,
+	saveAxis,
+	picp,
+	switchVideoChannel,
+	frameCtrl,
+	compression_quality,
+	wordColor,
+	wordType,
+	wordSize,
+	wordDisEnable,
+	config_block,
+	config_field,
+	config_value,
+	config_read,
+	jos_kboard
+}Host_CtrlInput;
 
 #endif

@@ -28,6 +28,7 @@ extern CurrParaStat  m_CurrStat;
 extern  selectTrack 	m_selectPara;
 extern POSMOVE	m_avtMove;
 static  bool   shieldInitTrkSearchBit= false;
+static bool cfg_stat = false;
 static int m_valuex;
 static int m_valuey;
 char  m_AvtTrkAimSize;
@@ -60,11 +61,7 @@ void  MSGAPI_StatusConvertFunc(int msg)
 	default:
 		break;
 	}
-	if(sThis->m_SetRealTime == 0)
-				sThis->m_SetRealTime = 1;
-				else
-					sThis->m_SetRealTime = 0;
-			sThis->realtime_avtStatus();
+
 }
 void usd_MSGAPI_ExtInpuCtrl_Track(long p)
 {
@@ -199,6 +196,37 @@ void usd_MSGAPI_EXTINPUTCtrl_Preset(long p)
 	m_CurrStat.m_PresetStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_PresetCtrl);
 		sThis->MSGAPI_ExtInputCtrl_Preset();
 }
+
+void usd_MSGAPI_IPCProfile(long p)
+{
+	//if(cfg_stat)
+	sThis->m_ipc->IpcConfig();
+	//cfg_stat = true;
+}
+
+void usd_MSGAPI_IPCConfigWrite(long p)
+{
+	int block = sThis->m_uart->Host_Ctrl[config_block];
+	int field = sThis->m_uart->Host_Ctrl[config_field];
+	int value = sThis->m_uart->Host_Ctrl[config_value];
+	printf("block = %d, field = %d, value = %d\n", block, field, value);
+	sThis->modifierAVTProfile(block, field, value);
+}
+
+void usd_MSGAPI_IPCReadOSD(long p)
+{
+	sThis->m_ipc->IpcConfigOSD();
+}
+
+void usd_MSGAPI_IPCReadUTC(long p)
+{
+	sThis->m_ipc->IpcConfigUTC();
+}
+
+void usd_MSGAPI_IPCReadCamera(long p)
+{
+	sThis->m_ipc->IPCConfigCamera();
+}
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p)
 {
 	m_CurrStat.m_AxisXStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
@@ -241,6 +269,10 @@ int  MSGAPI_initial()
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_SwitchSensor,usd_MSGAPI_EXTINPUTCtrl_Sensor,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_PresetCtrl,usd_MSGAPI_EXTINPUTCtrl_Preset,0);
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_INPUT_TRACKCTRL,usd_MSGAPI_ExtInpuCtrl_AXIS,0);
-
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_Config,usd_MSGAPI_IPCProfile,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_configWrite,usd_MSGAPI_IPCConfigWrite, 0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_OSD,usd_MSGAPI_IPCReadOSD ,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_UTC,usd_MSGAPI_IPCReadUTC,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_Camera,usd_MSGAPI_IPCReadCamera, 0);
     return 0;
 }
