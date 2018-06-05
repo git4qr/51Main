@@ -235,7 +235,7 @@ public:
 			{
 				SendMsg(Cmd_Mesg_SelfTest);
 			}
-			 void Channel_binding()
+			 void EnableChannel_binding()
 			 {
 				 SendMsg(Cmd_Mesg_Channel_binding);
 			 }
@@ -328,23 +328,23 @@ public:
 			 {
 				 SendMsg(Cmd_Mesg_switchVideoChannel);
 			 }
-			 void frameCtrl()
+			 void EnableframeCtrl()
 			 {
 				 SendMsg(Cmd_Mesg_frameCtrl);
 			 }
-			 void compression_quality()
+			 void Enablecompression_quality()
 			 {
 				 SendMsg(Cmd_Mesg_compression_quality);
 			 }
-			 void wordColor()
+			 void EnablewordColor()
 			 {
 				 SendMsg(Cmd_Mesg_wordColor);
 			 }
-			 void wordType()
+			 void EnablewordType()
 			 {
 				 SendMsg(Cmd_Mesg_wordType);
 			 }
-			 void wordSize()
+			 void EnablewordSize()
 			 {
 				 SendMsg(Cmd_Mesg_wordSize);
 			 }
@@ -360,7 +360,7 @@ public:
 			 {
 				 SendMsg(Cmd_Mesg_config_Read);
 			 }
-			 void Jos_kboard()
+			 void EnableJos_kboard()
 			 {
 				 SendMsg(Cmd_Mesg_jos_kboard);
 			 }
