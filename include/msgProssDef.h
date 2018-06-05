@@ -62,6 +62,8 @@ typedef enum _sys_msg_id_ {
     MSGID_EXT_INPUT_SwitchSensor,
     MSGID_EXT_INPUT_PresetCtrl,
     MSGID_EXT_INPUT_configWrite,
+    MSGID_EXT_INPUT_config_Read,
+    MSGID_EXT_INPUT_kboard,
 
     MSGID_IPC_INPUT_TRACKCTRL,
     MSGID_IPC_INPUT_MTDCTRL,
@@ -72,7 +74,19 @@ typedef enum _sys_msg_id_ {
     MSGID_IPC_Config,
     MSGID_IPC_OSD,
     MSGID_IPC_UTC,
-    MSGID_IPC_Camera
+    MSGID_IPC_Camera,
+    MSGID_IPC_Channel_binding,
+    MSGID_IPC_AxisMove,
+    MSGID_IPC_saveAxis,
+    MSGID_IPC_picp,
+    MSGID_IPC_switchVideoChannel,
+    MSGID_IPC_frameCtrl,
+    MSGID_IPC_compression_quality,
+    MSGID_IPC_wordColor,
+    MSGID_IPC_wordType,
+    MSGID_IPC_wordSize,
+    MSGID_IPC_wordDisEnable,
+
 }eSysMsgId, MSG_PROC_ID;
 
 int  MSGAPI_initial();
@@ -98,12 +112,28 @@ void usd_MSGAPI_ExtInpuCtrl_AXISY(long p);
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p);
 void usd_MSGAPI_EXTINPUTCtrl_Sensor(long p);
 void usd_MSGAPI_EXTINPUTCtrl_Preset(long p);
+void usd_MSGAPI_EXTINPUT_config_Read(long p);
+void usd_MSGAPI_EXTINPUT_kboard(long p);
+
 void usd_MSGAPI_IPCProfile(long p);
 void usd_MSGAPI_IPCConfigWrite(long p);
 void usd_MSGAPI_IPCReadOSD(long p);
 void usd_MSGAPI_IPCReadUTC(long p);
 void usd_MSGAPI_IPCReadCamera(long p);
 void usd_MSGAPI_IPCElectronicZoom(long p);
+
+void usd_MSGAPI_IPCChannel_binding(long p);
+void usd_MSGAPI_IPCAxisMove(long p);
+void usd_MSGAPI_IPCsaveAxis(long p);
+void usd_MSGAPI_IPCpicp(long p);
+void usd_MSGAPI_IPCswitchVideoChannel(long p);
+void usd_MSGAPI_IPCframeCtrl(long p);
+void usd_MSGAPI_IPCcompression_quality(long p);
+void usd_MSGAPI_IPCwordColor(long p);
+void usd_MSGAPI_IPCwordType(long p);
+void usd_MSGAPI_IPCwordSize(long p);
+void usd_MSGAPI_IPCwordDisEnable(long p);
+
 void  MSGAPI_StatusConvertFunc(int msg);
 
 

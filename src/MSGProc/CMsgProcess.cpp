@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <memory.h>
 #include <assert.h>
+#include <pthread.h>
 #include "CMsgProcess.h"
 #include  "msg_id.h"
 #include "iMessageQUE.h"
@@ -15,6 +16,8 @@ CurrParaStat  m_CurrStat;
 selectTrack 	m_selectPara;
 POSMOVE 		m_avtMove;
 bool  InitSystem  = false;
+//OSA_SemHndl  m_semHndl;
+
 
 CMsgProcess::CMsgProcess()
 {
@@ -60,6 +63,7 @@ void CMsgProcess::PlantTrackerInputPara(void)
 int CMsgProcess::Create()
 {
 	printf("CMsgProcess====>Create!\n");
+	//OSA_semCreate(&m_semHndl, 1, 0);
 	  // IPC communication
 	 m_ipc = new CIPCProc();
       m_ipc->Create();
@@ -80,13 +84,12 @@ int CMsgProcess::Create()
 	PlatformCtrl_CreateParams_Init(&m_pltParams, &m_cfgPlatParam);
 	printf("PlatCtrl is OK !!!\n");
 
-	//OSA_semCreate(m_semHndl, 1, 0);
 	PlantTrackerInputPara();
 	OSA_assert(m_plt == NULL);
 	m_plt = PlatformCtrl_Create(&m_pltParams);
 	OSA_assert(m_plt != NULL);
 	m_ptz = new CPTZControl();
-    //m_ptz->Create();
+    m_ptz->Create();
 
 
 	// Create main thread
@@ -229,8 +232,8 @@ void CMsgProcess::processMsg(int msg)
 						case Cmd_IPC_Config:
 							MSGDRIV_send(MSGID_IPC_Config, 0);
 							printf("CMsgProcess====>recv config\n");
-								gettimeofday(&ptz111, NULL);
-								printf("recv config++++%d++++ %d \n", ptz111.tv_sec,ptz111.tv_usec);
+								//gettimeofday(&ptz111, NULL);
+								//printf("recv config++++%d++++ %d \n", ptz111.tv_sec,ptz111.tv_usec);
 						break;
 						case Cmd_IPC_OSD:
 							MSGDRIV_send(MSGID_IPC_OSD, 0);
@@ -246,6 +249,48 @@ void CMsgProcess::processMsg(int msg)
 							break;
 						case Cmd_Mesg_MainElectronicZoom:
 							MSGDRIV_send(MSGID_IPC_MainElectronicZoom,0);
+							break;
+						case Cmd_Mesg_SelfTest:
+							MSGDRIV_send(MSGID_IPC_Camera, 0);
+							break;
+						case Cmd_Mesg_Channel_binding:
+							MSGDRIV_send(MSGID_IPC_Channel_binding, 0);
+							break;
+						case Cmd_Mesg_AxisMove:
+							MSGDRIV_send(MSGID_IPC_AxisMove, 0);
+							break;
+						case Cmd_Mesg_saveAxis:
+							MSGDRIV_send(MSGID_IPC_saveAxis, 0);
+							break;
+						case Cmd_Mesg_Picp:
+							MSGDRIV_send(MSGID_IPC_picp, 0);
+							break;
+						case Cmd_Mesg_switchVideoChannel:
+							MSGDRIV_send(MSGID_IPC_switchVideoChannel, 0);
+							break;
+						case Cmd_Mesg_frameCtrl:
+							MSGDRIV_send(MSGID_IPC_frameCtrl, 0);
+							break;
+						case Cmd_Mesg_compression_quality:
+							MSGDRIV_send(MSGID_IPC_compression_quality, 0);
+							break;
+						case Cmd_Mesg_wordColor:
+							MSGDRIV_send(MSGID_IPC_wordColor, 0);
+							break;
+						case Cmd_Mesg_wordType:
+							MSGDRIV_send(MSGID_IPC_wordType, 0);
+							break;
+						case Cmd_Mesg_wordSize:
+							MSGDRIV_send(MSGID_IPC_wordSize, 0);
+							break;
+						case Cmd_Mesg_wordDisEnable:
+							MSGDRIV_send(MSGID_IPC_wordDisEnable, 0);
+							break;
+						case Cmd_Mesg_config_Read:
+							MSGDRIV_send(MSGID_EXT_INPUT_config_Read, 0);
+							break;
+						case Cmd_Mesg_jos_kboard:
+							MSGDRIV_send(MSGID_EXT_INPUT_kboard, 0);
 							break;
 						default:
 							fprintf(stdout,"INFO: can not excute here\r\n");
@@ -292,6 +337,7 @@ int  CMsgProcess::configAvtFromFile()
 
 
 				{   // plat
+				m_cfgPlatParam.acqOutputType = (int)fr["cfg_avt_1"];
 
 				m_cfgPlatParam.scalarX = (float)fr["cfg_avt_2"];
 
@@ -436,45 +482,45 @@ int  CMsgProcess::configAvtFromFile()
 					m_ipc->ipc_UTC->occlusion_thred = (float)fr["cfg_avt_128"];//9--0
 					m_ipc->ipc_UTC->retry_acq_thred = (float)fr["cfg_avt_129"];
 					m_ipc->ipc_UTC->up_factor = (float)fr["cfg_avt_130"];
-					m_ipc->ipc_UTC->res_distance = (float)fr["cfg_avt_131"];
-					m_ipc->ipc_UTC->res_area = (float)fr["cfg_avt_132"];
-					m_ipc->ipc_UTC->gapframe = (float)fr["cfg_avt_133"];
-					m_ipc->ipc_UTC->enhEnable = (float)fr["cfg_avt_134"];
+					m_ipc->ipc_UTC->res_distance = (int)fr["cfg_avt_131"];
+					m_ipc->ipc_UTC->res_area = (int)fr["cfg_avt_132"];
+					m_ipc->ipc_UTC->gapframe = (int)fr["cfg_avt_133"];
+					m_ipc->ipc_UTC->enhEnable = (int)fr["cfg_avt_134"];
 					m_ipc->ipc_UTC->cliplimit = (float)fr["cfg_avt_135"];
-					m_ipc->ipc_UTC->dictEnable = (float)fr["cfg_avt_136"];
-					m_ipc->ipc_UTC->moveX = (float)fr["cfg_avt_137"];
-					m_ipc->ipc_UTC->moveY = (float)fr["cfg_avt_138"];
-					m_ipc->ipc_UTC->moveX2 = (float)fr["cfg_avt_139"];
-					m_ipc->ipc_UTC->moveY2 = (float)fr["cfg_avt_140"];
-					m_ipc->ipc_UTC->segPixelX = (float)fr["cfg_avt_141"];
-					m_ipc->ipc_UTC->segPixelY = (float)fr["cfg_avt_142"];
-					m_ipc->ipc_UTC->algOsdRect_Enable = (float)fr["cfg_avt_143"];  //9--15
+					m_ipc->ipc_UTC->dictEnable = (int)fr["cfg_avt_136"];
+					m_ipc->ipc_UTC->moveX = (int)fr["cfg_avt_137"];
+					m_ipc->ipc_UTC->moveY = (int)fr["cfg_avt_138"];
+					m_ipc->ipc_UTC->moveX2 = (int)fr["cfg_avt_139"];
+					m_ipc->ipc_UTC->moveY2 = (int)fr["cfg_avt_140"];
+					m_ipc->ipc_UTC->segPixelX = (int)fr["cfg_avt_141"];
+					m_ipc->ipc_UTC->segPixelY = (int)fr["cfg_avt_142"];
+					m_ipc->ipc_UTC->algOsdRect_Enable = (int)fr["cfg_avt_143"];  //9--15
 
-					m_ipc->ipc_UTC->ScalerLarge = (float)fr["cfg_avt_144"];//10--0
-					m_ipc->ipc_UTC->ScalerMid = (float)fr["cfg_avt_145"];
-					m_ipc->ipc_UTC->ScalerSmall = (float)fr["cfg_avt_146"];
-					m_ipc->ipc_UTC->Scatter = (float)fr["cfg_avt_147"];
+					m_ipc->ipc_UTC->ScalerLarge = (int)fr["cfg_avt_144"];//10--0
+					m_ipc->ipc_UTC->ScalerMid = (int)fr["cfg_avt_145"];
+					m_ipc->ipc_UTC->ScalerSmall = (int)fr["cfg_avt_146"];
+					m_ipc->ipc_UTC->Scatter = (int)fr["cfg_avt_147"];
 					m_ipc->ipc_UTC->ratio = (float)fr["cfg_avt_148"];
-					m_ipc->ipc_UTC->FilterEnable = (float)fr["cfg_avt_149"];
-					m_ipc->ipc_UTC->BigSecEnable = (float)fr["cfg_avt_150"];
-					m_ipc->ipc_UTC->SalientThred = (float)fr["cfg_avt_151"];
-					m_ipc->ipc_UTC->ScalerEnable = (float)fr["cfg_avt_152"];
-					m_ipc->ipc_UTC->DynamicRatioEnable = (float)fr["cfg_avt_153"];
-					m_ipc->ipc_UTC->acqSize_width = (float)fr["cfg_avt_154"];
-					m_ipc->ipc_UTC->acqSize_height = (float)fr["cfg_avt_155"];
-					m_ipc->ipc_UTC->TrkAim43_Enable = (float)fr["cfg_avt_156"];
-					m_ipc->ipc_UTC->SceneMVEnable = (float)fr["cfg_avt_157"];
-					m_ipc->ipc_UTC->BackTrackEnable = (float)fr["cfg_avt_158"];
-					m_ipc->ipc_UTC->bAveTrkPos = (float)fr["cfg_avt_159"]; //10--15
+					m_ipc->ipc_UTC->FilterEnable = (int)fr["cfg_avt_149"];
+					m_ipc->ipc_UTC->BigSecEnable = (int)fr["cfg_avt_150"];
+					m_ipc->ipc_UTC->SalientThred = (int)fr["cfg_avt_151"];
+					m_ipc->ipc_UTC->ScalerEnable = (int)fr["cfg_avt_152"];
+					m_ipc->ipc_UTC->DynamicRatioEnable = (int)fr["cfg_avt_153"];
+					m_ipc->ipc_UTC->acqSize_width = (int)fr["cfg_avt_154"];
+					m_ipc->ipc_UTC->acqSize_height = (int)fr["cfg_avt_155"];
+					m_ipc->ipc_UTC->TrkAim43_Enable = (int)fr["cfg_avt_156"];
+					m_ipc->ipc_UTC->SceneMVEnable = (int)fr["cfg_avt_157"];
+					m_ipc->ipc_UTC->BackTrackEnable = (int)fr["cfg_avt_158"];
+					m_ipc->ipc_UTC->bAveTrkPos = (int)fr["cfg_avt_159"]; //10--15
 
 					m_ipc->ipc_UTC->fTau = (float)fr["cfg_avt_160"]; //11--0
-					m_ipc->ipc_UTC->buildFrms = (float)fr["cfg_avt_161"];
-					m_ipc->ipc_UTC->LostFrmThred = (float)fr["cfg_avt_162"];
+					m_ipc->ipc_UTC->buildFrms = (int)fr["cfg_avt_161"];
+					m_ipc->ipc_UTC->LostFrmThred = (int)fr["cfg_avt_162"];
 					m_ipc->ipc_UTC->histMvThred = (float)fr["cfg_avt_163"];
-					m_ipc->ipc_UTC->detectFrms = (float)fr["cfg_avt_164"];
-					m_ipc->ipc_UTC->stillFrms = (float)fr["cfg_avt_165"];
+					m_ipc->ipc_UTC->detectFrms = (int)fr["cfg_avt_164"];
+					m_ipc->ipc_UTC->stillFrms = (int)fr["cfg_avt_165"];
 					m_ipc->ipc_UTC->stillThred = (float)fr["cfg_avt_166"];
-					m_ipc->ipc_UTC->bKalmanFilter = (float)fr["cfg_avt_167"];
+					m_ipc->ipc_UTC->bKalmanFilter = (int)fr["cfg_avt_167"];
 					m_ipc->ipc_UTC->xMVThred = (float)fr["cfg_avt_168"];
 					m_ipc->ipc_UTC->yMVThred = (float)fr["cfg_avt_169"];
 					m_ipc->ipc_UTC->xStillThred = (float)fr["cfg_avt_170"];
@@ -484,15 +530,15 @@ int  CMsgProcess::configAvtFromFile()
 					m_ipc->ipc_UTC->kalmanCoefQ = (float)fr["cfg_avt_174"];
 					m_ipc->ipc_UTC->kalmanCoefR = (float)fr["cfg_avt_175"]; //11--15
 
-					m_ipc->ipc_UTC->Enhmod_0 = (float)fr["cfg_avt_176"]; //12--0
+					m_ipc->ipc_UTC->Enhmod_0 = (int)fr["cfg_avt_176"]; //12--0
 					m_ipc->ipc_UTC->Enhparm_1 = (float)fr["cfg_avt_177"];
-					m_ipc->ipc_UTC->Mmtdparm_2 = (float)fr["cfg_avt_178"];
-					m_ipc->ipc_UTC->Mmtdparm_3 = (float)fr["cfg_avt_179"];
-					m_ipc->ipc_UTC->Mmtdparm_4 = (float)fr["cfg_avt_180"];
-					m_ipc->ipc_UTC->Mmtdparm_5 = (float)fr["cfg_avt_181"];
-					m_ipc->ipc_UTC->Mmtdparm_6 = (float)fr["cfg_avt_182"];
+					m_ipc->ipc_UTC->Mmtdparm_2 = (int)fr["cfg_avt_178"];
+					m_ipc->ipc_UTC->Mmtdparm_3 = (int)fr["cfg_avt_179"];
+					m_ipc->ipc_UTC->Mmtdparm_4 = (int)fr["cfg_avt_180"];
+					m_ipc->ipc_UTC->Mmtdparm_5 = (int)fr["cfg_avt_181"];
+					m_ipc->ipc_UTC->Mmtdparm_6 = (int)fr["cfg_avt_182"];
 					m_ipc->ipc_UTC->Mmtdparm_7 = (float)fr["cfg_avt_183"];
-					m_ipc->ipc_UTC->Mmtdparm_8 = (float)fr["cfg_avt_184"]; //12--8
+					m_ipc->ipc_UTC->Mmtdparm_8 = (int)fr["cfg_avt_184"]; //12--8
 					printf("CMsgProcess=====>ipc_UTC->Mmtdparm_8 = %d\n", m_ipc->ipc_UTC->Mmtdparm_8 );
 				} //UTC_TRK
 							}else
@@ -529,7 +575,7 @@ int  CMsgProcess::configAvtFromFile()
 		printf("send msg is OK !!!\n");
 	}
 
-void CMsgProcess::modifierAVTProfile(int block, int field, int value)
+void CMsgProcess::modifierAVTProfile(int block, int field, float value)
 {
 	m_ipc->ipc_OSD = m_ipc->getOSDSharedMem();
 	m_ipc->ipc_UTC = m_ipc->getUTCSharedMem();
@@ -538,372 +584,389 @@ void CMsgProcess::modifierAVTProfile(int block, int field, int value)
 	//cfg_value[check] = value;
 	switch(check)
 	{
+	case 1:
+		m_cfgPlatParam.acqOutputType = (int)value;
+		break;
 	case 2:
-		m_cfgPlatParam.scalarX = value;
+		m_cfgPlatParam.scalarX = (float)value;
 		printf("CMsgProcess======>scalarX = %f \n", m_cfgPlatParam.scalarX);
 		break;
 	case 3:
-		m_cfgPlatParam.scalarY = value;
+		m_cfgPlatParam.scalarY = (float)value;
 		printf("CMsgProcess======>scalarY = %f \n", m_cfgPlatParam.scalarY);
 		break;
 	case 4:
-		m_cfgPlatParam.demandMaxX = value;
+		m_cfgPlatParam.demandMaxX = (float)value;
 		printf("CMsgProcess======>demandMaxX = %f \n", m_cfgPlatParam.demandMaxX);
 		break;
 	case 5:
-		m_cfgPlatParam.demandMinX = value;
+		m_cfgPlatParam.demandMinX = (float)value;
 		printf("CMsgProcess======>demandMinX = %f \n", m_cfgPlatParam.demandMinX);
 		break;
 	case 6:
-		m_cfgPlatParam.demandMaxY = value;
+		m_cfgPlatParam.demandMaxY = (float)value;
 		printf("CMsgProcess======>demandMaxY = %f \n", m_cfgPlatParam.demandMaxY);
 		break;
 	case 7:
-		m_cfgPlatParam.demandMinY = value;
+		m_cfgPlatParam.demandMinY = (float)value;
 		printf("CMsgProcess======>demandMinY = %f \n", m_cfgPlatParam.demandMinY);
 		break;
+	case 8:
+		m_cfgPlatParam.deadbandX = value;
+		printf("CMsgProcess======>deadbandX = %f \n", m_cfgPlatParam.deadbandX);
+		break;
+	case 9:
+		m_cfgPlatParam.deadbandY = value;
+		printf("CMsgProcess======>deadbandY = %f \n", m_cfgPlatParam.deadbandY);
+		break;
+	case 10:
+		m_cfgPlatParam.driftX = (float)value;
+		break;
+	case 11:
+		m_cfgPlatParam.driftY = (float)value;
+		break;
 	case 12:
-		m_cfgPlatParam.bleedUsed = value;
+		m_cfgPlatParam.bleedUsed = (int)value;
 		printf("CMsgProcess======>bleedUsed = %d \n", m_cfgPlatParam.bleedUsed);
 		break;
 	case 13:
-		m_cfgPlatParam.bleedX = value;
+		m_cfgPlatParam.bleedX = (float)value;
 		printf("CMsgProcess======>bleedX = %f \n", m_cfgPlatParam.bleedX);
 		break;
 	case 14:
-		m_cfgPlatParam.bleedY = value;
+		m_cfgPlatParam.bleedY = (float)value;
 		printf("CMsgProcess======>bleedY = %f \n", m_cfgPlatParam.bleedY);
 		break;
 	case 17:
-		m_cfgPlatParam.m__cfg_platformFilterParam.P0 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.P0 = (float) value;
 		printf("CMsgProcess======>P0 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P0);
 		break;
 	case 18:
-		m_cfgPlatParam.m__cfg_platformFilterParam.P1 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.P1 = (float)value;
 		printf("CMsgProcess======>P1 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P1);
 		break;
 	case 19:
-		m_cfgPlatParam.m__cfg_platformFilterParam.P2 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.P2 =(float) value;
 		printf("CMsgProcess======>P2 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P2);
 		break;
 	case 20:
-		m_cfgPlatParam.m__cfg_platformFilterParam.L1 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.L1 = (float)value;
 		printf("CMsgProcess======>L1 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.L1);
 		break;
 	case 21:
-		m_cfgPlatParam.m__cfg_platformFilterParam.L2 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.L2 = (float)value;
 		printf("CMsgProcess======>L2 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.L2);
 		break;
 	case 22:
-			m_cfgPlatParam.m__cfg_platformFilterParam.G = value;
+			m_cfgPlatParam.m__cfg_platformFilterParam.G = (float)value;
 			printf("CMsgProcess======>G = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.G);
 		break;
 	case 23:
-		m_cfgPlatParam.m__cfg_platformFilterParam.P02 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.P02 = (float)value;
 		printf("CMsgProcess======>P02 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P02);
 		break;
 	case 24:
-		m_cfgPlatParam.m__cfg_platformFilterParam.P12 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.P12 = (float)value;
 		printf("CMsgProcess======>P12 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P12);
 		break;
 	case 25:
-		m_cfgPlatParam.m__cfg_platformFilterParam.P22 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.P22 = (float)value;
 		printf("CMsgProcess======>P22 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.P22);
 		break;
 	case 26:
-		m_cfgPlatParam.m__cfg_platformFilterParam.L12 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.L12 = (float)value;
 		printf("CMsgProcess======>L12 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.L12);
 		break;
 	case 27:
-		m_cfgPlatParam.m__cfg_platformFilterParam.L22 = value;
+		m_cfgPlatParam.m__cfg_platformFilterParam.L22 = (float)value;
 		printf("CMsgProcess======>L22 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.L22);
 		break;
 	case 28:
-			m_cfgPlatParam.m__cfg_platformFilterParam.G2 = value;
+			m_cfgPlatParam.m__cfg_platformFilterParam.G2 = (float)value;
 			printf("CMsgProcess======>G2 = %f \n", m_cfgPlatParam.m__cfg_platformFilterParam.G2);
 		break;
 	case 128:
-		m_ipc->ipc_UTC->occlusion_thred = value;
+		m_ipc->ipc_UTC->occlusion_thred = (float)value;
 		break;
 	case 129:
-		m_ipc->ipc_UTC->retry_acq_thred = value;
+		m_ipc->ipc_UTC->retry_acq_thred = (float)value;
 		break;
 	case 130:
-		m_ipc->ipc_UTC->up_factor = value;
+		m_ipc->ipc_UTC->up_factor = (float)value;
 		break;
 	case 131:
-		m_ipc->ipc_UTC->res_distance = value;
+		m_ipc->ipc_UTC->res_distance = (int)value;
 		break;
 	case 132:
-		m_ipc->ipc_UTC->res_area = value;
+		m_ipc->ipc_UTC->res_area = (int)value;
 		break;
 	case 133:
-		m_ipc->ipc_UTC->gapframe = value;
+		m_ipc->ipc_UTC->gapframe = (int)value;
 		break;
 	case 134:
-		m_ipc->ipc_UTC->enhEnable = value;
+		m_ipc->ipc_UTC->enhEnable = (int)value;
 		break;
 	case 135:
-		m_ipc->ipc_UTC->cliplimit = value;
+		m_ipc->ipc_UTC->cliplimit = (int)value;
 		break;
 	case 136:
-		m_ipc->ipc_UTC->dictEnable = value;
+		m_ipc->ipc_UTC->dictEnable = (int)value;
 		break;
 	case 137:
-		m_ipc->ipc_UTC->moveX = value;
+		m_ipc->ipc_UTC->moveX = (int)value;
 		break;
 	case 138:
-		m_ipc->ipc_UTC->moveY = value;
+		m_ipc->ipc_UTC->moveY = (int)value;
 		break;
 	case 139:
-		m_ipc->ipc_UTC->moveX2 = value;
+		m_ipc->ipc_UTC->moveX2 = (int)value;
 		break;
 	case 140:
-		m_ipc->ipc_UTC->moveY2 = value;
+		m_ipc->ipc_UTC->moveY2 = (int)value;
 		break;
 	case 141:
-		m_ipc->ipc_UTC->segPixelX = value;
+		m_ipc->ipc_UTC->segPixelX = (int)value;
 		break;
 	case 142:
-		m_ipc->ipc_UTC->segPixelY = value;
+		m_ipc->ipc_UTC->segPixelY = (int)value;
 		break;
 	case 143:
-		m_ipc->ipc_UTC->algOsdRect_Enable = value;
+		m_ipc->ipc_UTC->algOsdRect_Enable = (int)value;
 		break;
 	case 144:
-		m_ipc->ipc_UTC->ScalerLarge = value;
+		m_ipc->ipc_UTC->ScalerLarge = (int)value;
 		break;
 	case 145:
-		m_ipc->ipc_UTC->ScalerMid = value;
+		m_ipc->ipc_UTC->ScalerMid = (int)value;
 		break;
 	case 146:
-		m_ipc->ipc_UTC->ScalerSmall = value;
+		m_ipc->ipc_UTC->ScalerSmall = (int)value;
 		break;
 	case 147:
-		m_ipc->ipc_UTC->Scatter = value;
+		m_ipc->ipc_UTC->Scatter = (int)value;
 		break;
 	case 148:
-		m_ipc->ipc_UTC->ratio = value;
+		m_ipc->ipc_UTC->ratio = (float)value;
 		break;
 	case 149:
-		m_ipc->ipc_UTC->FilterEnable = value;
+		m_ipc->ipc_UTC->FilterEnable = (int)value;
 		break;
 	case 150:
-		m_ipc->ipc_UTC->BigSecEnable = value;
+		m_ipc->ipc_UTC->BigSecEnable = (int)value;
 		break;
 	case 151:
-		m_ipc->ipc_UTC->SalientThred = value;
+		m_ipc->ipc_UTC->SalientThred = (int)value;
 		break;
 	case 152:
-		m_ipc->ipc_UTC->ScalerEnable = value;
+		m_ipc->ipc_UTC->ScalerEnable = (int)value;
 		break;
 	case 153:
-		m_ipc->ipc_UTC->DynamicRatioEnable = value;
+		m_ipc->ipc_UTC->DynamicRatioEnable = (int)value;
 		break;
 	case 154:
-		m_ipc->ipc_UTC->acqSize_width = value;
+		m_ipc->ipc_UTC->acqSize_width = (int)value;
 		break;
 	case 155:
-		m_ipc->ipc_UTC->acqSize_height = value;
+		m_ipc->ipc_UTC->acqSize_height = (int)value;
 		break;
 	case 156:
-		m_ipc->ipc_UTC->TrkAim43_Enable = value;
+		m_ipc->ipc_UTC->TrkAim43_Enable = (int)value;
 		break;
 	case 157:
-		m_ipc->ipc_UTC->SceneMVEnable = value;
+		m_ipc->ipc_UTC->SceneMVEnable = (int)value;
 		break;
 	case 158:
-		m_ipc->ipc_UTC->BackTrackEnable = value;
+		m_ipc->ipc_UTC->BackTrackEnable = (int)value;
 		break;
 	case 159:
-		m_ipc->ipc_UTC->bAveTrkPos = value;
+		m_ipc->ipc_UTC->bAveTrkPos = (int)value;
 		break;
 	case 160:
-		m_ipc->ipc_UTC->fTau = value;
+		m_ipc->ipc_UTC->fTau = (float)value;
 		break;
 	case 161:
-		m_ipc->ipc_UTC->buildFrms = value;
+		m_ipc->ipc_UTC->buildFrms = (int)value;
 		break;
 	case 162:
-		m_ipc->ipc_UTC->LostFrmThred = value;
+		m_ipc->ipc_UTC->LostFrmThred = (int)value;
 		break;
 	case 163:
-		m_ipc->ipc_UTC->histMvThred = value;
+		m_ipc->ipc_UTC->histMvThred = (float)value;
 		break;
 	case 164:
-		m_ipc->ipc_UTC->detectFrms = value;
+		m_ipc->ipc_UTC->detectFrms = (int)value;
 		break;
 	case 165:
-		m_ipc->ipc_UTC->stillFrms = value;
+		m_ipc->ipc_UTC->stillFrms = (int)value;
 		break;
 	case 166:
-		m_ipc->ipc_UTC->stillThred = value;
+		m_ipc->ipc_UTC->stillThred = (float)value;
 		break;
 	case 167:
-		m_ipc->ipc_UTC->bKalmanFilter = value;
+		m_ipc->ipc_UTC->bKalmanFilter = (int)value;
 		break;
 	case 168:
-		m_ipc->ipc_UTC->xMVThred = value;
+		m_ipc->ipc_UTC->xMVThred = (float)value;
 		break;
 	case 169:
-		m_ipc->ipc_UTC->yMVThred = value;
+		m_ipc->ipc_UTC->yMVThred = (float)value;
 		break;
 	case 170:
-		m_ipc->ipc_UTC->xStillThred = value;
+		m_ipc->ipc_UTC->xStillThred = (float)value;
 		break;
 	case 171:
-		m_ipc->ipc_UTC->yStillThred = value;
+		m_ipc->ipc_UTC->yStillThred = (float)value;
 		break;
 	case 172:
-		m_ipc->ipc_UTC->slopeThred = value;
+		m_ipc->ipc_UTC->slopeThred = (float)value;
 		break;
 	case 173:
-		m_ipc->ipc_UTC->kalmanHistThred = value;
+		m_ipc->ipc_UTC->kalmanHistThred = (float)value;
 		break;
 	case 174:
-		m_ipc->ipc_UTC->kalmanCoefQ = value;
+		m_ipc->ipc_UTC->kalmanCoefQ = (float)value;
 		break;
 	case 175:
-		m_ipc->ipc_UTC->kalmanCoefR = value;
+		m_ipc->ipc_UTC->kalmanCoefR = (float)value;
 		break;
 	case 176:
-		m_ipc->ipc_UTC->Enhmod_0 = value;
+		m_ipc->ipc_UTC->Enhmod_0 = (int)value;
 		break;
 	case 177:
-		m_ipc->ipc_UTC->Enhparm_1 = value;
+		m_ipc->ipc_UTC->Enhparm_1 = (float)value;
 		break;
 	case 178:
-		m_ipc->ipc_UTC->Mmtdparm_2 = value;
+		m_ipc->ipc_UTC->Mmtdparm_2 = (int)value;
 		break;
 	case 179:
-		m_ipc->ipc_UTC->Mmtdparm_3 = value;
+		m_ipc->ipc_UTC->Mmtdparm_3 = (int)value;
 		break;
 	case 180:
-		m_ipc->ipc_UTC->Mmtdparm_4 = value;
+		m_ipc->ipc_UTC->Mmtdparm_4 = (int)value;
 		break;
 	case 181:
-		m_ipc->ipc_UTC->Mmtdparm_5 = value;
+		m_ipc->ipc_UTC->Mmtdparm_5 = (int)value;
 		break;
 	case 182:
-		m_ipc->ipc_UTC->Mmtdparm_6 = value;
+		m_ipc->ipc_UTC->Mmtdparm_6 = (int)value;
 		break;
 	case 183:
-		m_ipc->ipc_UTC->Mmtdparm_7 = value;
+		m_ipc->ipc_UTC->Mmtdparm_7 = (float)value;
 		break;
 	case 184:
-		m_ipc->ipc_UTC->Mmtdparm_8 = value;
+		m_ipc->ipc_UTC->Mmtdparm_8 = (int)value;
 		break;
 
 	case 192:
-		m_ipc->ipc_OSD->MAIN_Sensor = value;
+		m_ipc->ipc_OSD->MAIN_Sensor = (int)value;
 		break;
 	case 193:
-		m_ipc->ipc_OSD->Timedisp_9 = value;
+		m_ipc->ipc_OSD->Timedisp_9 = (int)value;
 		break;
 	case 194:
-		m_ipc->ipc_OSD->OSD_text_show = value;
+		m_ipc->ipc_OSD->OSD_text_show = (int)value;
 		break;
 	case 195:
-		m_ipc->ipc_OSD->OSD_text_color = value;
+		m_ipc->ipc_OSD->OSD_text_color = (int)value;
 		break;
 	case 196:
-		m_ipc->ipc_OSD->OSD_text_alpha = value;
+		m_ipc->ipc_OSD->OSD_text_alpha =(int) value;
 		break;
 	case 197:
-		m_ipc->ipc_OSD->OSD_text_font = value;
+		m_ipc->ipc_OSD->OSD_text_font = (int)value;
 		break;
 	case 198:
-		m_ipc->ipc_OSD->OSD_text_size = value;
+		m_ipc->ipc_OSD->OSD_text_size =(int) value;
 		break;
 	case 199:
-		m_ipc->ipc_OSD->OSD_draw_show = value;
+		m_ipc->ipc_OSD->OSD_draw_show = (int)value;
 		break;
 	case 200:
-		m_ipc->ipc_OSD->OSD_draw_color = value;
+		m_ipc->ipc_OSD->OSD_draw_color = (int)value;
 		break;
 	case 201:
-		m_ipc->ipc_OSD->CROSS_AXIS_WIDTH = value;
+		m_ipc->ipc_OSD->CROSS_AXIS_WIDTH = (int)value;
 		break;
 	case 202:
-		m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT = value;
+		m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT = (int)value;
 		break;
 	case 203:
-		m_ipc->ipc_OSD->Picp_CROSS_AXIS_WIDTH = value;
+		m_ipc->ipc_OSD->Picp_CROSS_AXIS_WIDTH = (int)value;
 		break;
 	case 204:
-		m_ipc->ipc_OSD->Picp_CROSS_AXIS_HEIGHT = value;
+		m_ipc->ipc_OSD->Picp_CROSS_AXIS_HEIGHT = (int)value;
 		break;
 	case 205:
-		m_ipc->ipc_OSD->ch0_acqRect_width =value;
+		m_ipc->ipc_OSD->ch0_acqRect_width =(int)value;
 		break;
 	case 206:
-		m_ipc->ipc_OSD->ch1_acqRect_width = value;
+		m_ipc->ipc_OSD->ch1_acqRect_width = (int)value;
 		break;
 	case 207:
-		m_ipc->ipc_OSD->ch2_acqRect_width = value;
+		m_ipc->ipc_OSD->ch2_acqRect_width = (int)value;
 		break;
 	case 208:
-		m_ipc->ipc_OSD->ch3_acqRect_width = value;
+		m_ipc->ipc_OSD->ch3_acqRect_width = (int)value;
 		break;
 	case 209:
-		m_ipc->ipc_OSD->ch4_acqRect_width = value;
+		m_ipc->ipc_OSD->ch4_acqRect_width = (int)value;
 		break;
 	case 210:
-		m_ipc->ipc_OSD->ch5_acqRect_width = value;
+		m_ipc->ipc_OSD->ch5_acqRect_width = (int)value;
 		break;
 	case 211:
-		m_ipc->ipc_OSD->ch0_acqRect_height = value;
+		m_ipc->ipc_OSD->ch0_acqRect_height = (int)value;
 		break;
 	case 212:
-		m_ipc->ipc_OSD->ch1_acqRect_height = value;
+		m_ipc->ipc_OSD->ch1_acqRect_height =(int) value;
 		break;
 	case 213:
-		m_ipc->ipc_OSD->ch2_acqRect_height = value;
+		m_ipc->ipc_OSD->ch2_acqRect_height = (int)value;
 		break;
 	case 214:
-		m_ipc->ipc_OSD->ch3_acqRect_height = value;
+		m_ipc->ipc_OSD->ch3_acqRect_height = (int)value;
 		break;
 	case 215:
-		m_ipc->ipc_OSD->ch4_acqRect_height = value;
+		m_ipc->ipc_OSD->ch4_acqRect_height = (int)value;
 		break;
 	case 216:
-		m_ipc->ipc_OSD->ch5_acqRect_height  = value;
+		m_ipc->ipc_OSD->ch5_acqRect_height  = (int)value;
 		break;
 	case 217:
-		m_ipc->ipc_OSD->ch0_aim_width = value;
+		m_ipc->ipc_OSD->ch0_aim_width = (int)value;
 		break;
 	case 218:
-		m_ipc->ipc_OSD->ch1_aim_width = value;
+		m_ipc->ipc_OSD->ch1_aim_width = (int)value;
 		break;
 	case 219:
-		m_ipc->ipc_OSD->ch2_aim_width = value;
+		m_ipc->ipc_OSD->ch2_aim_width =(int) value;
 		break;
 	case 220:
-		m_ipc->ipc_OSD->ch3_aim_width = value;
+		m_ipc->ipc_OSD->ch3_aim_width = (int)value;
 		break;
 	case 221:
-		m_ipc->ipc_OSD->ch4_aim_width = value;
+		m_ipc->ipc_OSD->ch4_aim_width = (int)value;
 		break;
 	case 222:
-		m_ipc->ipc_OSD->ch5_aim_width = value;
+		m_ipc->ipc_OSD->ch5_aim_width = (int)value;
 		break;
 	case 223:
-		m_ipc->ipc_OSD->ch0_aim_height = value;
+		m_ipc->ipc_OSD->ch0_aim_height = (int)value;
 		break;
 	case 224:
-		m_ipc->ipc_OSD->ch1_aim_height = value;
+		m_ipc->ipc_OSD->ch1_aim_height = (int)value;
 		break;
 	case 225:
-		m_ipc->ipc_OSD->ch2_aim_height = value;
+		m_ipc->ipc_OSD->ch2_aim_height = (int)value;
 		break;
 	case 226:
-		m_ipc->ipc_OSD->ch3_aim_height = value;
+		m_ipc->ipc_OSD->ch3_aim_height = (int)value;
 		break;
 	case 227:
-		m_ipc->ipc_OSD->ch4_aim_height = value;
+		m_ipc->ipc_OSD->ch4_aim_height = (int)value;
 		break;
 	case 228:
-		m_ipc->ipc_OSD->ch5_aim_height = value;
+		m_ipc->ipc_OSD->ch5_aim_height = (int)value;
 		break;
 	default:
 		break;
@@ -919,7 +982,7 @@ int CMsgProcess::updataProfile()
 	string cfgAvtFile;
 	int configId_Max = 256;
 	char  cfg_avt[20] = "cfg_avt_";
-	cfgAvtFile = "Profile.yml";
+	cfgAvtFile = "Profile_back.yml";
 	FILE *fp = fopen(cfgAvtFile.c_str(), "rt+");
 
 	if(fp != NULL){
@@ -931,12 +994,14 @@ int CMsgProcess::updataProfile()
 		else{
 			FileStorage fr(cfgAvtFile, FileStorage::WRITE);
 			if(fr.isOpened()){
-
+#if 0
 				for(int i=0; i<configId_Max; i++){
 									sprintf(cfg_avt, "cfg_avt_%d", i);
 									fr[cfg_avt] << cfg_value[i];
 				}
-
+#endif
+				sprintf(cfg_avt, "cfg_avt_%d",2);
+				fr  << cfg_avt << m_cfgPlatParam.scalarX;
 #if 0
 									{   // plat
 									fr["cfg_avt_2"] << m_cfgPlatParam.scalarX;
@@ -1000,7 +1065,7 @@ int CMsgProcess::updataProfile()
 	string cfgCameraFile;
 		int cfgId_Max = 671;
 		char  cfg_camera[10] = "cfg_avt_";
-		cfgCameraFile = "camera_Profile.yml";
+		cfgCameraFile = "camera_Profile_back.yml";
 		FILE *fp_camera = fopen(cfgCameraFile.c_str(), "rt");
 
 		if(fp_camera != NULL){

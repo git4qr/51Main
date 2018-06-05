@@ -312,3 +312,56 @@ int CIPCProc::IpcElectronicZoom(int zoom)
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
 	return 0;
 }
+
+int CIPCProc::IPCChannel_binding(int channel)
+{
+
+}
+
+int CIPCProc::IPCAxisMove(int x, int y)
+{
+
+}
+
+
+int CIPCProc::IPCpicp(int status, int pipChannel)
+{
+	CMD_PinP cmd_pip;
+	test.cmd_ID = pinp;
+	cmd_pip.ImgPicp = status;
+	cmd_pip.PicpSensorStat = pipChannel;
+	memcpy(test.param, &cmd_pip, sizeof(cmd_pip));
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+
+}
+
+int CIPCProc::IPCswitchVideoChannel(int channel)
+{
+
+}
+
+int CIPCProc::IPCframeCtrl(int fps, int channel)
+{
+
+}
+
+int CIPCProc::IPCcompression_quality(int quality, int channel)
+{
+
+}
+
+int CIPCProc::IPCwordColor(int color)
+{
+
+}
+
+int CIPCProc::IPCwordType(int type)
+{
+
+}
+
+int CIPCProc::IPCwordSize(int size)
+{
+
+}
+

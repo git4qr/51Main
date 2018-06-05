@@ -66,8 +66,8 @@ CUserBase::CUserBase()
 	memset(EXT_Ctrl, 0, sizeof(int) * 50);
 	}
 	if(Host_Ctrl == NULL){
-	Host_Ctrl = new int[30];
-	memset(Host_Ctrl, 0, sizeof(int) * 30);
+	Host_Ctrl = new float[30];
+	memset(Host_Ctrl, 0, sizeof(float) * 30);
 	}
 }
 
@@ -361,8 +361,8 @@ void  CUserBase::configSetting()
 	avtSetting.cmdFiled=rcvBufQue.at(5);
 	for(int m=6;m<10;m++)
 		tempbuf[m-6]=rcvBufQue.at(m);
-	memcpy(&avtSetting.confitData,tempbuf,sizeof(int));
-	printf("INFO:  Block=%d, filed=%d, value=%d\r\n",avtSetting.cmdBlock,avtSetting.cmdFiled,avtSetting.confitData);
+	memcpy(&avtSetting.confitData,tempbuf,sizeof(float));
+	printf("INFO:  Block=%d, filed=%d, value=%f\r\n",avtSetting.cmdBlock,avtSetting.cmdFiled,avtSetting.confitData);
 	Host_Ctrl[config_Wblock]=avtSetting.cmdBlock;
     Host_Ctrl[config_Wfield]=avtSetting.cmdFiled;
     Host_Ctrl[config_Wvalue]=avtSetting.confitData;

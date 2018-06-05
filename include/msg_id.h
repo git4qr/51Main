@@ -31,7 +31,7 @@ typedef enum SpecialEvent{
 
 typedef enum mesg_id{
 //jos  cmd message
-Cmd_Mesg_TrkCtrl=1, 			//1
+Cmd_Mesg_TrkCtrl = 1, 		//1
 Cmd_Mesg_Mtd,					//2
 Cmd_Mesg_ZoomLong,		//3
 Cmd_Mesg_ZoomShort,		//4
@@ -121,5 +121,35 @@ typedef enum {
 	jos_Kboard,
 	jos_Kboard2
 }Host_CtrlInput;
+
+typedef enum{
+	ACK_selfTest = 0,
+	ACK_wordColor,
+	ACK_wordType,
+	ACK_wordSize,
+	NAK_wordColor,
+	NAK_wordType,
+	NAK_wordSize,
+	ACK_mainVideoStatus,
+	ACK_Channel_bindingStatus,
+	ACK_avtTrkStatus,
+	ACK_avtTrkType,
+	ACK_avtErrorOutput,
+	ACK_mmtStatus,
+	ACK_mmtSelectStatus,
+	ACK_EnhStatus,
+	ACK_,
+	ACK_moveAxisStatus,
+	ACK_ElectronicZoomStatus,
+	ACK_picpStatus,
+	ACK_VideoChannelStatus,
+	ACK_frameCtrlStatus,
+	ACK_compression_quality,
+	ACK_config_Write,
+	ACK_config_Reab,
+	ACK_jos_Kboard,
+
+}ACK_Host_CtrlInput;
+
 
 #endif

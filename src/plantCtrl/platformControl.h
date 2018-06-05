@@ -271,7 +271,8 @@ typedef struct
 	float fFov[SENSOR_COUNT];
 
 	/* ����ģʽƽ̨������� */
-	eAcqOutputType acqOutputType;
+	eAcqOutputType acqOutputType2;
+	int acqOutputType;
 
 	/* ���ٴ����˲�ʹ�� */
 	int bTrkWinFilter;
@@ -319,7 +320,8 @@ typedef struct
 	float fFov[SENSOR_COUNT];
 
 	/* ����ģʽƽ̨������� */
-	eAcqOutputType acqOutputType;
+	eAcqOutputType acqOutputType2;
+	int acqOutputType;
 
 	/* ���ٴ����˲�ʹ�� */
 	int bTrkWinFilter;
@@ -413,7 +415,7 @@ __INLINE void PlatformCtrl_CreateParams_Init(PlatformCtrl_CreateParams *pPrm, co
 	pPrm->bleedY = m_Prm->bleedY;
 	printf("platfromContorl===> bleedY = %f\n", pPrm->bleedY);
 
-	pPrm->acqOutputType = AcqOutputType_ShapedAndGained;
+	pPrm->acqOutputType = m_Prm->acqOutputType;
 
 	pPrm->joystickRateDemandParam.fCutpoint = 0.5f;
 	pPrm->joystickRateDemandParam.fInputGain_X = 1.43;

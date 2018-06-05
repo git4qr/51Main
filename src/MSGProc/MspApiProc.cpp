@@ -209,8 +209,8 @@ void usd_MSGAPI_IPCConfigWrite(long p)
 {
 	int block = sThis->m_uart->Host_Ctrl[config_Wblock];
 	int field = sThis->m_uart->Host_Ctrl[config_Wfield];
-	int value = sThis->m_uart->Host_Ctrl[config_Wvalue];
-	printf("block = %d, field = %d, value = %d\n", block, field, value);
+	float value = sThis->m_uart->Host_Ctrl[config_Wvalue];
+	printf("block = %d, field = %d, value = %f\n", block, field, value);
 	sThis->modifierAVTProfile(block, field, value);
 }
 
@@ -234,6 +234,79 @@ void usd_MSGAPI_IPCReadCamera(long p)
 void usd_MSGAPI_IPCElectronicZoom(long p)
 {
 	sThis->m_ipc->IpcElectronicZoom(sThis->m_uart->Host_Ctrl[ElectronicZoom]);
+}
+
+void usd_MSGAPI_IPCChannel_binding(long p)
+{
+	int channel = sThis->m_uart->Host_Ctrl[Channel_binding];
+	sThis->m_ipc->IPCChannel_binding(channel);
+}
+
+void usd_MSGAPI_IPCAxisMove(long p)
+{
+	int x = sThis->m_uart->Host_Ctrl[moveAxisX];
+	int y = sThis->m_uart->Host_Ctrl[moveAxisY];
+	sThis->m_ipc->IPCAxisMove(x, y);
+}
+
+void usd_MSGAPI_IPCsaveAxis(long p)
+{
+	int x = sThis->m_ipc->ipc_status->opticAxisPosX[0];
+	int y = sThis->m_ipc->ipc_status->opticAxisPosY[0];
+
+}
+
+void usd_MSGAPI_IPCpicp(long p)
+{
+	int status = sThis->m_uart->Host_Ctrl[picp];
+	int channel = sThis->m_uart->Host_Ctrl[picpChannel];
+	sThis->m_ipc->IPCpicp(status, channel);
+}
+
+void usd_MSGAPI_IPCswitchVideoChannel(long p)
+{
+	int channel = sThis->m_uart->Host_Ctrl[switchVideoChannel];
+	sThis->m_ipc->IPCswitchVideoChannel(channel);
+}
+
+void usd_MSGAPI_IPCframeCtrl(long p)
+{
+
+}
+
+void usd_MSGAPI_IPCcompression_quality(long p)
+{
+
+}
+
+void usd_MSGAPI_IPCwordColor(long p)
+{
+
+}
+
+void usd_MSGAPI_IPCwordType(long p)
+{
+
+}
+
+void usd_MSGAPI_IPCwordSize(long p)
+{
+
+}
+
+void usd_MSGAPI_IPCwordDisEnable(long p)
+{
+
+}
+
+void usd_MSGAPI_EXTINPUT_config_Read(long p)
+{
+
+}
+
+void usd_MSGAPI_EXTINPUT_kboard(long p)
+{
+
 }
 
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p)
@@ -284,5 +357,19 @@ int  MSGAPI_initial()
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_UTC,usd_MSGAPI_IPCReadUTC,0);
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_Camera,usd_MSGAPI_IPCReadCamera, 0);
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_MainElectronicZoom, usd_MSGAPI_IPCElectronicZoom, 0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_Channel_binding,usd_MSGAPI_IPCChannel_binding,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_AxisMove,usd_MSGAPI_IPCAxisMove,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_saveAxis,usd_MSGAPI_IPCsaveAxis,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_picp,usd_MSGAPI_IPCpicp,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_switchVideoChannel,usd_MSGAPI_IPCswitchVideoChannel,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_frameCtrl,usd_MSGAPI_IPCframeCtrl,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_compression_quality,usd_MSGAPI_IPCcompression_quality,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_wordColor,usd_MSGAPI_IPCwordColor,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_wordType,usd_MSGAPI_IPCwordType,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_wordSize,usd_MSGAPI_IPCwordSize,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_IPC_wordDisEnable,usd_MSGAPI_IPCwordDisEnable,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_config_Read,usd_MSGAPI_EXTINPUT_config_Read,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_kboard,usd_MSGAPI_EXTINPUT_kboard,0);
+
     return 0;
 }

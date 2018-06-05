@@ -58,6 +58,7 @@ int CPTZControl::Create()
     //OSA_printf("%s: port open [%p]call... ", __func__, m_port->open);
     OSA_assert(m_port->open != NULL);
     iRet = m_port->open( m_port, &mUartOpenParams );
+    printf("PTZ======>create is OK!\n");
     OSA_assert( iRet == OSA_SOK );
 
     OSA_mutexCreate(&m_mutex);

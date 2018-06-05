@@ -28,6 +28,18 @@ public:
 		    int IpcConfigOSD();
 		    int IpcConfigUTC();
 		    int IPCConfigCamera();
+
+		    int IPCChannel_binding(int channel);
+		    int IPCAxisMove(int x, int y);
+		    int IPCpicp(int status, int pipChannel);
+		    int IPCswitchVideoChannel(int channel);
+		    int IPCframeCtrl(int fps, int channel);
+		    int IPCcompression_quality(int quality, int channel);
+		    int IPCwordColor(int color);
+		    int IPCwordType(int type);
+		    int IPCwordSize(int size);
+		    int IPCwordDisEnable(int status);
+
 		    IMGSTATUS  *getsharedmemstat();
 		    OSDSTATUS *getOSDSharedMem();
 		    UTCTRKSTATUS *getUTCSharedMem();

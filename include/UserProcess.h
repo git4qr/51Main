@@ -123,7 +123,7 @@ typedef struct {
 typedef  struct  {
 	u_int8_t   cmdBlock;
 	u_int8_t   cmdFiled;
-	int    confitData;
+	float    confitData;
 }systemSetting;
 
 class CUserBase
@@ -141,7 +141,7 @@ public:
 	virtual int  Stop(){return 0;};
 	int process_ExtInputData( u_int8_t *data_buf, uint data_len);
 	int *EXT_Ctrl;
-	int *Host_Ctrl;
+	float *Host_Ctrl;
 	int feedback;
 	IMGSTATUS  avt_status;
 	int errorOutPut[2];
@@ -380,7 +380,7 @@ protected:
 	u_int8_t  *procbufque;
 	 uint     rcvbufofft;
 	 u_int8_t *ptr;
-	 vector<unsigned char>  rcvBufQue;;
+	 vector<unsigned char>  rcvBufQue;
 
 	inline  void processExtEvent(pExtEventFunc  prcEventFunc)
 	{

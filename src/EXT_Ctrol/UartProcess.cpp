@@ -160,7 +160,7 @@ int  CUartProcess::Create()
 {
 		  int iret;
 
-		 open_Uart(2);
+		 open_Uart(1);
 		 set_Uart(115200, 8, 'E', 1);
 			m_UartRun=true;
 			iret =   OSA_thrCreate(&uartGetDataThrID,

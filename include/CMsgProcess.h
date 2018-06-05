@@ -26,7 +26,6 @@ typedef struct _main_thr_obj{
 	void 		 *pParent;
 }MAIN_ProcThrObj;
 
-//OSA_SemHndl *m_semHndl;
 
 typedef struct {
 		int  m_TrkStat;
@@ -82,7 +81,7 @@ class CMsgProcess{
          	}test;
          	test aa;
          	test *ptest;
-         	void modifierAVTProfile(int block, int field, int value);
+         	void modifierAVTProfile(int block, int field, float value);
         private:
          	int *cfg_value;
 private:

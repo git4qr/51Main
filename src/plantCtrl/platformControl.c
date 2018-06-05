@@ -299,14 +299,12 @@ static int PlatformCtrl_PlatformCompensation(PlatformCtrl_Obj *pObj)
     if(fTmp < pObj->params.demandMinX)
         fTmp = pObj->params.demandMinX;
     //printf("pObj->params.demandMinX = %f\n", pObj->params.demandMinX);
-
-    if(fTmp > EPSINON)
-        fTmp += pObj->params.deadbandX;
-    //printf("pObj->params.deadbandX = %f\n", pObj->params.deadbandX);
-
-    if(fTmp < (-1)*EPSINON)
-        fTmp -= pObj->params.deadbandX;
-
+// new
+    if(fabsf(fTmp) < pObj->params.deadbandX)
+    {
+    	fTmp = 0;
+    }
+    printf("platformControl==========>deadbandX = %f\n", fTmp);
 
     fTmp += pObj->params.driftX;
     pObj->inter.output.fPlatformDemandX = fTmp;
@@ -324,12 +322,12 @@ static int PlatformCtrl_PlatformCompensation(PlatformCtrl_Obj *pObj)
         fTmp = pObj->params.demandMinY;
     //printf("pObj->params.demandMinY = %f\n", pObj->params.demandMinY);
 
-    if(fTmp > EPSINON)
-        fTmp += pObj->params.deadbandY;
-    //printf("pObj->params.deadbandY = %f\n", pObj->params.deadbandY);
-
-    if(fTmp < (-1)*EPSINON)
-        fTmp -= pObj->params.deadbandY;
+    // new
+        if(fabsf(fTmp) < pObj->params.deadbandY)
+        {
+        	fTmp = 0;
+        }
+        printf("platformControl==========>deadbandX = %f\n", fTmp);
 
     fTmp += pObj->params.driftY;
     pObj->inter.output.fPlatformDemandY = fTmp;
