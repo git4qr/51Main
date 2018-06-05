@@ -219,7 +219,7 @@ public:
 			{
 				SendMsg(Cmd_Mesg_AXISY);
 			};
-			void SwitchSerson()
+			void SwitchSensor()
 			{
 				SendMsg(Cmd_Mesg_SensorCtrl);
 			};
@@ -235,6 +235,10 @@ public:
 			{
 				SendMsg(Cmd_Mesg_SelfTest);
 			}
+			 void Channel_binding()
+			 {
+				 SendMsg(Cmd_Mesg_Channel_binding);
+			 }
 			 void AxisMove()
 			{
 				SendMsg(Cmd_Mesg_AxisMove);
