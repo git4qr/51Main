@@ -241,7 +241,7 @@ void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
     			break;
     		case MSGID_INPUT_SensorCtrl:
     				if(jse->value == 1){
-						SwitchSerson();
+						SwitchSensor();
     				}
     				break;
     			case MSGID_INPUT_Mmt:
