@@ -480,13 +480,13 @@ int  CUserBase::prcRcvFrameBufQue()
                 	                        imageEnhance();
                 	       break;
                 case  0x08:
-                	                        trackFineuning();
+                							trackFinetuning();
                             break;
                 case    0x09:
                 							confirmAxisInfo();
                 	       break;
                 case    0x0a:
-                	                       ElectronicZoom();
+                							ElectronicZoomCtrl();
                 	       break;
                 case  0x0b:
                 							trackSearch();

@@ -397,9 +397,9 @@ private:
 		void  mutileTagartNotice();
 		void  mutileTagartSelect();
 		void    imageEnhance();
-		void  trackFineuning();
+		void  trackFinetuning();
 		void  confirmAxisInfo();
-		void  ElectronicZoom();
+		void  ElectronicZoomCtrl();
 		void trackSearch();
 		void confirmAxisSave();
 		void  moveTargetDetected();
