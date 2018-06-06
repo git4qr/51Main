@@ -22,9 +22,6 @@ src/MSGProc/CMsgProcess.o : ../src/MSGProc/CMsgProcess.cpp \
     /usr/include/aarch64-linux-gnu/bits/stdio2.h \
     /usr/include/memory.h \
     /usr/include/assert.h \
-    ../include/CMsgProcess.h \
-    ../src/OSA_CAP/inc/osa_thr.h \
-    ../src/OSA_CAP/inc/osa.h \
     /usr/include/pthread.h \
     /usr/include/endian.h \
     /usr/include/aarch64-linux-gnu/bits/endian.h \
@@ -37,6 +34,9 @@ src/MSGProc/CMsgProcess.o : ../src/MSGProc/CMsgProcess.cpp \
     /usr/include/aarch64-linux-gnu/bits/timex.h \
     /usr/include/aarch64-linux-gnu/bits/pthreadtypes.h \
     /usr/include/aarch64-linux-gnu/bits/setjmp.h \
+    ../include/CMsgProcess.h \
+    ../src/OSA_CAP/inc/osa_thr.h \
+    ../src/OSA_CAP/inc/osa.h \
     /usr/include/stdlib.h \
     /usr/include/aarch64-linux-gnu/bits/waitflags.h \
     /usr/include/aarch64-linux-gnu/bits/waitstatus.h \

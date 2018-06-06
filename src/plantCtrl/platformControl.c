@@ -304,7 +304,7 @@ static int PlatformCtrl_PlatformCompensation(PlatformCtrl_Obj *pObj)
     {
     	fTmp = 0;
     }
-    printf("platformControl==========>deadbandX = %f\n", fTmp);
+    //printf("platformControl==========>deadbandX = %f\n", fTmp);
 
     fTmp += pObj->params.driftX;
     pObj->inter.output.fPlatformDemandX = fTmp;
@@ -327,7 +327,7 @@ static int PlatformCtrl_PlatformCompensation(PlatformCtrl_Obj *pObj)
         {
         	fTmp = 0;
         }
-        printf("platformControl==========>deadbandX = %f\n", fTmp);
+        //printf("platformControl==========>deadbandY = %f\n", fTmp);
 
     fTmp += pObj->params.driftY;
     pObj->inter.output.fPlatformDemandY = fTmp;

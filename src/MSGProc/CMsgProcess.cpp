@@ -351,6 +351,14 @@ int  CMsgProcess::configAvtFromFile()
 
 				m_cfgPlatParam.demandMinY = (float)fr["cfg_avt_7"];
 
+				m_cfgPlatParam.deadbandX = (float)fr["cfg_avt_8"];
+
+				m_cfgPlatParam.deadbandY = (float)fr["cfg_avt_9"];
+
+				m_cfgPlatParam.driftX = (float)fr["cfg_avt_10"];
+
+				m_cfgPlatParam.driftY = (float)fr["cfg_avt_11"];
+
 				m_cfgPlatParam.bleedUsed = (int)fr["cfg_avt_12"];
 				printf("CMsgProcess===> bleedUsed = %d\n", m_cfgPlatParam.bleedUsed);
 
@@ -934,6 +942,7 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value)
 		break;
 	case 217:
 		m_ipc->ipc_OSD->ch0_aim_width = (int)value;
+		printf("CMsgProcess======>ch0_aim_width = %d\n", m_ipc->ipc_OSD->ch0_aim_width);
 		break;
 	case 218:
 		m_ipc->ipc_OSD->ch1_aim_width = (int)value;
@@ -952,6 +961,7 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value)
 		break;
 	case 223:
 		m_ipc->ipc_OSD->ch0_aim_height = (int)value;
+		printf("CMsgProcess======>ch0_aim_height = %d\n", m_ipc->ipc_OSD->ch0_aim_height);
 		break;
 	case 224:
 		m_ipc->ipc_OSD->ch1_aim_height = (int)value;

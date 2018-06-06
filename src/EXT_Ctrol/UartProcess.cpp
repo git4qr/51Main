@@ -159,7 +159,6 @@ int CUartProcess::set_Uart(const int baud_rate, const int data_bits, char parity
 int  CUartProcess::Create()
 {
 		  int iret;
-
 		 open_Uart(1);
 		 set_Uart(115200, 8, 'E', 1);
 			m_UartRun=true;

@@ -44,7 +44,10 @@ int CPTZControl::Create()
 	m_pResp = (LPPELCO_D_RESPPKT)recvBuffer;
 
     uart_open_params	mUartOpenParams;
-    strcpy( mUartOpenParams.device, "/dev/ttyTHS2" );
+    char uartname[20];
+    int num = 2;
+    sprintf(uartname,"/dev/ttyTHS%d", num);
+    strcpy( mUartOpenParams.device, uartname );
     mUartOpenParams.baudrate   = 4800;//4800;
     mUartOpenParams.databits   = 8;
     mUartOpenParams.parity	   = 'N';
