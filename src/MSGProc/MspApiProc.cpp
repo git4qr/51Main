@@ -271,37 +271,47 @@ void usd_MSGAPI_IPCswitchVideoChannel(long p)
 
 void usd_MSGAPI_IPCframeCtrl(long p)
 {
-
+	int fps = sThis->m_uart->Host_Ctrl[frameCtrl];
+	int channel = sThis->m_uart->Host_Ctrl[frameChannel];
+	sThis->m_ipc->IPCframeCtrl(fps, channel);
 }
 
 void usd_MSGAPI_IPCcompression_quality(long p)
 {
-
+	int quality = sThis->m_uart->Host_Ctrl[compression_quality];
+	int channel = sThis->m_uart->Host_Ctrl[compressionChannel];
+	sThis->m_ipc->IPCcompression_quality(quality, channel);
 }
 
 void usd_MSGAPI_IPCwordColor(long p)
 {
-
+	int color = sThis->m_uart->Host_Ctrl[wordColor];
+	sThis->m_ipc->IPCwordColor(color);
 }
 
 void usd_MSGAPI_IPCwordType(long p)
 {
-
+	int type = sThis->m_uart->Host_Ctrl[wordType];
+	sThis->m_ipc->IPCwordType(type);
 }
 
 void usd_MSGAPI_IPCwordSize(long p)
 {
-
+	int size = sThis->m_uart->Host_Ctrl[wordSize];
+	sThis->m_ipc->IPCwordSize(size);
 }
 
 void usd_MSGAPI_IPCwordDisEnable(long p)
 {
-
+	int status = sThis->m_uart->Host_Ctrl[wordDisEnable];
+	sThis->m_ipc->IPCwordDisEnable(status);
 }
 
 void usd_MSGAPI_EXTINPUT_config_Read(long p)
 {
-
+	int block = sThis->m_uart->Host_Ctrl[config_Rblock];
+	int field = sThis->m_uart->Host_Ctrl[config_Rfield];
+	float value = sThis->m_uart->Host_Ctrl[config_Rvalue];
 }
 
 void usd_MSGAPI_EXTINPUT_kboard(long p)

@@ -89,7 +89,8 @@ typedef enum {
         ipc_eSen_CH2 = 0x02,
         ipc_eSen_CH3 = 0x03,
         ipc_eSen_CH4 = 0x04,
-        ipc_eSen_Max = 0x05
+        ipc_eSen_CH5 = 0x05,
+        ipc_eSen_Max = 0x06
 }ipc_eSenserStat;
 
 typedef enum img_zoom

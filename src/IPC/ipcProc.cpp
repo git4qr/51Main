@@ -337,31 +337,34 @@ int CIPCProc::IPCpicp(int status, int pipChannel)
 
 int CIPCProc::IPCswitchVideoChannel(int channel)
 {
-
+	return 0;
 }
 
 int CIPCProc::IPCframeCtrl(int fps, int channel)
 {
-
+	return 0;
 }
 
 int CIPCProc::IPCcompression_quality(int quality, int channel)
 {
-
+	return 0;
 }
 
 int CIPCProc::IPCwordColor(int color)
 {
-
+	return 0;
 }
 
 int CIPCProc::IPCwordType(int type)
 {
-
+	return 0;
 }
 
 int CIPCProc::IPCwordSize(int size)
 {
-
+	return 0;
 }
-
+int CIPCProc::IPCwordDisEnable(int status)
+{
+	return 0;
+}
