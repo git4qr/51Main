@@ -1287,6 +1287,14 @@ void CMsgProcess::Change_avtStatus()
 				realtime_avtStatus();
 }
 
+void CMsgProcess::signalFeedBack(int signal, int index, int value, int s_value)
+{
+	m_uart->feedback = signal;
+	m_uart->mainProStat[index] = value;
+	m_uart->mainProStat[index +1] = s_value;
+	OSA_semSignal(&m_semHndl);
+}
+
 void CMsgProcess::main_thread_proc()
 {
 	    int msg;

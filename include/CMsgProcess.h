@@ -68,6 +68,7 @@ class CMsgProcess{
 		      int GetExtIputCtrlValue(int msg);
 		  	 void realtime_avtStatus();
 		  	 void Change_avtStatus();
+		  	 void signalFeedBack(int signal, int index, int value, int s_value);
              CMsgProcess *pThis;
          	 CJosStick *m_jos;
          	 CUartProcess *m_uart;

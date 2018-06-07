@@ -138,6 +138,8 @@ typedef enum{
 	ACK_mmtStatus,
 	ACK_mmtSelectStatus,  //
 	ACK_EnhStatus,
+	ACK_MtdStatus,
+	ACK_TrkSearchStatus,
 	ACK_posMoveStatus,   //
 	ACK_moveAxisStatus,  //
 	ACK_ElectronicZoomStatus,
@@ -151,23 +153,25 @@ typedef enum{
 }ACK_Host_CtrlInput;
 
 typedef enum{
-	ACK_selfTest2 = 0,  //
-	ACK_Channel_bindingStatus2,  //
-	ACK_posMoveStatus2,    //
-	ACK_moveAxisStatus2,   //
-	ACK_mmtSelectStatus2,   //
+	ACK_selfTest_value = 0,  //
+	ACK_Channel_bindingStatus_value,  //
+	ACK_posMove_value,    //
+	ACK_moveAxis_value = 4, //
+	ACK_mmtSelect_value = 6,   //
+	ACK_ElectronicZoom_value,
+	ACK_TrkSearch_value,
 	ACK_config_Wblock,
 	ACK_config_Wfield,
 	ACK_config_Wvalue,
 	ACK_config_Rblock,
 	ACK_config_Rfield,
 	ACK_config_Rvalue,
-	ACK_wordColor2,   //
-	ACK_wordType2,  //
-	ACK_wordSize2,		//
-	NAK_wordColor2,	//
-	NAK_wordType2,	//
-	NAK_wordSize2,		//
-	ACK_jos_Kboard2,		//
+	ACK_wordColor_value,   //
+	ACK_wordType_value,  //
+	ACK_wordSize_value,		//
+	NAK_wordColor_value,	//
+	NAK_wordType_value,	  //
+	NAK_wordSize_value,		//
+	ACK_jos_Kboard_value,		//
 }ACK_Host_Value;
 #endif

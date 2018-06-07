@@ -145,6 +145,7 @@ public:
 	int feedback;
 	IMGSTATUS  avt_status;
 	int errorOutPut[2];
+	int mainProStat[20];
 	systemSetting avtSetting;
 
 	virtual int  Destroy(){

@@ -250,9 +250,10 @@ void usd_MSGAPI_IPCAxisMove(long p)
 
 void usd_MSGAPI_IPCsaveAxis(long p)
 {
-	int x = sThis->m_ipc->ipc_status->opticAxisPosX[0];
-	int y = sThis->m_ipc->ipc_status->opticAxisPosY[0];
-
+	float x = float(sThis->m_ipc->ipc_status->opticAxisPosX[0]);
+	float y = float(sThis->m_ipc->ipc_status->opticAxisPosY[0]);
+	sThis->modifierAVTProfile(24, 0, x);
+	sThis->modifierAVTProfile(25, 0, y);
 }
 
 void usd_MSGAPI_IPCpicp(long p)

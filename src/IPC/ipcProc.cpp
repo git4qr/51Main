@@ -108,7 +108,8 @@ void CIPCProc::getIPCMsgProc()
             case read_shm_trkpos:
         		ipc_gettrack(&trackstatus,&trackposx,&trackposy);//get value from shared_memory
         		Work_quePut(Cmd_IPC_TrkCtrl);
-        		OSA_semSignal(&m_semHndl);
+        		sThis->signalFeedBack(ACK_avtErrorOutput, 0, 0, 0);
+
         		//gettimeofday(&recv, NULL);
         		//printf("------recv pos------  %d  ,%d \n", recv.tv_sec, recv.tv_usec);
         		//printf("trackstatus = %d\n", trackstatus);
@@ -142,8 +143,7 @@ int  CIPCProc::ipcTrackCtrl(volatile unsigned char AvtTrkStat)
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	}
 	sThis->Change_avtStatus();
-	OSA_semSignal(&m_semHndl);
-
+	sThis->signalFeedBack(ACK_avtTrkStatus, 0, 0, 0);
 		return 0;
 }
 
@@ -156,7 +156,7 @@ int  CIPCProc::ipcMutilTargetDetecCtrl(volatile unsigned char ImgMmtStat)//1:ope
 		test.param[0]=ImgMmtStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	    	sThis->Change_avtStatus();
-	    	OSA_semSignal(&m_semHndl);
+	    	sThis->signalFeedBack(ACK_mmtStatus, 0, 0, 0);
 	    	//printf("mmt = %d \n", test.param[0]);
 	}
 
@@ -172,7 +172,7 @@ int  CIPCProc::ipcMutilTargetSelectCtrl(volatile unsigned char ImgMmtSelect)
 		test.param[0]=ImgMmtSelect;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	    	sThis->Change_avtStatus();
-	    	OSA_semSignal(&m_semHndl);
+	    	sThis->signalFeedBack(ACK_mmtSelectStatus, ACK_mmtSelect_value, ImgMmtSelect, 0);
 	    //	printf("MMTSelect = %d\n",ImgMmtSelect );
 	}
 
@@ -187,7 +187,7 @@ int CIPCProc::ipcImageEnhanceCtrl(volatile unsigned char ImgEnhStat) //1open 0cl
 		test.param[0]=ImgEnhStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	    	sThis->Change_avtStatus();
-	    	OSA_semSignal(&m_semHndl);
+	    	sThis->signalFeedBack(ACK_EnhStatus, 0, 0, 0);
 	}
 		return 0;
 }
@@ -200,6 +200,7 @@ int CIPCProc::ipcMoveTatgetDetecCtrl(volatile unsigned char ImgMtdStat)
 		test.param[0]=ImgMtdStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	    	sThis->Change_avtStatus();
+	    	sThis->signalFeedBack(ACK_MtdStatus, 0, 0, 0);
 	    	printf("MTDStat = %d\n", test.param[0]);
 
 	}
@@ -218,6 +219,7 @@ int CIPCProc::ipcSecTrkCtrl(selectTrack *m_selcTrak)
 	cmd_sectrk.ImgPixelY =m_selcTrak->ImgPixelY;
 	memcpy(test.param, &cmd_sectrk, sizeof(cmd_sectrk));
     ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	sThis->signalFeedBack(ACK_TrkSearchStatus, ACK_TrkSearch_value, m_selcTrak->SecAcqStat, 0);
     	//printf("cmd_sectrk.SecAcqStat = %d\n", cmd_sectrk.SecAcqStat );
 		//printf("ImgPixelX = %d\n", cmd_sectrk.ImgPixelX );
 		//printf("ImgPixelY = %d\n", cmd_sectrk.ImgPixelY);
@@ -233,6 +235,7 @@ int CIPCProc::IpcSensorSwitch(volatile unsigned char ImgSenchannel)
 		test.param[0] = ImgSenchannel;
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
 		sThis->Change_avtStatus();
+		sThis->signalFeedBack(ACK_mainVideoStatus, 0, 0, 0);
 		printf("sensorchannel = %d\n", test.param[0]);
 	}
 	return 0;
@@ -249,6 +252,7 @@ int CIPCProc::IpcpinpCtrl(volatile unsigned char ImgPipStat)
 		cmd_pip.PicpZoomStat = 1;
 		memcpy(test.param, &cmd_pip, sizeof(cmd_pip));
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
+		sThis->signalFeedBack(ACK_picpStatus, 0, 0, 0);
 	}
 	return 0;
 }
@@ -275,6 +279,7 @@ int CIPCProc::IpcTrkPosMoveCtrl(POSMOVE * avtMove)
 		printf("AvtMoveX = %d         ----------      AvtMoveY = %d\r\n", cmd_posMove.AvtMoveX, cmd_posMove.AvtMoveY);
 		memcpy(test.param, &cmd_posMove, sizeof(cmd_posMove));
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
+		sThis->signalFeedBack(ACK_posMoveStatus, ACK_posMove_value, avtMove->AvtMoveX, avtMove->AvtMoveY);
 	}
 	return 0;
 }
@@ -317,6 +322,7 @@ int CIPCProc::IpcElectronicZoom(int zoom)
 	test.cmd_ID = elecZoom;
 	test.param[0] = zoom;
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	sThis->signalFeedBack(ACK_ElectronicZoomStatus, ACK_ElectronicZoom_value, zoom, 0);
 	return 0;
 }
 
@@ -327,7 +333,12 @@ int CIPCProc::IPCChannel_binding(int channel)
 
 int CIPCProc::IPCAxisMove(int x, int y)
 {
-
+	CMD_POSMOVE cmd_axismove;
+	test.cmd_ID = axismove;
+	cmd_axismove.AvtMoveX = x;
+	cmd_axismove.AvtMoveY = y;
+	memcpy(test.param, &cmd_axismove, sizeof(cmd_axismove));
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
 }
 
 
@@ -339,6 +350,7 @@ int CIPCProc::IPCpicp(int status, int pipChannel)
 	cmd_pip.PicpSensorStat = pipChannel;
 	memcpy(test.param, &cmd_pip, sizeof(cmd_pip));
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	sThis->signalFeedBack(ACK_picpStatus, status, pipChannel, 0);
 
 }
 
