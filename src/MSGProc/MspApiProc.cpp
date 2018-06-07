@@ -311,7 +311,7 @@ void usd_MSGAPI_EXTINPUT_config_Read(long p)
 {
 	int block = sThis->m_uart->Host_Ctrl[config_Rblock];
 	int field = sThis->m_uart->Host_Ctrl[config_Rfield];
-	float value = sThis->m_uart->Host_Ctrl[config_Rvalue];
+	sThis->answerRead( block,  field);
 }
 
 void usd_MSGAPI_EXTINPUT_kboard(long p)

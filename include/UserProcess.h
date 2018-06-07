@@ -143,6 +143,7 @@ public:
 	static int *EXT_Ctrl;
 	float *Host_Ctrl;
 	int feedback;
+	float ACK_read;
 	IMGSTATUS  avt_status;
 	int errorOutPut[2];
 	int mainProStat[20];

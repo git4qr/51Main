@@ -548,8 +548,10 @@ int  CMsgProcess::configAvtFromFile()
 					m_ipc->ipc_UTC->Mmtdparm_8 = (int)fr["cfg_avt_184"]; //12--8
 					printf("CMsgProcess=====>ipc_UTC->Mmtdparm_8 = %d\n", m_ipc->ipc_UTC->Mmtdparm_8 );
 				} //UTC_TRK
-							}else
-								return -1;
+							}else{
+								printf("Can not find YML. Please put this file into the folder of execute file\n");
+								exit (-1);
+							}
 			}
 		}
 
@@ -573,8 +575,10 @@ int  CMsgProcess::configAvtFromFile()
 										cfg_value[j] = (float)fr[cfg_camera];
 										printf(" update cfg [%d] %f \n", j, cfg_value[j]);
 									}
-								}else
-									return -1;
+								}else{
+									printf("Can not find YML. Please put this file into the folder of execute file\n");
+									exit (-1);
+								}
 				}
 			}
 		printf("send msg start!\n");
@@ -984,6 +988,7 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value)
 		m_uart->ReadShmOSD();
 	else if(check >= 128 && check <= 184)
 		m_uart->ReadShmUTC();
+	signalFeedBack( ACK_config_Write,  0,  0,  0);
 }
 
 int CMsgProcess::updataProfile()
@@ -1266,6 +1271,57 @@ int CMsgProcess::updataProfile()
 									return -1;
 				}
 			}
+}
+
+int CMsgProcess::answerRead(int block, int field)
+{
+	int check = ((block -1) * 16 + field);
+	string cfgAvtFile;
+		char  cfg_avt[20] = "cfg_avt_";
+		cfgAvtFile = "Profile.yml";
+		FILE *fp = fopen(cfgAvtFile.c_str(), "rt");
+
+		if(fp != NULL){
+			fseek(fp, 0, SEEK_END);
+			int len = ftell(fp);
+			fclose(fp);
+			if(len < 10)
+				return  -1;
+			else{
+				FileStorage fr(cfgAvtFile, FileStorage::READ);
+				if(fr.isOpened()){
+					if(check < 256){
+										sprintf(cfg_avt, "cfg_avt_%d", check);
+										m_uart->ACK_read = (float)fr[cfg_avt];
+					}
+				}
+			}
+		}
+
+
+		string cfgCameraFile;
+			int cfgId_Max = 671;
+			char  cfg_camera[64] = "cfg_avt_";
+			cfgCameraFile = "camera_Profile_back.yml";
+			FILE *fp_camera = fopen(cfgCameraFile.c_str(), "rt");
+
+			if(fp_camera != NULL){
+				fseek(fp_camera, 0, SEEK_END);
+				int len = ftell(fp_camera);
+				fclose(fp_camera);
+				if(len < 10)
+					return  -1;
+				else{
+					FileStorage fr(cfgCameraFile, FileStorage::READ);
+					if(fr.isOpened()){
+						if(check < 672  &&  check > 255){
+											sprintf(cfg_camera, "cfg_avt_%d", check);
+											m_uart->ACK_read = (float)fr[cfg_avt];
+						}
+									}else
+										return -1;
+					}
+				}
 }
 
 void CMsgProcess::realtime_avtStatus()

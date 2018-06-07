@@ -84,6 +84,7 @@ class CMsgProcess{
          	test *ptest;
          	void modifierAVTProfile(int block, int field, float value);
          	int updataProfile();
+         	int answerRead(int block, int field);
         private:
          	float *cfg_value;
 private:
