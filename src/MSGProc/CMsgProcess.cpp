@@ -1322,6 +1322,7 @@ int CMsgProcess::answerRead(int block, int field)
 										return -1;
 					}
 				}
+			signalFeedBack( ACK_config_Reab,  ACK_config_Rblock,  block,  field);
 }
 
 void CMsgProcess::realtime_avtStatus()

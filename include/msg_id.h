@@ -163,7 +163,7 @@ typedef enum{
 	ACK_config_Wblock,
 	ACK_config_Wfield,
 	ACK_config_Wvalue,
-	ACK_config_Rblock,
+	ACK_config_Rblock = 12,
 	ACK_config_Rfield,
 	ACK_config_Rvalue,
 	ACK_wordColor_value,   //
