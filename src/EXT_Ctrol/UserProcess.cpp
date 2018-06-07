@@ -221,6 +221,8 @@ void   CUserBase::imageEnhance()
 
 void CUserBase::trackFinetuning()
 {
+    EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=0;
+    EXT_Ctrl[Cmd_Mesg_AIMPOS_Y-1]=0;
     switch(rcvBufQue.at(4) ){
             case   0x1:
             	         	 EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=1;
@@ -253,6 +255,8 @@ void CUserBase::trackFinetuning()
 
 void CUserBase::confirmAxisInfo()
 {
+    Host_Ctrl[moveAxisX]=0;
+    Host_Ctrl[moveAxisY]=0;
     switch(rcvBufQue.at(4) ){
             case   0x1:
           	            Host_Ctrl[moveAxisX]=1;
@@ -554,6 +558,399 @@ int  CUserBase::prcRcvFrameBufQue()
 	 rcvBufQue.erase(rcvBufQue.begin(),rcvBufQue.begin()+cmdLength);  //  analysis complete erase bytes
        return 1;
 }
+
+//********************************AVT to host ****************************
+// ***************send****************
+
+u_int8_t CUserBase:: sendCheck_sum(uint len, u_int8_t *tmpbuf)
+{
+	u_int8_t  ckeSum=0;
+     for(int n=0;n<len;n++)
+    	 ckeSum ^= tmpbuf[n];
+    return ckeSum;
+}
+
+void  CUserBase:: startCheckAnswer(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  answerStarkCkArry[4];
+	answerStarkCkArry[0]=0x01;
+	answerStarkCkArry[1]=0x01;
+	answerStarkCkArry[2]=0x02;
+	sumCheck=sendCheck_sum(3,answerStarkCkArry);
+	answerStarkCkArry[4]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x07;
+	memcpy(&(spBuf->sendBuff[3]),answerStarkCkArry,4);
+}
+
+void  CUserBase:: mainVedioChannel(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  mainVedioChannel[3];
+	mainVedioChannel[0]=0x04;
+	mainVedioChannel[1]=avt_status.SensorStat;
+	mainVedioChannel[2]= sendCheck_sum(2,mainVedioChannel);
+	//mainVedioChannel[2]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),mainVedioChannel,3);
+}
+
+void  CUserBase:: bindVedioChannel(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  bindVedioChannel[3];
+	bindVedioChannel[0]=0x05;
+	bindVedioChannel[1]=0x7;
+	sumCheck=sendCheck_sum(2,bindVedioChannel);
+	bindVedioChannel[2]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),bindVedioChannel,3);
+}
+
+void  CUserBase:: trackStatus(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  trackStatus[3];
+	trackStatus[0]=0x06;
+	trackStatus[1]=avt_status.AvtTrkStat;
+	sumCheck=sendCheck_sum(2,trackStatus);
+	trackStatus[2]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),trackStatus,3);
+}
+
+void  CUserBase:: trackTypes(sendInfo * spBuf)
+{
+	int currtrackTypes;
+	u_int8_t sumCheck;
+	u_int8_t  trackTypes[3];
+	trackTypes[0]=0x07;
+	trackTypes[1]=avt_status.TrkStat;
+	sumCheck=sendCheck_sum(2,trackTypes);
+	trackTypes[2]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),trackTypes,3);
+}
+
+void  CUserBase:: trackErrOutput(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  trackErrOutput[6];
+	trackErrOutput[0]=0x08;
+	trackErrOutput[1]=errorOutPut[0]&0xff; //errorOutPut[0]
+	trackErrOutput[2]=(errorOutPut[0]>>8)&0xff; //errorOutPut[0]
+	trackErrOutput[3]= errorOutPut[1]&0xff; //errorOutPut[1]
+	trackErrOutput[4]=(errorOutPut[1]>>8)&0xff; //errorOutPut[1]
+	sumCheck=sendCheck_sum(5,trackErrOutput);
+	trackErrOutput[5]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x09;
+	memcpy(&(spBuf->sendBuff[3]),trackErrOutput,6);
+}
+
+void  CUserBase:: mutilTargetNoticeStatus(sendInfo * spBuf)
+{
+	channelTable    mutilTargetSta;
+	u_int8_t sumCheck;
+	mutilTargetSta.channel0=avt_status.MtdState[0];
+	mutilTargetSta.channel1=avt_status.MtdState[1];
+	mutilTargetSta.channel2=avt_status.MtdState[2];
+	mutilTargetSta.channel3=avt_status.MtdState[3];
+	mutilTargetSta.channel4=avt_status.MtdState[4];
+	mutilTargetSta.channel5=avt_status.MtdState[5];
+	u_int8_t  mutilTargetNotice[3];
+	mutilTargetNotice[0]=0x09;
+	mutilTargetNotice[1]=*(u_int8_t*)(&mutilTargetSta);
+	sumCheck=sendCheck_sum(2,mutilTargetNotice);
+	mutilTargetNotice[2]=sumCheck;
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),mutilTargetNotice,3);
+}
+
+void CUserBase::multilTargetNumSelectStatus(sendInfo * spBuf)
+{
+
+	u_int8_t sumCheck;
+	u_int8_t  mutilTargetSelectNum[3];
+	mutilTargetSelectNum[0]=0x0a;
+	mutilTargetSelectNum[1]=(u_int8_t) (mainProStat[ACK_mmtSelect_value]&0xff);
+	sumCheck=sendCheck_sum(2,mutilTargetSelectNum);
+	mutilTargetSelectNum[2]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),mutilTargetSelectNum,3);
+}
+
+void  CUserBase::imageEnhanceStatus(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	channelTable    enhanceChannelSta;
+	enhanceChannelSta.channel0=avt_status.ImgEnhStat[0];
+	enhanceChannelSta.channel1=avt_status.ImgEnhStat[1];
+	enhanceChannelSta.channel2=avt_status.ImgEnhStat[2];
+	enhanceChannelSta.channel3=avt_status.ImgEnhStat[3];
+	enhanceChannelSta.channel4=avt_status.ImgEnhStat[4];
+	enhanceChannelSta.channel5=avt_status.ImgEnhStat[5];
+	u_int8_t  imageEnhance[3];
+	imageEnhance[0]=0x0b;
+	imageEnhance[1]=*(u_int8_t*)(&enhanceChannelSta);;
+	sumCheck=sendCheck_sum(2,imageEnhance);
+	imageEnhance[2]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),imageEnhance,3);
+
+}
+
+void CUserBase::trackFinetuningStat(sendInfo * spBuf)
+{
+	int currtTrackFinetuning[2]={0};
+	u_int8_t sumCheck;
+	u_int8_t  trackFinetuningStat[4];
+	trackFinetuningStat[0]=0x0c;
+	trackFinetuningStat[1]=(u_int8_t) (mainProStat[ACK_posMove_value]&0xff);
+	trackFinetuningStat[2]=(u_int8_t) (mainProStat[ACK_posMove_value+1]&0xff);
+	sumCheck=sendCheck_sum(3,trackFinetuningStat);
+	trackFinetuningStat[3]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x07;
+	memcpy(&(spBuf->sendBuff[3]),trackFinetuningStat,4);
+
+}
+
+void CUserBase::confirmAxisStat(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  confirmAxisStat[4];
+	confirmAxisStat[0]=0x0d;
+	confirmAxisStat[1]=(u_int8_t) (mainProStat[ACK_moveAxis_value]&0xff);
+	confirmAxisStat[2]=(u_int8_t) (mainProStat[ACK_moveAxis_value+1]&0xff);
+	sumCheck=sendCheck_sum(3,confirmAxisStat);
+	confirmAxisStat[3]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x07;
+	memcpy(&(spBuf->sendBuff[3]),confirmAxisStat,4);
+
+}
+
+void CUserBase::ElectronicZoomStat(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  ElectronicZoom[3];
+	ElectronicZoom[0]=0x0e;
+	ElectronicZoom[1]=(u_int8_t) (mainProStat[ACK_ElectronicZoom_value]&0xff);
+	sumCheck=sendCheck_sum(2, ElectronicZoom);
+	ElectronicZoom[2]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),ElectronicZoom,4);
+}
+
+void CUserBase::trackSearchStat(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  trackSearch[3];
+	trackSearch[0]=0x0f;
+	trackSearch[1]=(u_int8_t) (mainProStat[ACK_TrkSearch_value]&0xff);
+	sumCheck=sendCheck_sum(2, trackSearch);
+	trackSearch[2]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),trackSearch,3);
+}
+
+void CUserBase::moveTargetDetectedStat(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  moveTargetDetect[3];
+	channelTable    currtmoveTargetDet;
+	currtmoveTargetDet.channel0=avt_status.MtdState[0];
+	currtmoveTargetDet.channel1=avt_status.MtdState[1];
+	currtmoveTargetDet.channel2=avt_status.MtdState[2];
+	currtmoveTargetDet.channel3=avt_status.MtdState[3];
+	currtmoveTargetDet.channel4=avt_status.MtdState[4];
+	currtmoveTargetDet.channel5=avt_status.MtdState[5];
+	moveTargetDetect[0]=0x10;
+	moveTargetDetect[1]=*(u_int8_t*)(&currtmoveTargetDet);
+	sumCheck=sendCheck_sum(2, moveTargetDetect);
+	moveTargetDetect[2]=sumCheck;
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),moveTargetDetect,3);
+}
+
+void CUserBase::pictureInPictureStat(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  pictureInPicture[4];
+	channelTable    currtPiPChanneStat;
+	currtPiPChanneStat.channel0=avt_status.MtdState[0];
+	currtPiPChanneStat.channel1=avt_status.MtdState[1];
+	currtPiPChanneStat.channel2=avt_status.MtdState[2];
+	currtPiPChanneStat.channel3=avt_status.MtdState[3];
+	currtPiPChanneStat.channel4=avt_status.MtdState[4];
+	currtPiPChanneStat.channel5=avt_status.MtdState[5];
+	pictureInPicture[0]=0x11;
+	pictureInPicture[1]=avt_status.PicpSensorStat;
+	pictureInPicture[2]=*(u_int8_t*)(&currtPiPChanneStat);
+	sumCheck=sendCheck_sum(3, pictureInPicture);
+	pictureInPicture[3]=sumCheck;
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x07;
+	memcpy(&(spBuf->sendBuff[3]),pictureInPicture,4);
+}
+
+void  CUserBase::vedioTransChannelStat(sendInfo * spBuf)
+{
+	int vedioTransChannelStat;
+	u_int8_t sumCheck;
+	u_int8_t  vedioTransChannel[3];
+	channelTable    currtVedioTransChnel;
+	currtVedioTransChnel.channel0=avt_status.ImgVideoTrans[0];
+	currtVedioTransChnel.channel1=avt_status.ImgVideoTrans[1];
+	currtVedioTransChnel.channel2=avt_status.ImgVideoTrans[2];
+	currtVedioTransChnel.channel3=avt_status.ImgVideoTrans[3];
+	currtVedioTransChnel.channel4=avt_status.ImgVideoTrans[4];
+	currtVedioTransChnel.channel5=avt_status.ImgVideoTrans[5];
+	vedioTransChannel[0]=0x20;
+	vedioTransChannel[1]=*(u_int8_t*)(&currtVedioTransChnel);
+	sumCheck=sendCheck_sum(2, vedioTransChannel);
+	vedioTransChannel[2]=sumCheck;
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x06;
+	memcpy(&(spBuf->sendBuff[3]),vedioTransChannel,3);
+
+}
+
+void CUserBase::frameFrequenceStat(sendInfo * spBuf)
+{
+	  int  frameFrequenceStat[2]={0};
+		u_int8_t sumCheck;
+		u_int8_t  frameFrequence[4];
+		frameFrequence[0]=0x21;
+		frameFrequence[1]=frameFrequenceStat[0];
+		frameFrequence[2]=frameFrequenceStat[1];
+		sumCheck=sendCheck_sum(3, frameFrequence);
+		frameFrequence[3]=(sumCheck&0xff);
+		spBuf->byteSizeSend=spBuf->sendBuff[2]=0x07;
+		memcpy(&(spBuf->sendBuff[3]),frameFrequence,4);
+
+}
+
+void CUserBase::vedioCompressStat(sendInfo * spBuf)
+{
+	  int  vedioCompressStat[2]={0};
+		u_int8_t sumCheck;
+		u_int8_t  vedioCompress[4];
+		vedioCompress[0]=0x22;
+		vedioCompress[1]=vedioCompressStat[0];
+		vedioCompress[2]=vedioCompressStat[1];
+		sumCheck=sendCheck_sum(3, vedioCompress);
+		vedioCompress[3]=(sumCheck&0xff);
+		spBuf->byteSizeSend=spBuf->sendBuff[2]=0x07;
+		memcpy(&(spBuf->sendBuff[3]),vedioCompress,4);
+}
+
+void CUserBase::settingCmdRespon(sendInfo * spBuf)
+{
+	u_int8_t sumCheck;
+	u_int8_t  settingCmdRespon[7];
+	settingCmdRespon[0]=0x30;
+	settingCmdRespon[1]=(u_int8_t) (mainProStat[ACK_config_Wblock]&0xff);
+	settingCmdRespon[2]=(u_int8_t) (mainProStat[ACK_config_Wfield]&0xff);
+	memcpy(&(settingCmdRespon[3]),&(Host_Ctrl[config_Wvalue]),4);
+	sumCheck=sendCheck_sum(7, settingCmdRespon);
+}
+
+void CUserBase::readConfigSetting(sendInfo * spBuf)
+{
+	systemSetting readCurrtCfgSetting={0};
+	u_int8_t sumCheck;
+	u_int8_t  readCfgSetting[7];
+	readCfgSetting[0]=0x31;
+	readCfgSetting[1]=(u_int8_t) (mainProStat[ACK_config_Rblock]&0xff);
+	readCfgSetting[2]=(u_int8_t) (mainProStat[ACK_config_Rfield]&0xff);;
+	memcpy(&(readCfgSetting[3]),&ACK_read,4);
+	sumCheck=sendCheck_sum(7, readCfgSetting);
+
+}
+
+void CUserBase::extExtraInputResponse(sendInfo * spBuf)
+{
+
+}
+
+
+int   CUserBase::getSendInfo(int  respondId, sendInfo * psendBuf)
+{
+		switch(respondId){
+		               case    ACK_selfTest:
+		            	 //  startCheckAnswer(psendBuf);
+		            	      break;
+		               case   ACK_wordColor:
+		                            break;
+		               case   ACK_wordType:
+		            	         break;
+		               case  ACK_wordSize:
+		            	         break;
+		               case  NAK_wordColor:
+		            	         break;
+		               case   NAK_wordType:
+		            	          break;
+		               case  NAK_wordSize:
+		            	          break;
+		               case   ACK_mainVideoStatus:
+		            	            mainVedioChannel(psendBuf);
+		            	         break;
+		               case   ACK_Channel_bindingStatus:
+		            	          bindVedioChannel(psendBuf);
+		            	          break;
+		               case  ACK_avtTrkStatus:
+		          	                 trackStatus(psendBuf);
+		            	          break;
+		               case  	ACK_avtTrkType:
+		            	         trackTypes(psendBuf);
+		            	          break;
+		               case   ACK_avtErrorOutput:
+		            	         trackErrOutput(psendBuf);
+		            	          break;
+		               case  ACK_mmtStatus:
+		            	      mutilTargetNoticeStatus(psendBuf);
+		            	         break;
+		               case   ACK_mmtSelectStatus:
+		            	        multilTargetNumSelectStatus(psendBuf);
+		            	         break;
+		               case   ACK_EnhStatus:
+		            	        imageEnhanceStatus(psendBuf);
+		            	          break;
+		               case   ACK_MtdStatus:
+		            	   moveTargetDetectedStat(psendBuf);
+		            	          break;
+		               case   ACK_TrkSearchStatus:
+		            	        trackSearchStat(psendBuf);
+		            	          break;
+		               case   ACK_posMoveStatus:
+		            	   trackFinetuningStat(psendBuf);
+		            	          break;
+		               case   ACK_moveAxisStatus:
+		            	       confirmAxisStat(psendBuf);
+		            	          break;
+		               case   ACK_ElectronicZoomStatus:
+		            	        ElectronicZoomStat(psendBuf);
+		            	          break;
+		               case  ACK_picpStatus:
+		            	         pictureInPictureStat(psendBuf);
+		            	          break;
+		               case  	ACK_VideoChannelStatus:
+		            	        vedioTransChannelStat(psendBuf);
+		            	         break;
+		               case  ACK_frameCtrlStatus:
+		            	         break;
+		               case  ACK_compression_quality:
+		            	        break;
+		               case   ACK_config_Write:
+		            	   settingCmdRespon(psendBuf);
+		            	        break;
+		               case  ACK_config_Reab:
+		            	         readConfigSetting(psendBuf);
+		            	        break;
+		               case  ACK_jos_Kboard:
+		            	       extExtraInputResponse(psendBuf);
+		            	         break;
+		}
+		return 0;
+}
+
 
 #if 0
 u_int8_t  CUserBase::check_sum(u_int8_t  *pdata,uint len_t)

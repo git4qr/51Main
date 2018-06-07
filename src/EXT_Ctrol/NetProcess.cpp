@@ -1,4 +1,6 @@
 #include <arpa/inet.h>
+#include <sys/ioctl.h>
+#include <net/if.h>
 #include <errno.h>
 #include <string.h>
 #include <vector>
@@ -21,7 +23,6 @@ CNetWork::CNetWork()
 		memset(&netCleanThrd,0,sizeof(netCleanThrd));
 		memset(&mutexConn,0,sizeof(mutexConn));
 }
-
 CNetWork::~CNetWork()
 {
 
@@ -39,14 +40,20 @@ int CNetWork::NetOpen()
 int CNetWork::NetBind()
 {
 	  int iRet;
+      char ipbuf[20];
+      char *ipaddr=ipbuf;
+      struct ifreq ifr;
       servAddr.sin_family = AF_INET;
-      servAddr.sin_port = htons( LISTENPROT);
-      servAddr.sin_addr.s_addr= inet_addr("192.168.1.189");//htonl(INADDR_ANY);
+      servAddr.sin_port = htons( _LisPort);
+      strcpy(ifr.ifr_name, "eth0");
+      //SIOCGIFADDR标志代表获取接口地址
+     if (ioctl(m_Socketfd, SIOCGIFADDR, &ifr) <  0)  perror("net ioctl Error");
+      ipaddr=inet_ntoa(((struct sockaddr_in*)&(ifr.ifr_addr))->sin_addr);
+      servAddr.sin_addr.s_addr= inet_addr(ipaddr);//htonl(INADDR_ANY);
       printf("INFO: server  addr:%d---port: %d\r\n",servAddr.sin_addr.s_addr,servAddr.sin_port);
-
        iRet = bind(m_Socketfd,(struct sockaddr*)&servAddr,sizeof(servAddr));
        if (iRet<0){
-            printf("ERR:  Can not bind  SocketFd, error: %s(errno: %d)\r\n ",strerror(errno),errno);
+            printf("ERR:  Can not bind  Socketfd, error: %s(errno: %d)\r\n ",strerror(errno),errno);
        }
 
       return  0 ;

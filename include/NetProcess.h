@@ -11,7 +11,7 @@
 #define  TIME_FOR_THREAD_END      (3)
 
 
-class CNetWork : public CUserBase{
+class CNetWork{
 
 public:
 	  CNetWork();

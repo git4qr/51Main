@@ -6,10 +6,9 @@
 #include <unistd.h>
 #include "UartProcess.h"
 #include "osa_sem.h"
-
+extern OSA_SemHndl m_semHndl;
 static void printfUARTRCVbuff(char *mBuf,int size);
 static u_int8_t  frame_head[]={0xEB, 0x53};
-
 CUartProcess::CUartProcess()
 {
 	m_UartRun=false;
@@ -159,6 +158,7 @@ int CUartProcess::set_Uart(const int baud_rate, const int data_bits, char parity
 int  CUartProcess::Create()
 {
 		  int iret;
+
 		 open_Uart(1);
 		 set_Uart(115200, 8, 'E', 1);
 			m_UartRun=true;
@@ -294,7 +294,6 @@ int  CUartProcess::UartRecvDataThread()
 }
 #endif
 
-
 int  CUartProcess::UartRecvDataThread()
 {
 	int sizeRcv;
@@ -305,9 +304,8 @@ int  CUartProcess::UartRecvDataThread()
 	memset(tmpRcvBuff,0,sizeof(tmpRcvBuff));
 	while(m_UartRun){
 		sizeRcv= UartRecv(tmpRcvBuff,RECV_BUF_SIZE);
-		//sizeRcv = read(m_port,tmpRcvBuff,RECV_BUF_SIZE);
-		//printf("INFO:rcv--0x%x\r\n",tmpRcvBuff);
 		if(sizeRcv>0){
+			    printf("INFO: Uart receive data: \r\n");
 			   for(int i=0;i<sizeRcv;i++)
 			   {
 				   printf("%02x ",tmpRcvBuff[i]);
@@ -316,37 +314,44 @@ int  CUartProcess::UartRecvDataThread()
 			   printf("\n");
 			   memset(tmpRcvBuff,0,sizeof(tmpRcvBuff));
 		}
-		 if(rcvBufQue.size()<5)   continue;    //less the smallest  frame   and then  receive the data
-            int off_t=findFrameHeader();     //find  frame header
-            printf("INFO:offset_t %d\r\n",off_t);
-             if(off_t<0){
+		   if(rcvBufQue.size()<5)   continue;    //less the smallest  frame   and then  receive the data
+           int off_t=findFrameHeader();     //find  frame header
+            if(off_t<0){
             	 rcvBufQue.clear();
             	 continue;
 			}
              if(off_t)
-            	 rcvBufQue.erase(rcvBufQue.begin(),rcvBufQue.begin()+off_t);  // erase  unused bytes
+             rcvBufQue.erase(rcvBufQue.begin(),rcvBufQue.begin()+off_t);  // erase  unused bytes
             	//now vector start 0xEB  0x53
-           if(rcvBufQue.size()<5)    continue; //less the smallest  frame   and then continue  receive the data
-           if( rcvBufQue.at(2)>rcvBufQue.size())   continue;  // judge the  length  byte  upper the  vector byte size
+             if(rcvBufQue.size()<5)    continue; //less the smallest  frame   and then continue  receive the data
+              if( rcvBufQue.at(2)>rcvBufQue.size())   continue;  // judge the  length  byte  upper the  vector byte size
              prcRcvFrameBufQue();
 	}
 	return 0;
 }
 
-char *Uarttest="asdfghjkl";
 
+#if 1
 int  CUartProcess::UartSendDataThread()
 {
+	    int mRespCmd;
+	    int n;
 	    int result,retVle;
 	    struct timeval    sendTimeout;
 		while(m_UartRun){
-	    //	OSA_semWait( semhandl,OSA_TIMEOUT_FOREVER);
-	  //  	getSendInfo();
-		  //  retVle = write (m_port, Uarttest,strlen(Uarttest));
+				OSA_semWait( & m_semHndl,OSA_TIMEOUT_FOREVER);
+				 memcpy(&repSendBuffer.sendBuff[0],frame_head,sizeof(frame_head));
+			     getSendInfo(feedback, &repSendBuffer);
+		         for(n=0;n<repSendBuffer.byteSizeSend;n++)
+			              printf("%02x ",repSendBuffer.sendBuff[n]);
+		             printf("\n");
+			        retVle = write (m_port, &repSendBuffer.sendBuff,repSendBuffer.byteSizeSend);
 		  }
 		return 0;
 }
-#if 0
+
+#else if
+char *Uarttest="asdfghjkl";
 int  CUartProcess::UartSendDataThread()
 {
 	    int result,retVle;
@@ -364,7 +369,7 @@ int  CUartProcess::UartSendDataThread()
 			  //test send
 			 printf("INFO: time out\r\n");
 			 printf("INFO: the size: %d\r\n",strlen(Uarttest));
-		//  retVle = write (m_port, Uarttest,strlen(Uarttest));
+		     retVle = write (m_port, Uarttest,strlen(Uarttest));
 		//  printf("%s, %d, retVle=%d, my port write:%02x\n",__FILE__, __LINE__, retVle,Uarttest[0]);
 			 if(retVle<=0){
 			 	  	  printf("ERR: Uart send error!!\r\n");

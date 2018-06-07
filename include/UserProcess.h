@@ -420,6 +420,30 @@ private:
 	   void readCurrentSetting();
 	   void extExtraInputCtrl();
 
+
+          //response  receive  command
+   void  startCheckAnswer(sendInfo * spBuf);
+   void mainVedioChannel(sendInfo * spBuf);
+   void bindVedioChannel(sendInfo * spBuf);
+   void trackStatus(sendInfo * spBuf);
+   void trackTypes(sendInfo * spBuf);
+   void trackErrOutput(sendInfo * spBuf);
+   void mutilTargetNoticeStatus(sendInfo * spBuf);
+   void multilTargetNumSelectStatus(sendInfo * spBuf);
+   void  imageEnhanceStatus(sendInfo * spBuf);
+   void trackFinetuningStat(sendInfo * spBuf);
+   void confirmAxisStat(sendInfo * spBuf);
+   void ElectronicZoomStat(sendInfo * spBuf);
+   void trackSearchStat(sendInfo * spBuf);
+   void moveTargetDetectedStat(sendInfo * spBuf);
+   void pictureInPictureStat(sendInfo * spBuf);
+   void  vedioTransChannelStat(sendInfo * spBuf);
+   void frameFrequenceStat(sendInfo * spBuf);
+   void vedioCompressStat(sendInfo * spBuf);
+   void settingCmdRespon(sendInfo * spBuf);
+   void readConfigSetting(sendInfo * spBuf);
+   void extExtraInputResponse(sendInfo * spBuf);
+
 	static int SendMsg(int MsgId)
 	{
 		Work_quePut(MsgId);
@@ -428,6 +452,7 @@ private:
 	int processExtInput(u_int8_t *mExtInput,uint size);
 	int check_InputDate(u_int8_t *pbuf, uint  len);
 	u_int8_t  check_sum(uint len_t);
+        u_int8_t  sendCheck_sum(uint len, u_int8_t *tmpbuf);
 	EXT_CtrlInput     extCtrl;
 };
 

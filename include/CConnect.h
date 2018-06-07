@@ -10,7 +10,7 @@
 typedef  int   CONNECT_IN;
 typedef  struct  sockaddr_in  Sockaddress_IN;
 
-class   CConnect {
+class CConnect : public CUserBase {
 
 public:
 	 	 	 CConnect (CONNECT_IN mConnectd, Sockaddress_IN mSockAddress );
