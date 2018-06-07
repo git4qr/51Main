@@ -407,9 +407,9 @@ __INLINE void PlatformCtrl_CreateParams_Init(PlatformCtrl_CreateParams *pPrm, co
 	pPrm->bleedUsed = m_Prm->bleedUsed;
 	printf("platfromContorl===> bleedUsed = %d\n", pPrm->bleedUsed);
 	pPrm->deadbandX = m_Prm->deadbandX;
-	printf("platfromContorl===> deadbandX = %d\n", pPrm->deadbandX);
+	printf("platfromContorl===> deadbandX = %f\n", pPrm->deadbandX);
 	pPrm->deadbandY = m_Prm->deadbandY;
-	printf("platfromContorl===> deadbandY = %d\n", pPrm->deadbandY);
+	printf("platfromContorl===> deadbandY = %f\n", pPrm->deadbandY);
 	pPrm->bleedX = m_Prm->bleedX;
 	printf("platfromContorl===> bleedX = %f\n", pPrm->bleedX);
 	pPrm->bleedY = m_Prm->bleedY;

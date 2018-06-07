@@ -35,12 +35,11 @@ char  m_AvtTrkAimSize;
 char m_eSenserStat;
 void  MSGAPI_StatusConvertFunc(int msg)
 {
-	sThis->m_ipc->ipc_status = sThis->m_ipc->getsharedmemstat();
+	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
 
 	switch(msg){
 	case Cmd_Mesg_TrkCtrl:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->AvtTrkStat);
-		printf("AvtStatus = %d\n", sThis->m_ipc->ipc_status->AvtTrkStat);
 		break;
 	case Cmd_Mesg_Mtd:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->MtdState[0]);
@@ -96,7 +95,7 @@ void usd_MSGAPI_ExtInpuCtrl_TrkBoxSize(long p)
 
 void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p)
 {
-	sThis->m_ipc->ipc_status = sThis->m_ipc->getsharedmemstat();
+	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
 	if(shieldInitTrkSearchBit){
 	m_CurrStat.m_SecTrkStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_TrkSearch);
 	if(sThis->m_ipc->ipc_status->AvtTrkStat){

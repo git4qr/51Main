@@ -140,7 +140,7 @@ public:
 	virtual int Run(){return 0;};
 	virtual int  Stop(){return 0;};
 	int process_ExtInputData( u_int8_t *data_buf, uint data_len);
-	int *EXT_Ctrl;
+	static int *EXT_Ctrl;
 	float *Host_Ctrl;
 	int feedback;
 	IMGSTATUS  avt_status;
@@ -354,7 +354,7 @@ public:
 			 }
 			 void Config_Write_Save()
 			 {
-				 SendMsg(Cmd_Mesg_config_Write_Save);
+				 SendMsg(Cmd_Mesg_config_Write);
 			 }
 			 void Config_Read()
 			 {

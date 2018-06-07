@@ -82,8 +82,9 @@ class CMsgProcess{
          	test aa;
          	test *ptest;
          	void modifierAVTProfile(int block, int field, float value);
+         	int updataProfile();
         private:
-         	int *cfg_value;
+         	float *cfg_value;
 private:
 	MAIN_ProcThrObj	  mainProcThrObj;
 	//OSA_MutexHndl    m_mutex;
@@ -95,8 +96,6 @@ private:
 	void processMsg(int msg);
 	void PlantTrackerInputPara(void);
 	int configAvtFromFile();
-
-	int updataProfile();
 //	int MSGAPI_initial();
 //static 	void app_PlantCtrl(long lParam );
  protected:

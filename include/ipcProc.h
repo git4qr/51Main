@@ -40,7 +40,7 @@ public:
 		    int IPCwordSize(int size);
 		    int IPCwordDisEnable(int status);
 
-		    IMGSTATUS  *getsharedmemstat();
+		    IMGSTATUS  *getAvtStatSharedMem();
 		    OSDSTATUS *getOSDSharedMem();
 		    UTCTRKSTATUS *getUTCSharedMem();
 			  	unsigned int trackstatus;

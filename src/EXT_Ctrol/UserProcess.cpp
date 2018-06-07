@@ -15,10 +15,12 @@ using namespace std;
 #define  KeyMAXSize  (12)
 #define   MAX_CFG_ID  (19)
 static int  cfg_blk_val[16];
-CUserBase  *Sthis =NULL;
 static u_int8_t  frame_head[]={0xEB, 0x53};
 //static  pExtEventFunc  funcArray[]={NULL,track,SelSensor,TrkBoxCtrl,TrkSearch,upIris,downIris,focusUp,FocusDown,imgEnhance,autoIsriFocus,
 															//	aimposx,aimposy,zoomlong, zoomshort, axisXctrl,axisYctrl };
+
+int * CUserBase::EXT_Ctrl = new int[50];
+
 
 void CUserBase::getReadLocalJosCfgSettingFile(void)
 {
@@ -61,10 +63,7 @@ CUserBase::CUserBase()
  	memset(&extCtrl,0,sizeof(extCtrl));
  	memset(&avtSetting,0,sizeof(avtSetting));
  	ptr=&procbufque[0];
-	if(EXT_Ctrl == NULL){
-	EXT_Ctrl = new int[50];
-	memset(EXT_Ctrl, 0, sizeof(int) * 50);
-	}
+ 	memset(EXT_Ctrl, 0, sizeof(int) * 50);
 	if(Host_Ctrl == NULL){
 	Host_Ctrl = new float[30];
 	memset(Host_Ctrl, 0, sizeof(float) * 30);
@@ -186,6 +185,7 @@ void CUserBase::mutileTagartNotice()
     printf("INFO: enable mutile target!!\r\n");
     int mutiltargetNotice=rcvBufQue.at(4);
     EXT_Ctrl[Cmd_Mesg_Mmt-1]=mutiltargetNotice;
+    printf("CUserBase=======>EXT_Ctrl = %p\n", EXT_Ctrl);
     EnableMmt();
 }
 
@@ -223,12 +223,15 @@ void CUserBase::trackFinetuning()
 {
     switch(rcvBufQue.at(4) ){
             case   0x1:
-            	         EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=1;
+            	         	 EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=1;
             	             AIMPOS_X();
+            	             printf("usrProcess========>AIMPOS is OK!\n");
             	             break;
             case   0x2:
             	            EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=2;
 	                          AIMPOS_X();
+	                          printf("usrProcess========>AIMPOS is OK!\n");
+	                          break;
             default:
             	            EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=0;
          }
@@ -236,10 +239,13 @@ void CUserBase::trackFinetuning()
     		case   0x1:
     						EXT_Ctrl[Cmd_Mesg_AIMPOS_Y-1]=1;;
     								AIMPOS_Y();
+    								printf("usrProcess========>AIMPOS is OK!\n");
     									break;
     		case   0x2:
     						EXT_Ctrl[Cmd_Mesg_AIMPOS_Y-1]=2;
                     			AIMPOS_Y();
+                    			printf("usrProcess========>AIMPOS is OK!\n");
+                    			break;
     		default:
     						EXT_Ctrl[Cmd_Mesg_AIMPOS_Y]=0;
     }
@@ -420,7 +426,7 @@ void  CUserBase::configSetting()
 	for(int m=6;m<10;m++)
 		tempbuf[m-6]=rcvBufQue.at(m);
 	memcpy(&avtSetting.confitData,tempbuf,sizeof(float));
-	printf("INFO:  Block=%d, filed=%d, value=%d\r\n",avtSetting.cmdBlock,avtSetting.cmdFiled,avtSetting.confitData);
+	printf("INFO:  Block=%d, filed=%d, value=%f\r\n",avtSetting.cmdBlock,avtSetting.cmdFiled,avtSetting.confitData);
 	Host_Ctrl[config_Wblock]=	avtSetting.cmdBlock;
 	Host_Ctrl[config_Wfield]=avtSetting.cmdFiled;
 	Host_Ctrl[config_Wvalue]=avtSetting.confitData;

@@ -5,6 +5,7 @@
 #include "CMsgProcess.h"
 
 extern CMsgProcess* sThis;
+extern OSA_SemHndl  m_semHndl;
 
 struct timeval ipcProc;
 extern selectTrack 	m_selectPara;
@@ -55,7 +56,7 @@ int CIPCProc::Destroy()
 	OSA_thrJoin(&thrHandlPCRcv);
 	return 0;
 }
-IMGSTATUS * CIPCProc::getsharedmemstat()
+IMGSTATUS * CIPCProc::getAvtStatSharedMem()
 {
 	ipc_status = ipc_getimgstatus_p();
 	assert(ipc_status != NULL);
@@ -107,6 +108,7 @@ void CIPCProc::getIPCMsgProc()
             case read_shm_trkpos:
         		ipc_gettrack(&trackstatus,&trackposx,&trackposy);//get value from shared_memory
         		Work_quePut(Cmd_IPC_TrkCtrl);
+        		OSA_semSignal(&m_semHndl);
         		//gettimeofday(&recv, NULL);
         		//printf("------recv pos------  %d  ,%d \n", recv.tv_sec, recv.tv_usec);
         		//printf("trackstatus = %d\n", trackstatus);
@@ -140,6 +142,8 @@ int  CIPCProc::ipcTrackCtrl(volatile unsigned char AvtTrkStat)
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	}
 	sThis->Change_avtStatus();
+	OSA_semSignal(&m_semHndl);
+
 		return 0;
 }
 
@@ -152,6 +156,7 @@ int  CIPCProc::ipcMutilTargetDetecCtrl(volatile unsigned char ImgMmtStat)//1:ope
 		test.param[0]=ImgMmtStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	    	sThis->Change_avtStatus();
+	    	OSA_semSignal(&m_semHndl);
 	    	//printf("mmt = %d \n", test.param[0]);
 	}
 
@@ -166,6 +171,8 @@ int  CIPCProc::ipcMutilTargetSelectCtrl(volatile unsigned char ImgMmtSelect)
 	{
 		test.param[0]=ImgMmtSelect;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	    	sThis->Change_avtStatus();
+	    	OSA_semSignal(&m_semHndl);
 	    //	printf("MMTSelect = %d\n",ImgMmtSelect );
 	}
 
@@ -176,11 +183,11 @@ int CIPCProc::ipcImageEnhanceCtrl(volatile unsigned char ImgEnhStat) //1open 0cl
 {
       memset(test.param,0,PARAMLEN);
 	test.cmd_ID = enh;
-	if(ImgEnhStat != fr_img_cmd_enh.ImgEnhStat)
 	{
 		test.param[0]=ImgEnhStat;
 	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	    	sThis->Change_avtStatus();
+	    	OSA_semSignal(&m_semHndl);
 	}
 		return 0;
 }
@@ -277,8 +284,8 @@ int CIPCProc::IpcConfig()
 	test.cmd_ID = read_shm_config;
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
 	printf("IPCProc=====>send config!\n");
-	gettimeofday(&ipcProc, NULL);
-	printf("-----send config------  %d  ,%d \n", ipcProc.tv_sec, ipcProc.tv_usec);
+	//gettimeofday(&ipcProc, NULL);
+	//printf("-----send config------  %d  ,%d \n", ipcProc.tv_sec, ipcProc.tv_usec);
 	return 0;
 }
 
