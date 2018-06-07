@@ -311,7 +311,7 @@ int  CUartProcess::UartRecvDataThread()
 				   printf("%02x ",tmpRcvBuff[i]);
 				   rcvBufQue.push_back(tmpRcvBuff[i]);
 			   }
-			   printf("\n");
+			  printf("\n");
 			   memset(tmpRcvBuff,0,sizeof(tmpRcvBuff));
 		}
 		   if(rcvBufQue.size()<5)   continue;    //less the smallest  frame   and then  receive the data
@@ -342,9 +342,9 @@ int  CUartProcess::UartSendDataThread()
 				OSA_semWait( & m_semHndl,OSA_TIMEOUT_FOREVER);
 				 memcpy(&repSendBuffer.sendBuff[0],frame_head,sizeof(frame_head));
 			     getSendInfo(feedback, &repSendBuffer);
-		         for(n=0;n<repSendBuffer.byteSizeSend;n++)
-			              printf("%02x ",repSendBuffer.sendBuff[n]);
-		             printf("\n");
+		        // for(n=0;n<repSendBuffer.byteSizeSend;n++)
+			              //printf("%02x ",repSendBuffer.sendBuff[n]);
+		          //   printf("\n");
 			        retVle = write (m_port, &repSendBuffer.sendBuff,repSendBuffer.byteSizeSend);
 		  }
 		return 0;

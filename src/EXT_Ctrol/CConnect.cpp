@@ -41,29 +41,6 @@ void CConnect::startRunning()
 														(void*)this);
 }
 
-int  CConnect::NetRecv(void *rcv_buf,int data_len)
-{
-		int fs_sel,len;
-		fd_set fd_netRead;
-		struct timeval timeout;
-		FD_ZERO(&fd_netRead);
-		FD_SET(m_connect,&fd_netRead);
-	    timeout.tv_sec = 3;
-		timeout.tv_usec = 0;
-		fs_sel = select(m_connect+1,&fd_netRead,NULL,NULL,&timeout);
-		if(fs_sel){
-			len = read(m_connect,rcv_buf,data_len);
-			return len;
-		}
-		else if(-1 == fs_sel){
-			printf("ERR: Net  Recv  select  Error!!\r\n");
-			return -1;
-		}
-		else if(0 == fs_sel){
-			return 0;
-		}
-}
-
 int  CConnect::RecvDataThread()
 {
 	int reVal;
@@ -82,10 +59,10 @@ int  CConnect::RecvDataThread()
                            printf("INFO:Net process!, Net receive data :\r\n");
 		    		      for(int i=0;i<reVal;i++)
 		    		       {
-		    				   printf("%02x ",tmpNetRcvBuff[i]);
+		    				 //  printf("%02x ",tmpNetRcvBuff[i]);
 		    				   rcvBufQue.push_back(tmpNetRcvBuff[i]);
 		    				}
-                           printf("\r\n");
+                          // printf("\r\n");
 		    		       memset(tmpNetRcvBuff,0,sizeof(tmpNetRcvBuff));
 		    			   if(rcvBufQue.size()<5)   continue;    //less the smallest  frame   and then  receive the data
 		    	           int off_t=findFrameHeader();     //find  frame heade
@@ -113,9 +90,9 @@ int  CConnect::SendDataThread()
 			   OSA_semWait(&m_semHndl,OSA_TIMEOUT_FOREVER);
 			memcpy(&repSendBuffer.sendBuff[0],frame_head,sizeof(frame_head));
 			     getSendInfo(feedback, &repSendBuffer);
-		         for(n=0;n<repSendBuffer.byteSizeSend;n++)
-			              printf("%02x ",repSendBuffer.sendBuff[n]);
-		             printf("\n");
+		     //   for(n=0;n<repSendBuffer.byteSizeSend;n++)
+			            //  printf("%02x ",repSendBuffer.sendBuff[n]);
+		            // printf("\n");
 			        retVle = write (m_connect, &repSendBuffer.sendBuff,repSendBuffer.byteSizeSend);
 			    }
 		return 0;
@@ -124,7 +101,6 @@ int  CConnect::SendDataThread()
 #else if
 // test
 char *test="asdfghjkl";
-
 int  CConnect::SendDataThread()
 {
 	    int result,retVle,n;

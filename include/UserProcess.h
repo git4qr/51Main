@@ -111,6 +111,23 @@ typedef struct
 	u_int8_t     	chksum;
 }EXT_CtrlInput;
 
+typedef struct{
+	uint channel0:1;
+	uint channel1:1;
+	uint channel2:1;
+	uint channel3:1;
+	uint channel4:1;
+	uint channel5:1;
+	uint reserve5:2;
+}channelTable;
+
+#define 	MAXSENDSIZE (15)
+typedef struct {
+	   int byteSizeSend;
+	   unsigned char sendBuff[MAXSENDSIZE];
+}sendInfo;
+
+
 typedef   void (*pExtEventFunc)(void);
 typedef    map<int,pExtEventFunc>  MAP_KYENUM_TO_PFUNC;
 typedef    map<int,int>  MAP_KYENUM_TO_PUTBUFFID;
@@ -377,6 +394,7 @@ protected:
 	int  preinitial();
 	int  findFrameHeader(void);
 	int  prcRcvFrameBufQue();
+	int getSendInfo(int  respondId, sendInfo * psendBuf);
 	volatile unsigned int  SensorStat;
 	volatile unsigned int  AvtTrkAimSize;
 	u_int8_t  *procbufque;
@@ -390,7 +408,7 @@ protected:
 	}
 	MAP_KYENUM_TO_PFUNC   keyNumToFunc;
 	MAP_KYENUM_TO_PUTBUFFID  keyNumToID;
-
+    sendInfo repSendBuffer;
 private:
 	    void   startSelfCheak();
 		void  mainVedioChannelSel();

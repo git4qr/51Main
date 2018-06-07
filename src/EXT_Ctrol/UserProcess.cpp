@@ -44,7 +44,7 @@ void CUserBase::getReadLocalJosCfgSettingFile(void)
 					sprintf(cfg_avt, "btn_key_%d", i);
 					tmp=cfg_blk_val[i] = (int)fr[cfg_avt];
 					keyNumToID.insert(map<int, int> :: value_type(i,cfg_blk_val[i]));
-					printf(" update cfg [%d] %d\r \n", i, cfg_blk_val[i]);
+					//printf(" update cfg [%d] %d\r \n", i, cfg_blk_val[i]);
 			}
  				fr.release();
 			}
@@ -152,14 +152,14 @@ u_int8_t  CUserBase::check_sum(uint len_t)
 
 void CUserBase::startSelfCheak()
 {
-	printf("INFO: startSelfCheak\r\n");
+//	printf("INFO: startSelfCheak\r\n");
 	int startCheck=rcvBufQue.at(4);
 	Host_Ctrl[selfTest]=startCheck;
 	EnableSelfTest();
 }
 void CUserBase:: mainVedioChannelSel()
 {
-	printf("INFO: mainVedioChannelSel\r\n");
+	//printf("INFO: mainVedioChannelSel\r\n");
 	int mainVedioChannel=rcvBufQue.at(4);
 	Host_Ctrl[mainVideo]=mainVedioChannel;
 	SwitchSensor();
@@ -167,14 +167,14 @@ void CUserBase:: mainVedioChannelSel()
 
 void CUserBase::channelBind()
 {
-	printf("INFO: channelBind\r\n");
+//	printf("INFO: channelBind\r\n");
 	int channelBind=rcvBufQue.at(4);
 	Host_Ctrl[Channel_binding]=channelBind;
 }
 
 void CUserBase::trackEnCmd()
 {
-	printf("INFO: track\r\n");
+//	printf("INFO: track\r\n");
 	int trackEnCmd= rcvBufQue.at(4);
 	EXT_Ctrl[Cmd_Mesg_TrkCtrl-1]=trackEnCmd;
 	EnableTrk();
@@ -182,7 +182,7 @@ void CUserBase::trackEnCmd()
 
 void CUserBase::mutileTagartNotice()
 {
-    printf("INFO: enable mutile target!!\r\n");
+//    printf("INFO: enable mutile target!!\r\n");
     int mutiltargetNotice=rcvBufQue.at(4);
     EXT_Ctrl[Cmd_Mesg_Mmt-1]=mutiltargetNotice;
     printf("CUserBase=======>EXT_Ctrl = %p\n", EXT_Ctrl);
@@ -213,7 +213,7 @@ void CUserBase::mutileTagartSelect()
 
 void   CUserBase::imageEnhance()
 {
-	  printf("INFO: image enhance \r\n");
+	//  printf("INFO: image enhance \r\n");
 	  int imageEnhance=rcvBufQue.at(4);
 	  EXT_Ctrl[Cmd_Mesg_ImgEnh-1]=imageEnhance;
 	  EnableIMG();
@@ -227,26 +227,26 @@ void CUserBase::trackFinetuning()
             case   0x1:
             	         	 EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=1;
             	             AIMPOS_X();
-            	             printf("usrProcess========>AIMPOS is OK!\n");
+
             	             break;
             case   0x2:
             	            EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=2;
 	                          AIMPOS_X();
-	                          printf("usrProcess========>AIMPOS is OK!\n");
+
 	                          break;
             default:
             	            EXT_Ctrl[Cmd_Mesg_AIMPOS_X-1]=0;
          }
     switch(rcvBufQue.at(5) ){
     		case   0x1:
-    						EXT_Ctrl[Cmd_Mesg_AIMPOS_Y-1]=1;;
+    						EXT_Ctrl[Cmd_Mesg_AIMPOS_Y-1]=1;
     								AIMPOS_Y();
-    								printf("usrProcess========>AIMPOS is OK!\n");
+
     									break;
     		case   0x2:
     						EXT_Ctrl[Cmd_Mesg_AIMPOS_Y-1]=2;
                     			AIMPOS_Y();
-                    			printf("usrProcess========>AIMPOS is OK!\n");
+
                     			break;
     		default:
     						EXT_Ctrl[Cmd_Mesg_AIMPOS_Y]=0;
@@ -275,7 +275,7 @@ void CUserBase::confirmAxisInfo()
     			             Host_Ctrl[moveAxisY]=2;
     			             break;
     		default:
-    			             Host_Ctrl[moveAxisX]=0;
+    			             Host_Ctrl[moveAxisY]=0;
     }
     AxisMove();
 }
@@ -430,7 +430,7 @@ void  CUserBase::configSetting()
 	for(int m=6;m<10;m++)
 		tempbuf[m-6]=rcvBufQue.at(m);
 	memcpy(&avtSetting.confitData,tempbuf,sizeof(float));
-	printf("INFO:  Block=%d, filed=%d, value=%f\r\n",avtSetting.cmdBlock,avtSetting.cmdFiled,avtSetting.confitData);
+	//printf("INFO:  Block=%d, filed=%d, value=%f\r\n",avtSetting.cmdBlock,avtSetting.cmdFiled,avtSetting.confitData);
 	Host_Ctrl[config_Wblock]=	avtSetting.cmdBlock;
 	Host_Ctrl[config_Wfield]=avtSetting.cmdFiled;
 	Host_Ctrl[config_Wvalue]=avtSetting.confitData;

@@ -173,16 +173,16 @@ void MSGAPI_ExtInputCtrl_MmtSelect(int msg)
 
 void usd_MSGAPI_ExtInpuCtrl_AIMPOSX(long p)
 {
-	m_CurrStat.m_AimPosXStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_AIMPOS_X);
-	m_avtMove.AvtMoveX = m_CurrStat.m_AimPosXStat;
+	m_avtMove.AvtMoveX = sThis->GetExtIputCtrlValue(Cmd_Mesg_AIMPOS_X);
 	sThis->m_ipc->IpcTrkPosMoveCtrl(&m_avtMove);
+	m_avtMove.AvtMoveX = 0;
 }
 
 void usd_MSGAPI_ExtInpuCtrl_AIMPOSY(long p)
 {
-	m_CurrStat.m_AimPosYStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_AIMPOS_Y);
-	m_avtMove.AvtMoveY = m_CurrStat.m_AimPosYStat;
+	m_avtMove.AvtMoveY = sThis->GetExtIputCtrlValue(Cmd_Mesg_AIMPOS_Y);
 	sThis->m_ipc->IpcTrkPosMoveCtrl(&m_avtMove);
+	m_avtMove.AvtMoveY = 0;
 }
 
 void usd_MSGAPI_EXTINPUTCtrl_Sensor(long p)

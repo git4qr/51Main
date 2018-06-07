@@ -2,11 +2,10 @@
 #define _NETPROCESS_H_
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include "UserProcess.h"
 #include "osa_thr.h"
 #include  "osa_mutex.h"
 
-#define  LISTENPROT  (10000)
+#define  _LisPort  (10000)
 #define  MAXCONNECT   (10)
 #define  TIME_FOR_THREAD_END      (3)
 

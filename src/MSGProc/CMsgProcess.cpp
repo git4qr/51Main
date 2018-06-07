@@ -72,7 +72,8 @@ int CMsgProcess::Create()
   	//uart Create
   	m_uart = new CUartProcess();
   	m_uart->Create();
-
+  	mNet= new CNetWork();
+  	//mNet->Create();
 	int iRet = 0;
 	MSGDRIV_create();
 	iRet = Work_queCreate();

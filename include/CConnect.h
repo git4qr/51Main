@@ -2,15 +2,15 @@
 #define _CCONNECT_H_
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include "UserProcess.h"
 #include <stddef.h>
 #include  "osa_thr.h"
 #include  "osa_mutex.h"
 
-
 typedef  int   CONNECT_IN;
 typedef  struct  sockaddr_in  Sockaddress_IN;
 
-class CConnect : public CUserBase {
+class CConnect:public CUserBase {
 
 public:
 	 	 	 CConnect (CONNECT_IN mConnectd, Sockaddress_IN mSockAddress );
@@ -56,7 +56,5 @@ protected:
 	 		}
 
 };
-
-
 
 #endif
