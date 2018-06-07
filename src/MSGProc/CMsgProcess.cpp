@@ -165,7 +165,7 @@ void CMsgProcess::processMsg(int msg)
 						case Cmd_Mesg_Mtd:
 							if(sThis->m_ipc->ipc_status->MmtStat[0])
 							MSGAPI_ExtInputCtrl_MmtSelect(2);
-							else
+							else if(sThis->m_ipc->ipc_status->AvtTrkStat == 0)
 						MSGDRIV_send(MSGID_EXT_INPUT_MTDCTRL,0);
 							break;
 						case Cmd_Mesg_ZoomLong:
