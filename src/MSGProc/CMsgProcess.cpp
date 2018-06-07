@@ -15,6 +15,7 @@ CMsgProcess* sThis =NULL;
 CurrParaStat  m_CurrStat;
 selectTrack 	m_selectPara;
 POSMOVE 		m_avtMove;
+AcqBoxSize	m_acqBox_Size;
 bool  InitSystem  = false;
 OSA_SemHndl  m_semHndl;
 
@@ -38,7 +39,7 @@ CMsgProcess::CMsgProcess()
 	memset(&m_CurrStat, 0 ,sizeof(m_CurrStat));
 	memset(&m_selectPara,0,sizeof(m_selectPara));
 	memset(&m_avtMove, 0, sizeof(m_avtMove));
-
+	memset(&m_acqBox_Size, 0, sizeof(m_acqBox_Size));
 }
 
 CMsgProcess::~CMsgProcess()
@@ -1017,7 +1018,7 @@ int CMsgProcess::updataProfile()
 				}
 #endif
 
-#if 0
+#if 1
 									{   // plat
 										sprintf(cfg_avt, "cfg_avt_%d",0);
 										fr << cfg_avt << 0;

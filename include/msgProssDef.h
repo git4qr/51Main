@@ -23,24 +23,6 @@
 #include "app_global.h"
 #include "msgDriv.h"
 
-/*
-Cmd_Mesg_TrkCtrl=1, 	//1
-Cmd_Mesg_SensorCtrl,		//2
-Cmd_Mesg_Unable,//3
-Cmd_Mesg_Unable2,//4
-Cmd_Mesg_TrkBoxCtrl,		//5
-Cmd_Mesg_TrkSearch,		//6
-Cmd_Mesg_IrisUp,			//7
-Cmd_Mesg_IrisDown,	//8
-Cmd_Mesg_FocusUp,	//9
-Cmd_Mesg_FocusDown, 	//10
-Cmd_Mesg_ImgEnh,				//11
-Cmd_Mesg_Auto_Iris_Focus,		//12
-Cmd_Mesg_AIMPOS_X,					//pov
-Cmd_Mesg_AIMPOS_Y,					//pov
-Cmd_Mesg_Zoom,				//throttle
-*/
-
 typedef enum _sys_msg_id_ {
     MSGID_SYS_INIT  = 0,           ///< internal cmd system init.
     MSGID_SYS_RESET,

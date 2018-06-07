@@ -5,38 +5,24 @@
 #include "CMsgProcess.h"
 #include "msg_id.h"
 #include "Ipcctl.h"
-/*
-Cmd_Mesg_TrkCtrl=1, 	//1
-Cmd_Mesg_SensorCtrl,		//2
-Cmd_Mesg_Unable,//3
-Cmd_Mesg_Unable2,//4
-Cmd_Mesg_TrkBoxCtrl,		//5
-Cmd_Mesg_TrkSearch,		//6
-Cmd_Mesg_IrisUp,			//7
-Cmd_Mesg_IrisDown,	//8
-Cmd_Mesg_FocusUp,	//9
-Cmd_Mesg_FocusDown, 	//10
-Cmd_Mesg_ImgEnh,				//11
-Cmd_Mesg_Auto_Iris_Focus,		//12
-Cmd_Mesg_AIMPOS_X,					//pov
-Cmd_Mesg_AIMPOS_Y,					//pov
-Cmd_Mesg_Zoom,				//throttle
-*/
 
 extern CMsgProcess* sThis;
 extern CurrParaStat  m_CurrStat;
 extern  selectTrack 	m_selectPara;
 extern POSMOVE	m_avtMove;
+extern AcqBoxSize	m_acqBox_Size;
 static  bool   shieldInitTrkSearchBit= false;
 static bool cfg_stat = false;
 static int m_valuex;
 static int m_valuey;
 char  m_AvtTrkAimSize;
 char m_eSenserStat;
+
+int acqAIM[5][5] = {{30,30}, {50,50}, {60,60}, {80,80}, {100,100}};
 void  MSGAPI_StatusConvertFunc(int msg)
 {
 	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
-
+	char iRet = -1;
 	switch(msg){
 	case Cmd_Mesg_TrkCtrl:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->AvtTrkStat);
@@ -45,8 +31,9 @@ void  MSGAPI_StatusConvertFunc(int msg)
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->MtdState[0]);
 		break;
 	case Cmd_Mesg_TrkBoxCtrl:
-		m_AvtTrkAimSize = (sThis->m_ipc->ipc_status->AvtTrkAimSize +1)%Trk_SizeMax;
-		sThis->m_jos->EXT_Ctrl[msg - 1] = m_AvtTrkAimSize;
+		iRet = (iRet +1)%Trk_SizeMax;
+		m_acqBox_Size.AcqBoxW[0] = acqAIM[iRet][0];
+		m_acqBox_Size.AcqBoxH[0] = acqAIM[iRet][1];
 		break;
 	case Cmd_Mesg_ImgEnh:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->ImgEnhStat[0]);
@@ -89,7 +76,7 @@ void usd_MSGAPI_ExtInpuCtrl_ZoomShort(long p)
 void usd_MSGAPI_ExtInpuCtrl_TrkBoxSize(long p)
 {
 	MSGAPI_StatusConvertFunc(Cmd_Mesg_TrkBoxCtrl);
-	sThis->m_ipc->IpcTrkDoorCtrl((unsigned char) sThis->m_jos->EXT_Ctrl[Cmd_Mesg_TrkBoxCtrl - 1]);
+	sThis->m_ipc->IpcTrkDoorCtrl(&m_acqBox_Size);
 }
 
 

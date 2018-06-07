@@ -5,7 +5,6 @@
 #include "Ipcctl.h"
 #include   "iMessageQUE.h"
 #pragma once
-
 class  CIPCProc{
 
 public:
@@ -21,7 +20,7 @@ public:
 		    int ipcSecTrkCtrl(selectTrack *m_selcTrak);
 		    int IpcSensorSwitch(volatile unsigned char ImgSenchannel);
 		    int IpcpinpCtrl(volatile unsigned char ImgPipStat);
-		    int IpcTrkDoorCtrl(volatile unsigned char TrkDoorStat);
+		    int IpcTrkDoorCtrl(AcqBoxSize *BoxSize);
 		    int IpcTrkPosMoveCtrl(POSMOVE * avtMove);
 		    int IpcElectronicZoom(int zoom);
 		    int IpcConfig();

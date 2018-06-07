@@ -257,12 +257,15 @@ int CIPCProc::IpcpinpCtrl(volatile unsigned char ImgPipStat)
 	return 0;
 }
 
-int CIPCProc::IpcTrkDoorCtrl(volatile unsigned char TrkDoorStat)
+int CIPCProc::IpcTrkDoorCtrl(AcqBoxSize *BoxSize)
 {
 	memset(test.param, 0, PARAMLEN);
+	AcqBoxWH m_acqBoxWH;
 	test.cmd_ID = trkdoor;
 	{
-		test.param[0] = TrkDoorStat;
+		m_acqBoxWH.AimW = BoxSize->AcqBoxW[0];
+		m_acqBoxWH.AimH = BoxSize->AcqBoxH[0];
+		memcpy(test.param, &m_acqBoxWH, sizeof(m_acqBoxWH));
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
 		sThis->Change_avtStatus();
 	}
@@ -271,6 +274,7 @@ int CIPCProc::IpcTrkDoorCtrl(volatile unsigned char TrkDoorStat)
 
 int CIPCProc::IpcTrkPosMoveCtrl(POSMOVE * avtMove)
 {
+	memset(test.param, 0, PARAMLEN);
 	CMD_POSMOVE cmd_posMove;
 	test.cmd_ID = posmove;
 	{
@@ -286,6 +290,7 @@ int CIPCProc::IpcTrkPosMoveCtrl(POSMOVE * avtMove)
 
 int CIPCProc::IpcConfig()
 {
+	memset(test.param, 0, PARAMLEN);
 	test.cmd_ID = read_shm_config;
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
 	printf("IPCProc=====>send config!\n");
@@ -296,6 +301,7 @@ int CIPCProc::IpcConfig()
 
 int CIPCProc::IpcConfigOSD()
 {
+	memset(test.param, 0, PARAMLEN);
 	test.cmd_ID = read_shm_osd;
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
 	printf("IPCProc=====>send OSD!\n");
@@ -304,6 +310,7 @@ int CIPCProc::IpcConfigOSD()
 
 int CIPCProc::IpcConfigUTC()
 {
+	memset(test.param, 0, PARAMLEN);
 	test.cmd_ID = read_shm_utctrk;
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
 	printf("IPCProc=====>send UTC!\n");
@@ -312,6 +319,7 @@ int CIPCProc::IpcConfigUTC()
 
 int CIPCProc::IPCConfigCamera()
 {
+	memset(test.param, 0, PARAMLEN);
 	test.cmd_ID = read_shm_camera;
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
 	return 0;
@@ -319,6 +327,7 @@ int CIPCProc::IPCConfigCamera()
 
 int CIPCProc::IpcElectronicZoom(int zoom)
 {
+	memset(test.param, 0, PARAMLEN);
 	test.cmd_ID = elecZoom;
 	test.param[0] = zoom;
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
@@ -328,11 +337,13 @@ int CIPCProc::IpcElectronicZoom(int zoom)
 
 int CIPCProc::IPCChannel_binding(int channel)
 {
-
+	memset(test.param, 0, PARAMLEN);
+	return 0;
 }
 
 int CIPCProc::IPCAxisMove(int x, int y)
 {
+	memset(test.param, 0, PARAMLEN);
 	CMD_POSMOVE cmd_axismove;
 	test.cmd_ID = axismove;
 	cmd_axismove.AvtMoveX = x;
@@ -344,6 +355,7 @@ int CIPCProc::IPCAxisMove(int x, int y)
 
 int CIPCProc::IPCpicp(int status, int pipChannel)
 {
+	memset(test.param, 0, PARAMLEN);
 	CMD_PinP cmd_pip;
 	test.cmd_ID = pinp;
 	cmd_pip.ImgPicp = status;
@@ -356,34 +368,41 @@ int CIPCProc::IPCpicp(int status, int pipChannel)
 
 int CIPCProc::IPCswitchVideoChannel(int channel)
 {
+	memset(test.param, 0, PARAMLEN);
 	return 0;
 }
 
 int CIPCProc::IPCframeCtrl(int fps, int channel)
 {
+	memset(test.param, 0, PARAMLEN);
 	return 0;
 }
 
 int CIPCProc::IPCcompression_quality(int quality, int channel)
 {
+	memset(test.param, 0, PARAMLEN);
 	return 0;
 }
 
 int CIPCProc::IPCwordColor(int color)
 {
+	memset(test.param, 0, PARAMLEN);
 	return 0;
 }
 
 int CIPCProc::IPCwordType(int type)
 {
+	memset(test.param, 0, PARAMLEN);
 	return 0;
 }
 
 int CIPCProc::IPCwordSize(int size)
 {
+	memset(test.param, 0, PARAMLEN);
 	return 0;
 }
 int CIPCProc::IPCwordDisEnable(int status)
 {
+	memset(test.param, 0, PARAMLEN);
 	return 0;
 }

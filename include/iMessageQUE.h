@@ -68,6 +68,7 @@ CMESGQUEHndl  procQue;
 #else
 
 #include "osa_que.h"
+#include "app_status.h"
 #define  MAXQUESIZE  (128)
 #define MES_SOK      0  ///< Status : OK
 #define MES_EFAIL   -1  ///< Status : Generic error
@@ -100,6 +101,10 @@ typedef struct{
 	volatile unsigned char AvtMoveY;// eTrkRefine (axis or aim) y
 }POSMOVE;
 
+typedef struct{
+	volatile int AcqBoxW[eSen_Max];
+	volatile int AcqBoxH[eSen_Max];
+}AcqBoxSize;
 #pragma pack()
 
 #define MES_ERROR(...) \

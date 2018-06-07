@@ -7,7 +7,8 @@ typedef enum {
 	eSen_CH2   = 0x02,
 	eSen_CH3 	= 0x03,
 	eSen_CH4   = 0x04,
-	eSen_Max   = 0x05
+	eSen_CH5	= 0x05,
+	eSen_Max   = 0x06
 }eSenserStat;
 
 typedef enum {

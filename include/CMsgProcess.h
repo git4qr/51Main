@@ -48,6 +48,8 @@ typedef struct {
 		int m_AxisYStat;
 }CurrParaStat,*PCurrParaStat;
 
+
+
 class CMsgProcess{
         public:
              CMsgProcess();

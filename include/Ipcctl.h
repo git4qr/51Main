@@ -335,6 +335,10 @@ typedef struct{
 	unsigned char param[PARAMLEN];
 }SENDST;
 
+typedef struct{
+	unsigned int AimW;
+	unsigned int AimH;
+}AcqBoxWH;
 
 
 /** universal status **/
