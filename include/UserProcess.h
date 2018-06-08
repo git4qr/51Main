@@ -437,7 +437,7 @@ private:
 	   void configSetting();
 	   void readCurrentSetting();
 	   void extExtraInputCtrl();
-
+	   void extFocusInputCtrl();
 
           //response  receive  command
    void  startCheckAnswer(sendInfo * spBuf);

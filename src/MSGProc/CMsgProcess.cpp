@@ -321,7 +321,7 @@ int  CMsgProcess::configAvtFromFile()
 				for(int i=0; i<configId_Max; i++){
 									sprintf(cfg_avt, "cfg_avt_%d", i);
 									cfg_value[i] = (float)fr[cfg_avt];
-									printf(" update cfg [%d] %f \n", i, cfg_value[i]);
+									//printf(" update cfg [%d] %f \n", i, cfg_value[i]);
 								}
 				{ //uart
 				typedef struct{
@@ -361,13 +361,13 @@ int  CMsgProcess::configAvtFromFile()
 				m_cfgPlatParam.driftY = (float)fr["cfg_avt_11"];
 
 				m_cfgPlatParam.bleedUsed = (int)fr["cfg_avt_12"];
-				printf("CMsgProcess===> bleedUsed = %d\n", m_cfgPlatParam.bleedUsed);
+				//printf("CMsgProcess===> bleedUsed = %d\n", m_cfgPlatParam.bleedUsed);
 
 				m_cfgPlatParam.bleedX = (float)fr["cfg_avt_13"];
-				printf("CMsgProcess===> bleedX = %f\n", m_cfgPlatParam.bleedX);
+				//printf("CMsgProcess===> bleedX = %f\n", m_cfgPlatParam.bleedX);
 
 				m_cfgPlatParam.bleedY = (float)fr["cfg_avt_14"];
-				printf("CMsgProcess===> bleedY = %f\n", m_cfgPlatParam.bleedY);
+				//printf("CMsgProcess===> bleedY = %f\n", m_cfgPlatParam.bleedY);
 				} //   plat
 
 
@@ -386,7 +386,7 @@ int  CMsgProcess::configAvtFromFile()
 					m_cfgPlatParam.m__cfg_platformFilterParam.L2 = (float)fr["cfg_avt_21"];
 
 					m_cfgPlatParam.m__cfg_platformFilterParam.G = (float)fr["cfg_avt_22"];
-					printf("CMsgProcess===> G = %f\n", m_cfgPlatParam.m__cfg_platformFilterParam.G);
+					//printf("CMsgProcess===> G = %f\n", m_cfgPlatParam.m__cfg_platformFilterParam.G);
 
 					m_cfgPlatParam.m__cfg_platformFilterParam.P02 = (float)fr["cfg_avt_23"];
 
@@ -414,7 +414,7 @@ int  CMsgProcess::configAvtFromFile()
 				m_ipc->ipc_OSD->OSD_text_show = (int)fr["cfg_avt_194"];
 
 				m_ipc->ipc_OSD->OSD_text_color = (int)fr["cfg_avt_195"];
-				printf("OSD_text_color %x\n", m_ipc->ipc_OSD->OSD_text_color);
+				//printf("OSD_text_color %x\n", m_ipc->ipc_OSD->OSD_text_color);
 
 				m_ipc->ipc_OSD->OSD_text_alpha = (int)fr["cfg_avt_196"];
 
@@ -425,13 +425,13 @@ int  CMsgProcess::configAvtFromFile()
 				m_ipc->ipc_OSD->OSD_draw_show = (int)fr["cfg_avt_199"];
 
 				m_ipc->ipc_OSD->OSD_draw_color = (int)fr["cfg_avt_200"];
-				printf("CMsgProcess===>OSD_draw_color %x\n", m_ipc->ipc_OSD->OSD_draw_color);
+				//printf("CMsgProcess===>OSD_draw_color %x\n", m_ipc->ipc_OSD->OSD_draw_color);
 
 				m_ipc->ipc_OSD->CROSS_AXIS_WIDTH = (int)fr["cfg_avt_201"];
-				printf("CMsgProcess===>CROSS_AXIS_WIDTH %d\n", m_ipc->ipc_OSD->CROSS_AXIS_WIDTH);
+				//printf("CMsgProcess===>CROSS_AXIS_WIDTH %d\n", m_ipc->ipc_OSD->CROSS_AXIS_WIDTH);
 
 				m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT = (int)fr["cfg_avt_202"];
-				printf("CMsgProcess===>CROSS_AXIS_HEIGHT %d\n", m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT);
+				//printf("CMsgProcess===>CROSS_AXIS_HEIGHT %d\n", m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT);
 
 				m_ipc->ipc_OSD->Picp_CROSS_AXIS_WIDTH = (int)fr["cfg_avt_203"];
 
@@ -484,7 +484,7 @@ int  CMsgProcess::configAvtFromFile()
 				m_ipc->ipc_OSD->ch4_aim_height = (int)fr["cfg_avt_227"];
 
 				m_ipc->ipc_OSD->ch5_aim_height = (int)fr["cfg_avt_228"];
-				printf("ch5_aim_height %d\n", m_ipc->ipc_OSD->ch5_aim_height);
+				//printf("ch5_aim_height %d\n", m_ipc->ipc_OSD->ch5_aim_height);
 				}//osd
 
 				{ //UTC_TRK
@@ -548,7 +548,7 @@ int  CMsgProcess::configAvtFromFile()
 					m_ipc->ipc_UTC->Mmtdparm_6 = (int)fr["cfg_avt_182"];
 					m_ipc->ipc_UTC->Mmtdparm_7 = (float)fr["cfg_avt_183"];
 					m_ipc->ipc_UTC->Mmtdparm_8 = (int)fr["cfg_avt_184"]; //12--8
-					printf("CMsgProcess=====>ipc_UTC->Mmtdparm_8 = %d\n", m_ipc->ipc_UTC->Mmtdparm_8 );
+					//printf("CMsgProcess=====>ipc_UTC->Mmtdparm_8 = %d\n", m_ipc->ipc_UTC->Mmtdparm_8 );
 				} //UTC_TRK
 							}else{
 								printf("Can not find YML. Please put this file into the folder of execute file\n");
@@ -575,7 +575,7 @@ int  CMsgProcess::configAvtFromFile()
 					for(int j=256; j<cfgId_Max;j++){
 										sprintf(cfg_camera, "cfg_avt_%d", j);
 										cfg_value[j] = (float)fr[cfg_camera];
-										printf(" update cfg [%d] %f \n", j, cfg_value[j]);
+										//printf(" update cfg [%d] %f \n", j, cfg_value[j]);
 									}
 								}else{
 									printf("Can not find YML. Please put this file into the folder of execute file\n");
@@ -583,9 +583,7 @@ int  CMsgProcess::configAvtFromFile()
 								}
 				}
 			}
-		printf("send msg start!\n");
 		m_uart->ReadProfile();
-		printf("send msg is OK !!!\n");
 	}
 
 void CMsgProcess::modifierAVTProfile(int block, int field, float value)
@@ -602,35 +600,35 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value)
 		break;
 	case 2:
 		m_cfgPlatParam.scalarX = (float)value;
-		printf("CMsgProcess======>scalarX = %f \n", m_cfgPlatParam.scalarX);
+		//printf("CMsgProcess======>scalarX = %f \n", m_cfgPlatParam.scalarX);
 		break;
 	case 3:
 		m_cfgPlatParam.scalarY = (float)value;
-		printf("CMsgProcess======>scalarY = %f \n", m_cfgPlatParam.scalarY);
+		//printf("CMsgProcess======>scalarY = %f \n", m_cfgPlatParam.scalarY);
 		break;
 	case 4:
 		m_cfgPlatParam.demandMaxX = (float)value;
-		printf("CMsgProcess======>demandMaxX = %f \n", m_cfgPlatParam.demandMaxX);
+		//printf("CMsgProcess======>demandMaxX = %f \n", m_cfgPlatParam.demandMaxX);
 		break;
 	case 5:
 		m_cfgPlatParam.demandMinX = (float)value;
-		printf("CMsgProcess======>demandMinX = %f \n", m_cfgPlatParam.demandMinX);
+		//printf("CMsgProcess======>demandMinX = %f \n", m_cfgPlatParam.demandMinX);
 		break;
 	case 6:
 		m_cfgPlatParam.demandMaxY = (float)value;
-		printf("CMsgProcess======>demandMaxY = %f \n", m_cfgPlatParam.demandMaxY);
+		//printf("CMsgProcess======>demandMaxY = %f \n", m_cfgPlatParam.demandMaxY);
 		break;
 	case 7:
 		m_cfgPlatParam.demandMinY = (float)value;
-		printf("CMsgProcess======>demandMinY = %f \n", m_cfgPlatParam.demandMinY);
+		//printf("CMsgProcess======>demandMinY = %f \n", m_cfgPlatParam.demandMinY);
 		break;
 	case 8:
 		m_cfgPlatParam.deadbandX = value;
-		printf("CMsgProcess======>deadbandX = %f \n", m_cfgPlatParam.deadbandX);
+		//printf("CMsgProcess======>deadbandX = %f \n", m_cfgPlatParam.deadbandX);
 		break;
 	case 9:
 		m_cfgPlatParam.deadbandY = value;
-		printf("CMsgProcess======>deadbandY = %f \n", m_cfgPlatParam.deadbandY);
+		//("CMsgProcess======>deadbandY = %f \n", m_cfgPlatParam.deadbandY);
 		break;
 	case 10:
 		m_cfgPlatParam.driftX = (float)value;
@@ -640,11 +638,11 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value)
 		break;
 	case 12:
 		m_cfgPlatParam.bleedUsed = (int)value;
-		printf("CMsgProcess======>bleedUsed = %d \n", m_cfgPlatParam.bleedUsed);
+		//printf("CMsgProcess======>bleedUsed = %d \n", m_cfgPlatParam.bleedUsed);
 		break;
 	case 13:
 		m_cfgPlatParam.bleedX = (float)value;
-		printf("CMsgProcess======>bleedX = %f \n", m_cfgPlatParam.bleedX);
+		//printf("CMsgProcess======>bleedX = %f \n", m_cfgPlatParam.bleedX);
 		break;
 	case 14:
 		m_cfgPlatParam.bleedY = (float)value;
@@ -1014,7 +1012,7 @@ int CMsgProcess::updataProfile()
 				for(int i=0; i<configId_Max; i++){
 									sprintf(cfg_avt, "cfg_avt_%d", i);
 									fr << cfg_avt << cfg_value[i];
-									printf("updata profile_back[%d] --- %f\n",i, fr[cfg_avt]);
+									//printf("updata profile_back[%d] --- %f\n",i, fr[cfg_avt]);
 				}
 #endif
 
@@ -1267,7 +1265,7 @@ int CMsgProcess::updataProfile()
 					for(int j=256; j<cfgId_Max;j++){
 										sprintf(cfg_camera, "cfg_avt_%d", j);
 										fr << cfg_camera << cfg_value[j];
-										printf(" update cfg [%d] %f \n", j, fr[cfg_camera]);
+										//printf(" update cfg [%d] %f \n", j, fr[cfg_camera]);
 									}
 								}else
 									return -1;
@@ -1461,10 +1459,12 @@ void CMsgProcess::MSGAPI_ExtInputCtrl_AXIS()
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineXInput, m_CurrStat.m_AxisXStat/32760.f);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickYInput, m_CurrStat.m_AxisYStat/32760.f);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineYInput, m_CurrStat.m_AxisYStat/32760.f);
-		m_pltInput.fTargetBoresightErrorX=(float)0;
-		m_pltInput.fTargetBoresightErrorY=(float)0;
 	  }
-	 else{
+	 else if(m_CurrStat.m_SecTrkStat == 1 && sThis->m_ipc->ipc_status->AvtTrkStat == 1){
+			m_pltInput.fTargetBoresightErrorX=this->m_ipc->trackposx;
+			m_pltInput.fTargetBoresightErrorY=this->m_ipc->trackposy;
+	 }
+	 else {
 		       m_pltInput.iTrkAlgState= sThis->m_ipc->ipc_status->AvtTrkStat + 1;
 			  m_pltInput.fTargetBoresightErrorX=this->m_ipc->trackposx;
 			  m_pltInput.fTargetBoresightErrorY=this->m_ipc->trackposy;

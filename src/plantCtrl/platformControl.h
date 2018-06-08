@@ -392,8 +392,8 @@ __INLINE void PlatformCtrl_CreateParams_Init(PlatformCtrl_CreateParams *pPrm, co
 	pPrm->scalarX = m_Prm->scalarX;
 	pPrm->scalarY = m_Prm->scalarY;
 
-	printf("X = %f\n", pPrm->scalarX);
-	printf("Y = %f\n", pPrm->scalarY);
+	printf("platfromContorl===>scalarX = %f\n", pPrm->scalarX);
+	printf("platfromContorl===> scalarY = %f\n", pPrm->scalarY);
 
 	pPrm->demandMaxX = m_Prm->demandMaxX;
 	printf("platfromContorl===> demandMaxX = %f\n", pPrm->demandMaxX);

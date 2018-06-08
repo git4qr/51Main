@@ -304,8 +304,8 @@ void CUserBase::trackSearch()
 	int tarkSearkSwitch,trakSearchx,trackSearchy;
 	trakSearchx=trackSearchy=0;
 	tarkSearkSwitch=rcvBufQue.at(4);
-	trakSearchx=  (rcvBufQue.at(5)<<8|rcvBufQue.at(6));
-	trackSearchy=  (rcvBufQue.at(7)<<8|rcvBufQue.at(8));
+	trakSearchx=  (rcvBufQue.at(5)|rcvBufQue.at(6)<<8);
+	trackSearchy=  (rcvBufQue.at(7)|rcvBufQue.at(8)<<8);
 	EXT_Ctrl[Cmd_Mesg_AXISX-1] =trakSearchx;
      EXT_Ctrl[Cmd_Mesg_AXISY-1] =trackSearchy;
      EnableTrkSearch( );
@@ -453,6 +453,14 @@ void   CUserBase::extExtraInputCtrl()
 
 }
 
+void CUserBase::extFocusInputCtrl()
+{
+    int extFocus=-1;
+    extFocus=  (rcvBufQue.at(4)|rcvBufQue.at(5)<<8);
+
+}
+
+
 int  CUserBase::prcRcvFrameBufQue()
 {
     int ret =  -1;
@@ -549,8 +557,12 @@ int  CUserBase::prcRcvFrameBufQue()
                 case  0x32:
                 							extExtraInputCtrl();
                             break;
+
+                case  0x40:
+                							extFocusInputCtrl();
+                            break;
                 default:
-                	        printf("INFO: Unknow  Cmd, please check!!!\r\n ");
+                	        printf("INFO: Unknow  Control Command, please check!!!\r\n ");
                 	 	 	ret =0;
                             break;
              }
@@ -844,24 +856,29 @@ void CUserBase::vedioCompressStat(sendInfo * spBuf)
 void CUserBase::settingCmdRespon(sendInfo * spBuf)
 {
 	u_int8_t sumCheck;
-	u_int8_t  settingCmdRespon[7];
+	u_int8_t  settingCmdRespon[8];
 	settingCmdRespon[0]=0x30;
 	settingCmdRespon[1]=(u_int8_t) (mainProStat[ACK_config_Wblock]&0xff);
 	settingCmdRespon[2]=(u_int8_t) (mainProStat[ACK_config_Wfield]&0xff);
 	memcpy(&(settingCmdRespon[3]),&(Host_Ctrl[config_Wvalue]),4);
 	sumCheck=sendCheck_sum(7, settingCmdRespon);
+	settingCmdRespon[7]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x0b;
+	memcpy(&(spBuf->sendBuff[3]),settingCmdRespon,8);
 }
 
 void CUserBase::readConfigSetting(sendInfo * spBuf)
 {
-	systemSetting readCurrtCfgSetting={0};
 	u_int8_t sumCheck;
-	u_int8_t  readCfgSetting[7];
+	u_int8_t  readCfgSetting[8];
 	readCfgSetting[0]=0x31;
 	readCfgSetting[1]=(u_int8_t) (mainProStat[ACK_config_Rblock]&0xff);
 	readCfgSetting[2]=(u_int8_t) (mainProStat[ACK_config_Rfield]&0xff);;
 	memcpy(&(readCfgSetting[3]),&ACK_read,4);
 	sumCheck=sendCheck_sum(7, readCfgSetting);
+	readCfgSetting[7]=(sumCheck&0xff);
+	spBuf->byteSizeSend=spBuf->sendBuff[2]=0x0b;
+	memcpy(&(spBuf->sendBuff[3]),readCfgSetting,8);
 
 }
 

@@ -61,7 +61,6 @@ int CPTZControl::Create()
     //OSA_printf("%s: port open [%p]call... ", __func__, m_port->open);
     OSA_assert(m_port->open != NULL);
     iRet = m_port->open( m_port, &mUartOpenParams );
-    printf("PTZ======>create is OK!\n");
     OSA_assert( iRet == OSA_SOK );
 
     OSA_mutexCreate(&m_mutex);
@@ -150,7 +149,7 @@ void CPTZControl::dataInThrd()
             OSA_assert(rlen > 0);
             for(i=0; i<rlen; i++)
             	RecvByte(buffer[i]);
-          //  OSA_printf("%s: rlen = %d. [%02x %02x %02x %02x %02x %02x %02x]",__func__, rlen, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
+            //OSA_printf("%s: [%02x %02x %02x %02x %02x %02x %02x]",__func__, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
         }
     }
     free(buffer);
@@ -180,9 +179,9 @@ void CPTZControl::RecvByte(unsigned char byRecv)
 		if(uiCurRecvLen == m_nWait){
 			if(recvBuffer[3] != 0x59 && recvBuffer[3] != 0x5B
 				&& recvBuffer[3] != 0x5D && recvBuffer[3] != 0x63){
-				OSA_printf("PTZ R> %d %02X %02X %02X %02X %02X %02X %02X\n", uiCurRecvLen,
-					recvBuffer[0], recvBuffer[1], recvBuffer[2], recvBuffer[3],
-					recvBuffer[4], recvBuffer[5], recvBuffer[6]);
+				//OSA_printf("PTZ R> %d %02X %02X %02X %02X %02X %02X %02X\n", uiCurRecvLen,
+				//	recvBuffer[0], recvBuffer[1], recvBuffer[2], recvBuffer[3],
+				//	recvBuffer[4], recvBuffer[5], recvBuffer[6]);
 			}
 
 			switch(recvBuffer[3])

@@ -291,6 +291,7 @@ static int PlatformCtrl_PlatformCompensation(PlatformCtrl_Obj *pObj)
     float fTmp;
 
     fTmp = pObj->privates.curRateDemandX / pObj->params.scalarX;
+   // printf("Scalar = %f\n", fTmp);
 
     if(fTmp > pObj->params.demandMaxX)
         fTmp = pObj->params.demandMaxX;
@@ -312,7 +313,7 @@ static int PlatformCtrl_PlatformCompensation(PlatformCtrl_Obj *pObj)
 
 
     fTmp = pObj->privates.curRateDemandY / pObj->params.scalarY;
-    //printf("pObj->params.scalarY = %f\n", pObj->params.scalarY);
+   // printf("Scalar = %f\n", fTmp);
 
     if(fTmp > pObj->params.demandMaxY)
         fTmp = pObj->params.demandMaxY;

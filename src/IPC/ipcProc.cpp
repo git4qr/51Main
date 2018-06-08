@@ -112,8 +112,8 @@ void CIPCProc::getIPCMsgProc()
 
         		//gettimeofday(&recv, NULL);
         		//printf("------recv pos------  %d  ,%d \n", recv.tv_sec, recv.tv_usec);
-        		//printf("trackstatus = %d\n", trackstatus);
-        	//	printf("trackposx = %d, trackposy = %d\n", trackposx, trackposy);
+        		printf("trackstatus = %d\n", trackstatus);
+        		printf("trackposx = %d, trackposy = %d\n", trackposx, trackposy);
 
                 break;
             default:
@@ -221,8 +221,8 @@ int CIPCProc::ipcSecTrkCtrl(selectTrack *m_selcTrak)
     ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	sThis->signalFeedBack(ACK_TrkSearchStatus, ACK_TrkSearch_value, m_selcTrak->SecAcqStat, 0);
     	//printf("cmd_sectrk.SecAcqStat = %d\n", cmd_sectrk.SecAcqStat );
-		//printf("ImgPixelX = %d\n", cmd_sectrk.ImgPixelX );
-		//printf("ImgPixelY = %d\n", cmd_sectrk.ImgPixelY);
+		//printf("IPC======>ImgPixelX = %d\n", cmd_sectrk.ImgPixelX );
+		//printf("IPC======>ImgPixelY = %d\n", cmd_sectrk.ImgPixelY);
 	}
 	return 0;
 }
@@ -265,6 +265,8 @@ int CIPCProc::IpcTrkDoorCtrl(AcqBoxSize *BoxSize)
 	{
 		m_acqBoxWH.AimW = BoxSize->AcqBoxW[0];
 		m_acqBoxWH.AimH = BoxSize->AcqBoxH[0];
+		printf("IPC======>AimW = %d\n", m_acqBoxWH.AimW);
+		printf("IPC======>AimH = %d\n", m_acqBoxWH.AimH);
 		memcpy(test.param, &m_acqBoxWH, sizeof(m_acqBoxWH));
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
 		sThis->Change_avtStatus();
@@ -350,6 +352,7 @@ int CIPCProc::IPCAxisMove(int x, int y)
 	cmd_axismove.AvtMoveY = y;
 	memcpy(test.param, &cmd_axismove, sizeof(cmd_axismove));
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	sThis->signalFeedBack(ACK_moveAxisStatus, ACK_moveAxis_value, x, y);
 }
 
 

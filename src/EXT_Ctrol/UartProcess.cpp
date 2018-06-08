@@ -6,7 +6,7 @@
 #include <unistd.h>
 #include "UartProcess.h"
 #include "osa_sem.h"
-extern OSA_SemHndl m_semHndl;
+extern OSA_SemHndl  m_semHndl;
 static void printfUARTRCVbuff(char *mBuf,int size);
 static u_int8_t  frame_head[]={0xEB, 0x53};
 CUartProcess::CUartProcess()
@@ -342,9 +342,9 @@ int  CUartProcess::UartSendDataThread()
 				OSA_semWait( & m_semHndl,OSA_TIMEOUT_FOREVER);
 				 memcpy(&repSendBuffer.sendBuff[0],frame_head,sizeof(frame_head));
 			     getSendInfo(feedback, &repSendBuffer);
-		        // for(n=0;n<repSendBuffer.byteSizeSend;n++)
-			              //printf("%02x ",repSendBuffer.sendBuff[n]);
-		          //   printf("\n");
+		       //  for(n=0;n<repSendBuffer.byteSizeSend;n++)
+			    //          printf("%02x ",repSendBuffer.sendBuff[n]);
+		         //    printf("\n");
 			        retVle = write (m_port, &repSendBuffer.sendBuff,repSendBuffer.byteSizeSend);
 		  }
 		return 0;

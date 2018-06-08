@@ -17,12 +17,11 @@ static int m_valuex;
 static int m_valuey;
 char  m_AvtTrkAimSize;
 char m_eSenserStat;
-
+char iRet = -1;
 int acqAIM[5][5] = {{30,30}, {50,50}, {60,60}, {80,80}, {100,100}};
 void  MSGAPI_StatusConvertFunc(int msg)
 {
 	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
-	char iRet = -1;
 	switch(msg){
 	case Cmd_Mesg_TrkCtrl:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->AvtTrkStat);
@@ -198,6 +197,7 @@ void usd_MSGAPI_IPCConfigWrite(long p)
 	float value = sThis->m_uart->Host_Ctrl[config_Wvalue];
 	printf("block = %d, field = %d, value = %f\n", block, field, value);
 	sThis->modifierAVTProfile(block, field, value);
+	sThis->signalFeedBack(ACK_config_Write, ACK_config_Wblock, block, field);
 }
 
 void usd_MSGAPI_IPCReadOSD(long p)
@@ -299,6 +299,7 @@ void usd_MSGAPI_EXTINPUT_config_Read(long p)
 	int block = sThis->m_uart->Host_Ctrl[config_Rblock];
 	int field = sThis->m_uart->Host_Ctrl[config_Rfield];
 	sThis->answerRead( block,  field);
+	sThis->signalFeedBack(ACK_config_Reab, ACK_config_Rblock, block, field);
 }
 
 void usd_MSGAPI_EXTINPUT_kboard(long p)
