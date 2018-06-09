@@ -20,7 +20,7 @@ public:
 		    int ipcSecTrkCtrl(selectTrack *m_selcTrak);
 		    int IpcSensorSwitch(volatile unsigned char ImgSenchannel);
 		    int IpcpinpCtrl(volatile unsigned char ImgPipStat);
-		    int IpcTrkDoorCtrl(AcqBoxSize *BoxSize);
+		    int IpcAcqDoorCtrl(AcqBoxSize *BoxSize);
 		    int IpcTrkPosMoveCtrl(POSMOVE * avtMove);
 		    int IpcElectronicZoom(int zoom);
 		    int IpcConfig();

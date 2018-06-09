@@ -147,7 +147,7 @@ class CUserBase
 {
 public:
 	CUserBase();
-	~CUserBase();
+	virtual ~CUserBase();
 	int *ExtInputCtrl;
 	vector<int> ExtInputCtrlValue;
 	virtual int  Create(){return 0;};
@@ -168,6 +168,7 @@ public:
 
 	virtual int  Destroy(){
 		delete EXT_Ctrl;
+		delete Host_Ctrl;
 		return 0;
 	};
 		void Enableconfig()
@@ -184,7 +185,7 @@ public:
 			};
 			void TrkBoxCtrl()
 			{
-				SendMsg(Cmd_Mesg_TrkBoxCtrl);
+				SendMsg(Cmd_Mesg_AcqBoxCtrl);
 			};
 			 void EnableTrkSearch( )
 			{

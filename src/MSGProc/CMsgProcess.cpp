@@ -102,12 +102,13 @@ int CMsgProcess::Destroy()
 {
 	OSA_assert(m_jos != NULL);
 	m_jos->Destroy();
-	m_jos = NULL;
+	delete m_jos;
 	OSA_printf("INFO: Destroy Jos ctrl ok");
 	OSA_assert(m_uart != NULL);
-	m_uart = NULL;
+	delete m_uart;
 	OSA_assert(m_ipc!= NULL);
 	m_ipc->Destroy();
+	delete m_ipc;
 	OSA_printf("INFO: Destroy IPC ctrl ok");
 	OSA_assert(m_plt != NULL);
 	PlatformCtrl_Delete(m_plt);
@@ -115,12 +116,14 @@ int CMsgProcess::Destroy()
 	OSA_printf("%s ... ok", __func__);
 	m_plt = NULL;
 	OSA_assert(m_plt != NULL);
+	OSA_semDelete(&m_semHndl);
 	delete cfg_value;
 	return 0;
 }
 int CMsgProcess::Init()
 {
 	MSGAPI_initial();
+	init_prm.keyboardfunc = keyboard_event;
 
 	return 0 ;
 	
@@ -129,6 +132,8 @@ int CMsgProcess::Init()
 int CMsgProcess::Run() 
 {	
 	m_jos->Run();
+	if(init_prm.keyboardfunc != NULL)
+			//glutKeyboardFunc(m_initPrm.keyboardfunc);
 	return 0;
 
 }
@@ -182,7 +187,7 @@ void CMsgProcess::processMsg(int msg)
 							else
 						MSGDRIV_send(MSGID_EXT_INPUT_OPTICZOOMSHORTCTRL,0);
 						break;
-						case Cmd_Mesg_TrkBoxCtrl:
+						case Cmd_Mesg_AcqBoxCtrl:
 							if(sThis->m_ipc->ipc_status->MmtStat[0])
 							MSGAPI_ExtInputCtrl_MmtSelect(5);
 							else
@@ -1342,6 +1347,14 @@ void CMsgProcess::Change_avtStatus()
 				else
 					m_SetRealTime = 0;
 				realtime_avtStatus();
+}
+
+void CMsgProcess::keyboard_event(unsigned char key, int x, int y)
+{
+	if(key == 27){
+		sThis->Destroy();
+		exit(0);
+	}
 }
 
 void CMsgProcess::signalFeedBack(int signal, int index, int value, int s_value)

@@ -29,7 +29,7 @@ void  MSGAPI_StatusConvertFunc(int msg)
 	case Cmd_Mesg_Mtd:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->MtdState[0]);
 		break;
-	case Cmd_Mesg_TrkBoxCtrl:
+	case Cmd_Mesg_AcqBoxCtrl:
 		iRet = (iRet +1)%Trk_SizeMax;
 		m_acqBox_Size.AcqBoxW[0] = acqAIM[iRet][0];
 		m_acqBox_Size.AcqBoxH[0] = acqAIM[iRet][1];
@@ -72,10 +72,10 @@ void usd_MSGAPI_ExtInpuCtrl_ZoomShort(long p)
 	sThis->MSGAPI_ExtInputCtrl_ZoomShort();
 }
 
-void usd_MSGAPI_ExtInpuCtrl_TrkBoxSize(long p)
+void usd_MSGAPI_ExtInpuCtrl_AcqBoxSize(long p)
 {
-	MSGAPI_StatusConvertFunc(Cmd_Mesg_TrkBoxCtrl);
-	sThis->m_ipc->IpcTrkDoorCtrl(&m_acqBox_Size);
+	MSGAPI_StatusConvertFunc(Cmd_Mesg_AcqBoxCtrl);
+	sThis->m_ipc->IpcAcqDoorCtrl(&m_acqBox_Size);
 }
 
 
@@ -333,7 +333,7 @@ int  MSGAPI_initial()
     memset(handle->msgTab, 0, sizeof(MSGTAB_Class) * MAX_MSG_NUM);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_TRACKCTRL,usd_MSGAPI_ExtInpuCtrl_Track,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_MTDCTRL,usd_MSGAPI_ExtInpuCtrl_Mtd,0);
-    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_TRCKBOXSIZECTRL,usd_MSGAPI_ExtInpuCtrl_TrkBoxSize,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_TRCKBOXSIZECTRL,usd_MSGAPI_ExtInpuCtrl_AcqBoxSize,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_TRACKSEARCHCTRL,usd_MSGAPI_ExtInpuCtrl_TrkSearch,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_IRISUPCTRL,usd_MSGAPI_ExtInpuCtrl_IrisUp,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_IRISDOWNCTRL,usd_MSGAPI_ExtInpuCtrl_IrisDwon,0);

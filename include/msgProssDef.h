@@ -77,7 +77,7 @@ void MSGAPI_unInitial(MSGDRIV_Handle handle);
 //void MSGAPI_init_device(LPARAM lParam       /*=NULL*/);
 void usd_MSGAPI_ExtInpuCtrl_Track(long p);
 void usd_MSGAPI_ExtInpuCtrl_Mtd(long p);
-void usd_MSGAPI_ExtInpuCtrl_TrkBoxSize(long p);
+void usd_MSGAPI_ExtInpuCtrl_AcqBoxSize(long p);
 void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p);
 void usd_MSGAPI_ExtInpuCtrl_IrisUp(long p);
 void usd_MSGAPI_ExtInpuCtrl_IrisDwon(long p);

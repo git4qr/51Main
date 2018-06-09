@@ -14,7 +14,8 @@
 #include <iostream>
 #include "ipcProc.h"
 #include "Ipcctl.h"
-#include "opencv2/core/core.hpp"
+#include <opencv2/core/core.hpp>
+//#include <glut.h>"
 
 using namespace cv;
 using namespace std;
@@ -48,7 +49,9 @@ typedef struct {
 		int m_AxisYStat;
 }CurrParaStat,*PCurrParaStat;
 
-
+typedef struct {
+	void (*keyboardfunc)(unsigned char key, int x, int y);
+}ms_init_prm;
 
 class CMsgProcess{
         public:
@@ -101,9 +104,11 @@ private:
 	void processMsg(int msg);
 	void PlantTrackerInputPara(void);
 	int configAvtFromFile();
+	static void keyboard_event(unsigned char key, int x, int y);
 //	int MSGAPI_initial();
 //static 	void app_PlantCtrl(long lParam );
  protected:
+	ms_init_prm init_prm;
 	volatile int m_value;
 	HPLTCTRL   m_plt;
 	CPTZSpeedTransfer  m_ptzSpeed;

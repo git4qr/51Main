@@ -257,11 +257,11 @@ int CIPCProc::IpcpinpCtrl(volatile unsigned char ImgPipStat)
 	return 0;
 }
 
-int CIPCProc::IpcTrkDoorCtrl(AcqBoxSize *BoxSize)
+int CIPCProc::IpcAcqDoorCtrl(AcqBoxSize *BoxSize)
 {
 	memset(test.param, 0, PARAMLEN);
 	AcqBoxWH m_acqBoxWH;
-	test.cmd_ID = trkdoor;
+	test.cmd_ID = acqBox;
 	{
 		m_acqBoxWH.AimW = BoxSize->AcqBoxW[0];
 		m_acqBoxWH.AimH = BoxSize->AcqBoxH[0];

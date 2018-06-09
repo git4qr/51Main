@@ -30,12 +30,21 @@ typedef enum
     mmtselect,/*11*/
     axismove,/*12*/
     read_shm_trkpos,/*13*/
-    read_shm_config,
-    read_shm_osd,
-    read_shm_utctrk,
-    read_shm_camera,
-    elecZoom,
-    exit_img,
+    read_shm_config,/*14*/
+    read_shm_osd,/*15*/
+    read_shm_utctrk,/*16*/
+    read_shm_camera,/*17*/
+    elecZoom,/*18*/
+    exit_img,/*19*/
+    sensor_bind,/*20*/
+    sensor_video_trans,/*21*/
+    vframerate,/*22*/
+    vquality,/*23*/
+    osdcolor,/*24*/
+    osdfont,/*25*/
+    osdsize,/*26*/
+    osdctrl,/*27*/
+    acqBox,
     invalid
 }CMD_ID;
 

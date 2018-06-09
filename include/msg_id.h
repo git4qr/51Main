@@ -35,7 +35,7 @@ Cmd_Mesg_TrkCtrl = 1, 		//1
 Cmd_Mesg_Mtd,					//2
 Cmd_Mesg_ZoomLong,		//3
 Cmd_Mesg_ZoomShort,		//4
-Cmd_Mesg_TrkBoxCtrl,		//5
+Cmd_Mesg_AcqBoxCtrl,		//5
 Cmd_Mesg_TrkSearch,			//6
 Cmd_Mesg_IrisUp,				//7
 Cmd_Mesg_IrisDown,			//8
