@@ -88,6 +88,7 @@ public:
 		return  NULL;
 	}
 	void updateJosKeyMap();
+	void updateJosAxisMap();
 private:
 	int open_joystick(char *joystick_device);
 	int read_joystick_event(joy_event *jse);
@@ -101,6 +102,8 @@ private:
 	bool isTrackIn;
 	josBtn_t josKey;
 	int josKeyMap[MSGID_INPUT_Max];
+	josAxis_t josAxis;
+	int JosAxisMap[6];
 };
 
 #endif

@@ -26,7 +26,6 @@ typedef enum SpecialEvent{
 	MSGID_INPUT_ImgEnh = 3,				//throttle
 	MSGID_INPUT__POVX = 5,
 	MSGID_INPUT__POVY = 6,
-
 }Jos_Special;
 
 typedef enum mesg_id{

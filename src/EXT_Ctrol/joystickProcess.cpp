@@ -22,6 +22,12 @@ void CJosStick::updateJosKeyMap()
 		josKeyMap[i] = *(p+1);	
 }
 
+void CJosStick::updateJosAxisMap()
+{
+	int *p = &josAxis.jos_axis_1_x;
+	for(int i = 0;i<6;i++)
+		JosAxisMap[i] = *(p+1);
+}
 
 int  CJosStick::Create()
 {
@@ -29,6 +35,7 @@ int  CJosStick::Create()
 	 open_joystick(joystick_Dev);
 	 jse=(joy_event*)malloc (sizeof(joy_event));
 	 updateJosKeyMap();
+	 updateJosAxisMap();
 	 return 0;
 }
 
@@ -101,6 +108,10 @@ int  CJosStick::Run()
 
 void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 {
+	if(mjosNum > 6)
+		return ;
+	int id = JosAxisMap[mjosNum];
+
 	switch(mjosNum){
 
 			case MSGID_INPUT_AXISX:
