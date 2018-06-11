@@ -133,7 +133,7 @@ int CMsgProcess::Run()
 {	
 	m_jos->Run();
 	if(init_prm.keyboardfunc != NULL)
-			//glutKeyboardFunc(m_initPrm.keyboardfunc);
+			//glutKeyboardFunc(init_prm.keyboardfunc);
 	return 0;
 
 }
@@ -591,11 +591,12 @@ int  CMsgProcess::configAvtFromFile()
 		m_uart->ReadProfile();
 	}
 
-void CMsgProcess::modifierAVTProfile(int block, int field, float value)
+void CMsgProcess::modifierAVTProfile(int block, int field, float value, PlatformCtrl_CreateParams *Pprm, configPlatParam_InitParams *m_cfgPprm)
 {
 	m_ipc->ipc_OSD = m_ipc->getOSDSharedMem();
 	m_ipc->ipc_UTC = m_ipc->getUTCSharedMem();
-
+	Pprm = &m_pltParams;
+	m_cfgPprm = &m_cfgPlatParam;
 	int check = ((block -1) * 16 + field);
 	//cfg_value[check] = value;
 	switch(check)
@@ -989,6 +990,8 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value)
 	default:
 		break;
 	}
+	if( check > 16 && check < 29)
+		PlatformFilter_CreateParams_Gettxt(&Pprm->platformFilterParam[0][0],&Pprm->platformFilterParam[0][1], &m_cfgPprm->m__cfg_platformFilterParam);
 	if( check >= 192 && check <= 228)
 		m_uart->ReadShmOSD();
 	else if(check >= 128 && check <= 184)

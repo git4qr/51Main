@@ -15,7 +15,7 @@
 #include "ipcProc.h"
 #include "Ipcctl.h"
 #include <opencv2/core/core.hpp>
-//#include <glut.h>"
+#include "glut.h"
 
 using namespace cv;
 using namespace std;
@@ -88,7 +88,7 @@ class CMsgProcess{
          	}test;
          	test aa;
          	test *ptest;
-         	void modifierAVTProfile(int block, int field, float value);
+         	void modifierAVTProfile(int block, int field, float value, PlatformCtrl_CreateParams *m_cfgPrm, configPlatParam_InitParams *m_cfgPprm);
          	int updataProfile();
          	int answerRead(int block, int field);
         private:
@@ -104,7 +104,7 @@ private:
 	void processMsg(int msg);
 	void PlantTrackerInputPara(void);
 	int configAvtFromFile();
-	static void keyboard_event(unsigned char key, int x, int y);
+
 //	int MSGAPI_initial();
 //static 	void app_PlantCtrl(long lParam );
  protected:
@@ -117,6 +117,8 @@ private:
 	PlatformFilter_InitParams m_cfgPlatFilter;
 	PLATFORMCTRL_TrackerInput m_pltInput;
 	PLATFORMCTRL_Output m_pltOutput;
+	static void keyboard_event(unsigned char key, int x, int y);
+
 	static void *mainProcTsk(void *context)
 	{
 		//OSA_waitMsecs(200);

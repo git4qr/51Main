@@ -196,7 +196,7 @@ void usd_MSGAPI_IPCConfigWrite(long p)
 	int field = sThis->m_uart->Host_Ctrl[config_Wfield];
 	float value = sThis->m_uart->Host_Ctrl[config_Wvalue];
 	printf("block = %d, field = %d, value = %f\n", block, field, value);
-	sThis->modifierAVTProfile(block, field, value);
+	sThis->modifierAVTProfile(block, field, value, NULL,NULL);
 	sThis->signalFeedBack(ACK_config_Write, ACK_config_Wblock, block, field);
 }
 
@@ -239,8 +239,8 @@ void usd_MSGAPI_IPCsaveAxis(long p)
 {
 	float x = float(sThis->m_ipc->ipc_status->opticAxisPosX[0]);
 	float y = float(sThis->m_ipc->ipc_status->opticAxisPosY[0]);
-	sThis->modifierAVTProfile(24, 0, x);
-	sThis->modifierAVTProfile(25, 0, y);
+	sThis->modifierAVTProfile(24, 0, x, NULL, NULL);
+	sThis->modifierAVTProfile(25, 0, y, NULL, NULL);
 }
 
 void usd_MSGAPI_IPCpicp(long p)
