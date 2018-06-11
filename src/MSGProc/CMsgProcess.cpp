@@ -165,7 +165,6 @@ void CMsgProcess::processMsg(int msg)
 {
 
 	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
-
 					switch(msg){
 						case Cmd_Mesg_TrkCtrl:
 							if(sThis->m_ipc->ipc_status->MmtStat[0])

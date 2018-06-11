@@ -114,22 +114,23 @@ int  CJosStick::Run()
 
 void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 {
-
+#if 1
 	if(mjosNum > 6 || mjosNum == 4)
 		return ;
-	printf("fresh  mjosNum = %d \n",mjosNum);
+	//printf("fresh  mjosNum = %d \n",mjosNum);
 	if(mjosNum == 5 || mjosNum == 6 )
 		mjosNum -= 3;
 	else if(mjosNum == 3)
 		mjosNum = 4;
 
 	int id = JosAxisMap[mjosNum];
+#endif
 
-#if 1
+#if 0
 	printf("!!!  id = %d , nJos = %d \n",id,mjosNum);
 	printf("*****************************\n");
 	for(int i=0;i<6;i++)
-		printf("josKeyMap[%d] = %d\n",i,JosAxisMap[i]);
+		printf("josAxisMap[%d] = %d\n",i,JosAxisMap[i]);
 	printf("*****************end*********\n");
 #endif
 
@@ -188,9 +189,11 @@ void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 
 void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
 {
+#if 1
 	if(njosNum >= MSGID_INPUT_Max)
 		return ;
 	int id = josKeyMap[njosNum];
+#endif
 
 #if 0
 	printf("!!!  id = %d , nJos = %d \n",id,njosNum);

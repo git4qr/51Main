@@ -732,6 +732,7 @@ int PlatformCtrl_VirtualInput(HPLTCTRL handle, int iIndex, float fValue)
 
 #endif
     fTmp *= pParam->fGain;
+    //if()
     pObj->inter.virtalInput[iIndex] = fTmp;
 
     return 0;

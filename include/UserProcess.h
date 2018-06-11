@@ -171,6 +171,10 @@ public:
 		delete Host_Ctrl;
 		return 0;
 	};
+	void EnableOSD()
+	{
+	//	SendMsg();
+	}
 		void Enableconfig()
 		{
 			SendMsg(Cmd_Mesg_config_Write);
@@ -274,10 +278,6 @@ public:
 			 void WorkMode()
 			{
 				SendMsg(Cmd_Mesg_WorkMode);
-			}
-			 void EnableOsd()
-			{
-				SendMsg(Cmd_Mesg_Osd);
 			}
 			 void SensorMode()
 			{
