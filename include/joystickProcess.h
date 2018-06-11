@@ -38,6 +38,30 @@ typedef struct js_event {
     UINT8 number; 
 }joy_event;
 
+typedef struct josBtn{
+     int jos_btn_1; 
+     int jos_btn_2;
+     int jos_btn_3; 
+     int jos_btn_4; 
+     int jos_btn_5; 
+     int jos_btn_6; 
+     int jos_btn_7; 
+     int jos_btn_8; 
+     int jos_btn_9; 
+     int jos_btn_10; 
+     int jos_btn_11;
+     int jos_btn_12;
+}josBtn_t;
+
+typedef struct josAxis{
+     int jos_axis_1_x;
+     int jos_axis_1_y; 
+     int jos_axis_2_x;
+     int jos_axis_2_y; 
+     int jos_axis_3_x; 
+     int jos_axis_3_y;
+}josAxis_t;
+
 //static bool JosStart = true;
 
 class CJosStick : public CUserBase
@@ -63,6 +87,8 @@ public:
 		}
 		return  NULL;
 	}
+	void updateJosKeyMap();
+	void updateJosAxisMap();
 private:
 	int open_joystick(char *joystick_device);
 	int read_joystick_event(joy_event *jse);
@@ -73,8 +99,11 @@ private:
     void EventAixs(u_int8_t  axisNum);
 	joy_event *jse;
 	static bool JosStart;
-
 	bool isTrackIn;
+	josBtn_t josKey;
+	int josKeyMap[MSGID_INPUT_Max];
+	josAxis_t josAxis;
+	int JosAxisMap[6];
 };
 
 #endif

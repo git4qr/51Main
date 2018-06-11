@@ -15,13 +15,27 @@ CJosStick::~CJosStick()
 	Destroy();
 }
 
+void CJosStick::updateJosKeyMap()
+{
+	int * p = &josKey.jos_btn_1;
+	for(int i = 0 ;i<MSGID_INPUT_Max;i++)
+		josKeyMap[i] = *(p+1);	
+}
 
+void CJosStick::updateJosAxisMap()
+{
+	int *p = &josAxis.jos_axis_1_x;
+	for(int i = 0;i<6;i++)
+		JosAxisMap[i] = *(p+1);
+}
 
 int  CJosStick::Create()
 {
 	//preinitial();
 	 open_joystick(joystick_Dev);
 	 jse=(joy_event*)malloc (sizeof(joy_event));
+	 updateJosKeyMap();
+	 updateJosAxisMap();
 	 return 0;
 }
 
@@ -94,6 +108,10 @@ int  CJosStick::Run()
 
 void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 {
+	if(mjosNum > 6)
+		return ;
+	int id = JosAxisMap[mjosNum];
+
 	switch(mjosNum){
 
 			case MSGID_INPUT_AXISX:
@@ -149,9 +167,11 @@ void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 
 void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
 {
+	if(njosNum >= MSGID_INPUT_Max)
+		return ;
+	int id = josKeyMap[njosNum];
 
-
-    switch (njosNum) {
+	switch (njosNum) {
     		case MSGID_INPUT_TrkCtrl:
     				if(jse->value == 1){
     							EnableTrk();
