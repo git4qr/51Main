@@ -92,6 +92,10 @@ int CMsgProcess::Create()
 	m_ptz = new CPTZControl();
     m_ptz->Create();
 
+    m_jos->updateJosAxisMap();
+    m_jos->updateJosKeyMap();
+
+
 
 	// Create main thread
 	MAIN_threadCreate();	
@@ -407,7 +411,27 @@ int  CMsgProcess::configAvtFromFile()
 
 				}//pid
 
+				{// jos
+					m_jos->m_josBtn_t.jos_btn_1 = (int)fr["cfg_avt_49"];
+					m_jos->m_josBtn_t.jos_btn_2 = (int)fr["cfg_avt_50"];
+					m_jos->m_josBtn_t.jos_btn_3 = (int)fr["cfg_avt_51"];
+					m_jos->m_josBtn_t.jos_btn_4 = (int)fr["cfg_avt_52"];
+					m_jos->m_josBtn_t.jos_btn_5 = (int)fr["cfg_avt_53"];
+					m_jos->m_josBtn_t.jos_btn_6 = (int)fr["cfg_avt_54"];
+					m_jos->m_josBtn_t.jos_btn_7 = (int)fr["cfg_avt_55"];
+					m_jos->m_josBtn_t.jos_btn_8 = (int)fr["cfg_avt_56"];
+					m_jos->m_josBtn_t.jos_btn_9 = (int)fr["cfg_avt_57"];
+					m_jos->m_josBtn_t.jos_btn_10 = (int)fr["cfg_avt_58"];
+					m_jos->m_josBtn_t.jos_btn_11 = (int)fr["cfg_avt_59"];
+					m_jos->m_josBtn_t.jos_btn_12 = (int)fr["cfg_avt_60"];
 
+					m_jos->m_josAxis_t.jos_axis_1_x = (int)fr["cfg_avt_64"];
+					m_jos->m_josAxis_t.jos_axis_1_y = (int)fr["cfg_avt_65"];
+					m_jos->m_josAxis_t.jos_axis_2_x = (int)fr["cfg_avt_66"];
+					m_jos->m_josAxis_t.jos_axis_2_y = (int)fr["cfg_avt_67"];
+					m_jos->m_josAxis_t.jos_axis_3_x = (int)fr["cfg_avt_68"];
+					m_jos->m_josAxis_t.jos_axis_3_y = (int)fr["cfg_avt_69"];
+				}//jos
 
 
 				{ // osd

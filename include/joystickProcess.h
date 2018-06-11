@@ -56,7 +56,7 @@ typedef struct josBtn{
 typedef struct josAxis{
      int jos_axis_1_x;
      int jos_axis_1_y; 
-     int jos_axis_2_x;
+     int jos_axis_2_x;//pov
      int jos_axis_2_y; 
      int jos_axis_3_x; 
      int jos_axis_3_y;
@@ -89,6 +89,12 @@ public:
 	}
 	void updateJosKeyMap();
 	void updateJosAxisMap();
+
+	josBtn_t m_josBtn_t;
+	josAxis_t m_josAxis_t;
+	int josKeyMap[MSGID_INPUT_Max];
+	int JosAxisMap[6];
+
 private:
 	int open_joystick(char *joystick_device);
 	int read_joystick_event(joy_event *jse);
@@ -100,10 +106,6 @@ private:
 	joy_event *jse;
 	static bool JosStart;
 	bool isTrackIn;
-	josBtn_t josKey;
-	int josKeyMap[MSGID_INPUT_Max];
-	josAxis_t josAxis;
-	int JosAxisMap[6];
 };
 
 #endif

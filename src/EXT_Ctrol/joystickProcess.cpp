@@ -17,16 +17,22 @@ CJosStick::~CJosStick()
 
 void CJosStick::updateJosKeyMap()
 {
-	int * p = &josKey.jos_btn_1;
+	int * p = &m_josBtn_t.jos_btn_1;
 	for(int i = 0 ;i<MSGID_INPUT_Max;i++)
-		josKeyMap[i] = *(p+1);	
+		josKeyMap[i] = *(p+i);
+#if 0
+	printf("*****************************\n");
+	for(int i=0;i<MSGID_INPUT_Max;i++)
+		printf("josKeyMap[%d] = %d\n",i,josKeyMap[i]);
+	printf("*****************end*********\n");
+#endif
 }
 
 void CJosStick::updateJosAxisMap()
 {
-	int *p = &josAxis.jos_axis_1_x;
+	int *p = &m_josAxis_t.jos_axis_1_x;
 	for(int i = 0;i<6;i++)
-		JosAxisMap[i] = *(p+1);
+		JosAxisMap[i] = *(p+i);
 }
 
 int  CJosStick::Create()
@@ -108,11 +114,26 @@ int  CJosStick::Run()
 
 void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 {
-	if(mjosNum > 6)
+
+	if(mjosNum > 6 || mjosNum == 4)
 		return ;
+	printf("fresh  mjosNum = %d \n",mjosNum);
+	if(mjosNum == 5 || mjosNum == 6 )
+		mjosNum -= 3;
+	else if(mjosNum == 3)
+		mjosNum = 4;
+
 	int id = JosAxisMap[mjosNum];
 
-	switch(mjosNum){
+#if 1
+	printf("!!!  id = %d , nJos = %d \n",id,mjosNum);
+	printf("*****************************\n");
+	for(int i=0;i<6;i++)
+		printf("josKeyMap[%d] = %d\n",i,JosAxisMap[i]);
+	printf("*****************end*********\n");
+#endif
+
+	switch(id){
 
 			case MSGID_INPUT_AXISX:
 				EXT_Ctrl[14] = jse->value;
@@ -171,26 +192,34 @@ void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
 		return ;
 	int id = josKeyMap[njosNum];
 
-	switch (njosNum) {
+#if 0
+	printf("!!!  id = %d , nJos = %d \n",id,njosNum);
+	printf("*****************************\n");
+	for(int i=0;i<MSGID_INPUT_Max;i++)
+		printf("josKeyMap[%d] = %d\n",i,josKeyMap[i]);
+	printf("*****************end*********\n");
+#endif
+
+	switch (id) {
     		case MSGID_INPUT_TrkCtrl:
+    				printf("enter this MSGID_INPUT_TrkCtrl \n");
     				if(jse->value == 1){
     							EnableTrk();
+    					printf("EnableTrk \n");
     				}
     				break;
     		case MSGID_INPUT_Mtd:
+    				printf("enter this MSGID_INPUT_Mtd \n");
     				if(jse->value == 1){
-    			/*		if(JOS_Value[17] == 0)
-    					JOS_Value[17] = 1;
-    				else
-    					JOS_Value[17] = 0;
-    					PresetCtrl();
-    					*/
     					EnableMtd();
+    					printf("EnableMtd \n");
     				}
     				break;
     		case MSGID_INPUT_ZoomLong:
+    				printf("enter this MSGID_INPUT_ZoomLong \n");
     				if(jse->value == 1){
     					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 1;
+    					printf("MSGID_INPUT_ZoomLong \n");
     				}
     				else{
     					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 0;

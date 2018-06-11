@@ -112,8 +112,8 @@ void CIPCProc::getIPCMsgProc()
 
         		//gettimeofday(&recv, NULL);
         		//printf("------recv pos------  %d  ,%d \n", recv.tv_sec, recv.tv_usec);
-        		printf("trackstatus = %d\n", trackstatus);
-        		printf("trackposx = %d, trackposy = %d\n", trackposx, trackposy);
+      //  		printf("trackstatus = %d\n", trackstatus);
+     //		printf("trackposx = %d, trackposy = %d\n", trackposx, trackposy);
 
                 break;
             default:
