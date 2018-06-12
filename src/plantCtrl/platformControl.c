@@ -701,7 +701,7 @@ int PlatformCtrl_AnalogInput(HPLTCTRL handle, int iIndex, float fValue)
 }
 
 /* �����豸�û��������� */
-int PlatformCtrl_VirtualInput(HPLTCTRL handle, int iIndex, float fValue)
+int PlatformCtrl_VirtualInput(HPLTCTRL handle, int iIndex, float fValue,  int TrkStat, int SeaTrkStat)
 {
     float fTmp;
     VirtualDeviceParam *pParam;
@@ -732,7 +732,9 @@ int PlatformCtrl_VirtualInput(HPLTCTRL handle, int iIndex, float fValue)
 
 #endif
     fTmp *= pParam->fGain;
-    //if()
+    if(SeaTrkStat == 1 && TrkStat != 0)
+    	pObj->inter.virtalInput[iIndex] = 0;
+    else
     pObj->inter.virtalInput[iIndex] = fTmp;
 
     return 0;

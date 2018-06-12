@@ -470,7 +470,7 @@ int PlatformCtrl_LocalInput(HPLTCTRL handle, eDevUsr usr, float fValue);
 int PlatformCtrl_AnalogInput(HPLTCTRL handle, int iIndex, float fValue);
 
 /* �����豸�û��������� */
-int PlatformCtrl_VirtualInput(HPLTCTRL handle, int iIndex, float fValue);
+int PlatformCtrl_VirtualInput(HPLTCTRL handle, int iIndex, float fValue, int TrkStat, int SeaTrkStat);
 
 /* ���ò���ģʽƽ̨������� */
 int PlatformCtrl_SelAcqPlatformOutput(HPLTCTRL handle, eAcqOutputType type);

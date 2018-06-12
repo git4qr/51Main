@@ -1492,22 +1492,27 @@ void CMsgProcess::MSGAPI_IPCInputCtrl_Axis()
 void CMsgProcess::MSGAPI_ExtInputCtrl_AXIS()
 {
 	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
-	 if( ! m_CurrStat.m_SecTrkStat && sThis->m_ipc->ipc_status->AvtTrkStat == 0){
-	    m_pltInput.iTrkAlgState= m_CurrStat.m_TrkStat + 1;
-		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickXInput, m_CurrStat.m_AxisXStat/32760.f);
-		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineXInput, m_CurrStat.m_AxisXStat/32760.f);
-		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickYInput, m_CurrStat.m_AxisYStat/32760.f);
-		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineYInput, m_CurrStat.m_AxisYStat/32760.f);
-	  }
-	 else if(m_CurrStat.m_SecTrkStat == 1 && sThis->m_ipc->ipc_status->AvtTrkStat == 1){
-			m_pltInput.fTargetBoresightErrorX=this->m_ipc->trackposx;
-			m_pltInput.fTargetBoresightErrorY=this->m_ipc->trackposy;
-	 }
-	 else {
-		       m_pltInput.iTrkAlgState= sThis->m_ipc->ipc_status->AvtTrkStat + 1;
+	int TrkStat = sThis->m_ipc->ipc_status->AvtTrkStat;
+	// if( ! m_CurrStat.m_SecTrkStat && TrkStat == 0){
+
+		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickXInput, m_CurrStat.m_AxisXStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
+		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineXInput, m_CurrStat.m_AxisXStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
+		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickYInput, m_CurrStat.m_AxisYStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
+		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineYInput, m_CurrStat.m_AxisYStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
+	//  }
+//	 else if(m_CurrStat.m_SecTrkStat == 1 && sThis->m_ipc->ipc_status->AvtTrkStat == 1){
+//			m_pltInput.fTargetBoresightErrorX=this->m_ipc->trackposx;
+//			m_pltInput.fTargetBoresightErrorY=this->m_ipc->trackposy;
+	// }
+		printf("CMsgProcess ===== >TrkStat = %d\n", TrkStat);
+	 if(TrkStat) {
+		 	 	 TrkStat = 1;
+		      m_pltInput.iTrkAlgState= TrkStat + 1;
 			  m_pltInput.fTargetBoresightErrorX=this->m_ipc->trackposx;
 			  m_pltInput.fTargetBoresightErrorY=this->m_ipc->trackposy;
 		}
+	 else
+		 m_pltInput.iTrkAlgState= TrkStat + 1;
 
 
 		PlatformCtrl_TrackerInput(m_plt, &m_pltInput);
