@@ -450,14 +450,176 @@ void CUserBase::readCurrentSetting()
 
 void   CUserBase::extExtraInputCtrl()
 {
+	uint8_t  tmpValue=rcvBufQue.at(6);
+	uint8_t  isPress = (tmpValue>127)?(1):(0);
+	switch (tmpValue%128)
+	{
+    	 case MSGID_INPUT_TrkCtrl:
+    		 if(isPress == 1)
+    		 EnableTrk();
+    		  break;
+    	 case MSGID_INPUT_Mtd:
+    		 if(isPress)
+    			 EnableMtd();
+        		  break;
+    	 case MSGID_INPUT_ZoomLong:
+				if(isPress == 1){
+					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 1;
+				}
+				else
+					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 0;
+				ZoomLongCtrl();
+    		  break;
+    	 case MSGID_INPUT_ZoomShort:
+ 			if(isPress == 1)
+ 				EXT_Ctrl[MSGID_INPUT_ZoomShort ] = 1;
+ 			else
+ 				EXT_Ctrl[MSGID_INPUT_ZoomShort ] = 0;
+ 			ZoomShortCtrl();
+        		  break;
+    	 case MSGID_INPUT_TrkBoxCtrl:
+ 			if(isPress == 1)
+ 					TrkBoxCtrl();
+    		  break;
+    	 case MSGID_INPUT_TrkSearch:
+ 			if(isPress == 1){
+ 					EnableTrkSearch();
+ 					EXT_Ctrl[MSGID_INPUT_TrkSearch ] = 1;
+ 			}
+ 			else{
+ 				EnableTrkSearch();
+ 				EXT_Ctrl[MSGID_INPUT_TrkSearch ] = 0;
+ 			}
+        		  break;
+    	 case MSGID_INPUT_IrisUp:
+ 			if(isPress == 1){
+ 				EXT_Ctrl[MSGID_INPUT_IrisUp ] = 1;
+ 					IrisUp();
+ 			}
+ 			else{
+ 				EXT_Ctrl[MSGID_INPUT_IrisUp] = 0;
+ 					IrisUp();
+ 			}
+    		  break;
+    	 case MSGID_INPUT_IrisDown:
+				if(isPress == 1){
+					EXT_Ctrl[MSGID_INPUT_IrisDown] = 1;
+					IrisDown();
+				}
+				else{
+					EXT_Ctrl[MSGID_INPUT_IrisDown] = 0;
+					IrisDown();
+				}
+        		  break;
+    	 case MSGID_INPUT_FocusFar:
+ 			if(isPress == 1){
+ 				EXT_Ctrl[MSGID_INPUT_FocusFar ] = 1;
+ 					FocusUp();
+ 			}
+ 			else{
+ 				EXT_Ctrl[MSGID_INPUT_FocusFar] = 0;
+ 				FocusUp();
+ 			}
+    		  break;
+    	 case MSGID_INPUT_FocusNear:
+ 			if(isPress == 1){
+ 				EXT_Ctrl[MSGID_INPUT_FocusNear] = 1;
+ 					FocusDown();
+ 			}
+ 			else{
+ 				EXT_Ctrl[MSGID_INPUT_FocusNear] = 0;
+ 					FocusDown();
+ 			}
+        		  break;
+    	 case MSGID_INPUT_SensorCtrl:
+				if(isPress == 1)
+					SwitchSensor();
+    		  break;
+    	 case MSGID_INPUT_Mmt:
+				if(isPress == 1)
+						EnableMmt();
+        		  break;
+    	 default:
+        		  break;
+     }
 
+    int xAxisValue=rcvBufQue.at(7)|rcvBufQue.at(8)<<8;
+	EXT_Ctrl[Cmd_Mesg_AXISX-1] = xAxisValue - 32767;
+	if(EXT_Ctrl[Cmd_Mesg_AXISX-1] < -200 ||EXT_Ctrl[Cmd_Mesg_AXISX-1] > 200)
+	AXIS_X();
+	else
+		EXT_Ctrl[Cmd_Mesg_AXISX-1] = 0;
+	AXIS_X();
+
+	int yAxisValue=rcvBufQue.at(9)|rcvBufQue.at(10)<<8;
+	EXT_Ctrl[Cmd_Mesg_AXISY-1] =  yAxisValue - 32767;
+	if(EXT_Ctrl[Cmd_Mesg_AXISY-1] < -200 ||EXT_Ctrl[Cmd_Mesg_AXISY-1] > 200)
+	AXIS_Y();
+	else
+		EXT_Ctrl[Cmd_Mesg_AXISY-1] = 0;
+	AXIS_Y();
+
+	int zAxisValue=rcvBufQue.at(11)|rcvBufQue.at(12)<<8;
+	if(zAxisValue < 200){
+		if(EXT_Ctrl[16] == 0)
+		EnableIMG();
+	}
+	else if(zAxisValue > 65335){
+		if(EXT_Ctrl[16] == 1)
+		EnableIMG();
+	}
+
+
+
+	int AimposValje=rcvBufQue.at(13)|rcvBufQue.at(14)<<8;
+	if(AimposValje == 65535){
+		EXT_Ctrl[12] = 0;
+		AIMPOS_X();
+		}
+	else if(AimposValje == -27000){
+		EXT_Ctrl[12] = 1;
+		AIMPOS_X();
+	}
+	else if(AimposValje == 9000){
+		EXT_Ctrl[12] = 2;
+		AIMPOS_X();
+	}
+
+	if(AimposValje == 65535){
+		EXT_Ctrl[13] = 0;
+		AIMPOS_Y();
+	}
+	else if(AimposValje == 0){
+		EXT_Ctrl[13] = 1;
+		AIMPOS_Y();
+	}
+	else if(AimposValje == 18000){
+		EXT_Ctrl[13] = 2;
+		AIMPOS_Y();
+	}
+
+}
+
+void  CUserBase::osdInfoDispley()
+{
+	u_int8_t  ptmpbuff[OSDINFOBYTESIZE];
+	for(int i=0;i<OSDINFOBYTESIZE;i++)
+	ptmpbuff[0]= rcvBufQue.at(i+4);
+	memset(&setOsdInfo,0,sizeof(setOsdInfo));
+	memcpy(&setOsdInfo,ptmpbuff,sizeof(ptmpbuff));
+	EnableOSD();
+}
+
+void CUserBase::saveParamter()
+{
+	EnablesaveParamter();
 }
 
 void CUserBase::extFocusInputCtrl()
 {
     int extFocus=-1;
     extFocus=  (rcvBufQue.at(4)|rcvBufQue.at(5)<<8);
-
+    EnableFov();
 }
 
 
@@ -545,6 +707,9 @@ int  CUserBase::prcRcvFrameBufQue()
                 case    0x22:
                 							 fontSize();
                 	       break;
+                case  0x23:
+                            		          osdInfoDispley();
+                            		          break;
                 case  0x24:
                 		                     fontDisplayCtrl();
                             break;
@@ -555,9 +720,11 @@ int  CUserBase::prcRcvFrameBufQue()
                                              readCurrentSetting();
                             break;
                 case  0x32:
-                							extExtraInputCtrl();
+                						//	extExtraInputCtrl();
                             break;
-
+                case  0x34:
+                							saveParamter();
+                            break;
                 case  0x40:
                 							extFocusInputCtrl();
                             break;

@@ -333,6 +333,7 @@ int CIPCProc::IpcElectronicZoom(int zoom)
 	test.cmd_ID = elecZoom;
 	test.param[0] = zoom;
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	printf("zoom send success\n");
 	sThis->signalFeedBack(ACK_ElectronicZoomStatus, ACK_ElectronicZoom_value, zoom, 0);
 	return 0;
 }
@@ -365,6 +366,7 @@ int CIPCProc::IPCpicp(int status, int pipChannel)
 	cmd_pip.PicpSensorStat = pipChannel;
 	memcpy(test.param, &cmd_pip, sizeof(cmd_pip));
 	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	printf("Pinp send success \n");
 	sThis->signalFeedBack(ACK_picpStatus, status, pipChannel, 0);
 
 }

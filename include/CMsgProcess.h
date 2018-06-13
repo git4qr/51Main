@@ -79,7 +79,7 @@ class CMsgProcess{
          	 CUartProcess *m_uart;
          	 CPTZControl *m_ptz;
          	 CIPCProc  *m_ipc;
-         	 CNetWork *mNet;
+         	 CNetWork *m_Net;
         public:
          	char m_SetRealTime, m_CurRealTime;
          	bool m_ChangeRealTime;

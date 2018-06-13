@@ -111,6 +111,47 @@ typedef struct
 	u_int8_t     	chksum;
 }EXT_CtrlInput;
 
+#define OSDINFOBYTESIZE    (27)
+
+typedef  struct {
+	//char 1
+	uint distance:1;
+	uint speed:1;
+	uint focus:1;
+	uint time:1;
+	uint plantAgle:1;
+	uint targetPost:1;
+	uint navDuration:1;
+	uint commuDuration:1;
+	//char 2
+	uint  workPlace:1;
+	uint softVer:1;
+	uint reserve0:6;
+}OSD_Switch;
+
+typedef struct{
+	OSD_Switch  mSwitch;
+	ushort   focusFeedBack;
+	uint8_t   speedInfo;
+	uint8_t   yearInfo;
+	uint8_t   monthInfo;
+	uint8_t   dayInfo;
+	uint8_t   timeHours;
+	uint8_t  timeMini;
+	uint8_t  timeSecnd;
+	ushort plantTilt;
+	ushort plantPan;
+	uint8_t lgitudeAgl;
+	uint8_t lgitudeMini;
+	uint8_t lgitudeSencd;
+    uint8_t latitudeAgl;
+	uint8_t latitudeMini;
+	uint8_t latitudeSencd;
+	ushort distanceInfo;
+	ushort navDuratInfo;
+	ushort commuDuratInfo;
+}OSD_info;
+
 typedef struct{
 	uint channel0:1;
 	uint channel1:1;
@@ -171,14 +212,24 @@ public:
 		delete Host_Ctrl;
 		return 0;
 	};
-	void EnableOSD()
-	{
-	//	SendMsg();
-	}
+		void EnableOSD()
+		{
+			SendMsg(Cmd_Mesg_Osd);
+		}
+		void EnableFov()
+		{
+			SendMsg(Cmd_Mesg_Focus);
+		}
 		void Enableconfig()
 		{
 			SendMsg(Cmd_Mesg_config_Write);
 		};
+
+		void  EnablesaveParamter()
+		{
+			SendMsg(Cmd_Mesg_config_Write_Save);
+		}
+
 		void EnableTrk( )
 			{
 				SendMsg(Cmd_Mesg_TrkCtrl);
@@ -386,6 +437,7 @@ public:
 			 }
 
 		int finderMapKey(int mVal);
+		OSD_info   setOsdInfo;
 
 protected:
 
@@ -439,6 +491,8 @@ private:
 	   void readCurrentSetting();
 	   void extExtraInputCtrl();
 	   void extFocusInputCtrl();
+	   void osdInfoDispley();
+	   void saveParamter();
 
           //response  receive  command
    void  startCheckAnswer(sendInfo * spBuf);

@@ -73,8 +73,8 @@ int CMsgProcess::Create()
   	//uart Create
   	m_uart = new CUartProcess();
   	m_uart->Create();
-  	mNet= new CNetWork();
-  	//mNet->Create();
+  	m_Net= new CNetWork();
+  	m_Net->Create();
 	int iRet = 0;
 	MSGDRIV_create();
 	iRet = Work_queCreate();
@@ -255,6 +255,9 @@ void CMsgProcess::processMsg(int msg)
 							break;
 						case Cmd_Mesg_config_Write:
 							MSGDRIV_send(MSGID_EXT_INPUT_configWrite, 0);
+							break;
+						case Cmd_Mesg_config_Write_Save:
+							MSGDRIV_send(MSGID_EXT_INPUT_configWrite_Save, 0);
 							break;
 						case Cmd_Mesg_MainElectronicZoom:
 							MSGDRIV_send(MSGID_IPC_MainElectronicZoom,0);
@@ -621,7 +624,7 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value, Platform
 	Pprm = &m_pltParams;
 	m_cfgPprm = &m_cfgPlatParam;
 	int check = ((block -1) * 16 + field);
-	//cfg_value[check] = value;
+	cfg_value[check] = value;
 	switch(check)
 	{
 	case 1:
@@ -1047,239 +1050,315 @@ int CMsgProcess::updataProfile()
 				}
 #endif
 
-#if 1
-									{   // plat
-										sprintf(cfg_avt, "cfg_avt_%d",0);
-										fr << cfg_avt << 0;
-
-										sprintf(cfg_avt, "cfg_avt_%d",1);
-										fr  << cfg_avt << m_cfgPlatParam.acqOutputType;
-
-										sprintf(cfg_avt, "cfg_avt_%d",2);
-										fr  << cfg_avt << m_cfgPlatParam.scalarX;
-
-										sprintf(cfg_avt, "cfg_avt_%d",3);
+#if 0
+							switch(check){
+									  // plat
+								case 0:
+									sprintf(cfg_avt, "cfg_avt_%d",0);
+									fr << cfg_avt << 0;
+									break;
+								case 1:
+									sprintf(cfg_avt, "cfg_avt_%d",1);
+									fr  << cfg_avt << m_cfgPlatParam.acqOutputType;
+									break;
+								case 2:
+									sprintf(cfg_avt, "cfg_avt_%d",2);
+									fr  << cfg_avt << m_cfgPlatParam.scalarX;
+									break;
+								case 3:
+									sprintf(cfg_avt, "cfg_avt_%d",3);
 									fr << cfg_avt << m_cfgPlatParam.scalarY;
-
+									break;
+								case 4:
 									sprintf(cfg_avt, "cfg_avt_%d",4);
 									fr << cfg_avt  << m_cfgPlatParam.demandMaxX;
-
+									break;
+								case 5:
 									sprintf(cfg_avt, "cfg_avt_%d",5);
 									fr << cfg_avt  <<m_cfgPlatParam.demandMinX;
-
+									break;
+								case 6:
 									sprintf(cfg_avt, "cfg_avt_%d",6);
 									fr << cfg_avt << m_cfgPlatParam.demandMaxY;
-
+									break;
+								case 7:
 									sprintf(cfg_avt, "cfg_avt_%d",7);
 									fr << cfg_avt << m_cfgPlatParam.demandMinY;
-
+									break;
+								case 8:
 									sprintf(cfg_avt, "cfg_avt_%d",8);
 									fr << cfg_avt << m_cfgPlatParam.deadbandX;
-
+									break;
+								case 9:
 									sprintf(cfg_avt, "cfg_avt_%d",9);
 									fr << cfg_avt << m_cfgPlatParam.deadbandY;
-
+									break;
+								case 10:
 									sprintf(cfg_avt, "cfg_avt_%d",10);
 									fr << cfg_avt << m_cfgPlatParam.driftX;
-
+									break;
+								case 11:
 									sprintf(cfg_avt, "cfg_avt_%d",11);
 									fr << cfg_avt << m_cfgPlatParam.driftY;
-
+									break;
+								case 12:
 									sprintf(cfg_avt, "cfg_avt_%d",12);
 									fr << cfg_avt  << m_cfgPlatParam.bleedUsed;
 									printf("updataProfile===> bleedUsed = %d\n", m_cfgPlatParam.bleedUsed);
-
+									break;
+								case 13:
 									sprintf(cfg_avt, "cfg_avt_%d",13);
 									fr << cfg_avt  << m_cfgPlatParam.bleedX;
 									printf("updataProfile===> bleedX = %f\n", m_cfgPlatParam.bleedX);
-
+									break;
+								case 14:
 									sprintf(cfg_avt, "cfg_avt_%d",14);
 									fr << cfg_avt  << m_cfgPlatParam.bleedY;
 									printf("updataProfile===> bleedY = %f\n", m_cfgPlatParam.bleedY);
-
+									break;
+								case 15:
 									sprintf(cfg_avt, "cfg_avt_%d",15);
 									fr << cfg_avt  << 0;
-									} //   plat
+									break;
+									 //   plat
 
 
-									{//pid
+									//pid
+								case 16:
 										sprintf(cfg_avt, "cfg_avt_%d",16);
 										fr << cfg_avt  << 0;
-
+										break;
+								case 17:
 										sprintf(cfg_avt, "cfg_avt_%d",17);
 										fr << cfg_avt   << m_cfgPlatParam.m__cfg_platformFilterParam.P0;
-
+										break;
+								case 18:
 										sprintf(cfg_avt, "cfg_avt_%d",18);
 										fr << cfg_avt   << m_cfgPlatParam.m__cfg_platformFilterParam.P1;
-
+										break;
+								case 19:
 										sprintf(cfg_avt, "cfg_avt_%d",19);
 										fr << cfg_avt   << m_cfgPlatParam.m__cfg_platformFilterParam.P2;
-
+										break;
+								case 20:
 										sprintf(cfg_avt, "cfg_avt_%d",20);
 										fr << cfg_avt  << m_cfgPlatParam.m__cfg_platformFilterParam.L1;
-
+										break;
+								case 21:
 										sprintf(cfg_avt, "cfg_avt_%d",21);
 										fr << cfg_avt  << m_cfgPlatParam.m__cfg_platformFilterParam.L2;
-
+										break;
+								case 22:
 										sprintf(cfg_avt, "cfg_avt_%d",22);
 										fr << cfg_avt   << m_cfgPlatParam.m__cfg_platformFilterParam.G;
 										printf("updataProfile===> G = %f\n", m_cfgPlatParam.m__cfg_platformFilterParam.G);
-
+										break;
+								case 23:
 										sprintf(cfg_avt, "cfg_avt_%d",23);
 										fr << cfg_avt   << m_cfgPlatParam.m__cfg_platformFilterParam.P02;
-
+										break;
+								case 24:
 										sprintf(cfg_avt, "cfg_avt_%d",24);
 										fr << cfg_avt   << m_cfgPlatParam.m__cfg_platformFilterParam.P12;
-
+										break;
+								case 25:
 										sprintf(cfg_avt, "cfg_avt_%d",25);
 										fr << cfg_avt   << m_cfgPlatParam.m__cfg_platformFilterParam.P22;
-
+										break;
+								case 26:
 										sprintf(cfg_avt, "cfg_avt_%d",26);
 										fr << cfg_avt   << m_cfgPlatParam.m__cfg_platformFilterParam.L12;
-
+										break;
+								case 27:
 										sprintf(cfg_avt, "cfg_avt_%d",27);
 										fr << cfg_avt  << m_cfgPlatParam.m__cfg_platformFilterParam.L22;
-
+										break;
+								case 28:
 										sprintf(cfg_avt, "cfg_avt_%d",28);
 										fr << cfg_avt  << m_cfgPlatParam.m__cfg_platformFilterParam.G2;
-
+										break;
+								case 29:
 										sprintf(cfg_avt, "cfg_avt_%d",29);
 										fr << cfg_avt  << 0;
-
+										break;
+								case 30:
 										sprintf(cfg_avt, "cfg_avt_%d",30);
 										fr << cfg_avt  << 0;
-
+										break;
+								case 31:
 										sprintf(cfg_avt, "cfg_avt_%d",31);
 										fr << cfg_avt  << 0;
-									}//pid
+										break;
+									//pid
 
 
-									{ // osd
-										sprintf(cfg_avt, "cfg_avt_%d",192);
-										fr << cfg_avt  << m_ipc->ipc_OSD->MAIN_Sensor;
-
+									 // osd
+								case 192:
+									sprintf(cfg_avt, "cfg_avt_%d",192);
+									fr << cfg_avt  << m_ipc->ipc_OSD->MAIN_Sensor;
+									break;
+								case 193:
 									sprintf(cfg_avt, "cfg_avt_%d",193);
 									fr << cfg_avt  << m_ipc->ipc_OSD->Timedisp_9;
-
+									break;
+								case 194:
 									sprintf(cfg_avt, "cfg_avt_%d",194);
 									fr << cfg_avt  << m_ipc->ipc_OSD->OSD_text_show;
-
+									break;
+								case 195:
 									sprintf(cfg_avt, "cfg_avt_%d",195);
 									fr << cfg_avt  << m_ipc->ipc_OSD->OSD_text_color;
-
+									break;
+								case 196:
 									sprintf(cfg_avt, "cfg_avt_%d",196);
 									fr << cfg_avt  << m_ipc->ipc_OSD->OSD_text_alpha;
-
+									break;
+								case 197:
 									sprintf(cfg_avt, "cfg_avt_%d",197);
 									fr << cfg_avt  << m_ipc->ipc_OSD->OSD_text_font;
-
+									break;
+								case 198:
 									sprintf(cfg_avt, "cfg_avt_%d",198);
 									fr << cfg_avt  << m_ipc->ipc_OSD->OSD_text_size;
-
+									break;
+								case 199:
 									sprintf(cfg_avt, "cfg_avt_%d",199);
 									fr << cfg_avt  << m_ipc->ipc_OSD->OSD_draw_show;
-
+									break;
+								case 200:
 									sprintf(cfg_avt, "cfg_avt_%d",200);
 									fr << cfg_avt  << m_ipc->ipc_OSD->OSD_draw_color ;
-
+									break;
+								case 201:
 									sprintf(cfg_avt, "cfg_avt_%d",201);
 									fr << cfg_avt  << m_ipc->ipc_OSD->CROSS_AXIS_WIDTH;
-
+									break;
+								case 202:
 									sprintf(cfg_avt, "cfg_avt_%d",202);
 									fr << cfg_avt  << m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT;
-
+									break;
+								case 203:
 									sprintf(cfg_avt, "cfg_avt_%d",203);
 									fr << cfg_avt  << m_ipc->ipc_OSD->Picp_CROSS_AXIS_WIDTH;
-
+									break;
+								case 204:
 									sprintf(cfg_avt, "cfg_avt_%d",204);
 									fr << cfg_avt  << m_ipc->ipc_OSD->Picp_CROSS_AXIS_HEIGHT;
-
+									break;
+								case 205:
 									sprintf(cfg_avt, "cfg_avt_%d",205);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch0_acqRect_width;
-
+									break;
+								case 206:
 									sprintf(cfg_avt, "cfg_avt_%d",206);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch1_acqRect_width;
-
+									break;
+								case 207:
 									sprintf(cfg_avt, "cfg_avt_%d",207);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch2_acqRect_width;
-
+									break;
+								case 208:
 									sprintf(cfg_avt, "cfg_avt_%d",208);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch3_acqRect_width;
-
+									break;
+								case 209:
 									sprintf(cfg_avt, "cfg_avt_%d",209);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch4_acqRect_width;
-
+									break;
+								case 210:
 									sprintf(cfg_avt, "cfg_avt_%d",210);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch5_acqRect_width;
-
+									break;
+								case 211:
 									sprintf(cfg_avt, "cfg_avt_%d",211);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch0_acqRect_height;
-
+									break;
+								case 212:
 									sprintf(cfg_avt, "cfg_avt_%d",212);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch1_acqRect_height;
-
+									break;
+								case 213:
 									sprintf(cfg_avt, "cfg_avt_%d",213);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch2_acqRect_height;
-
+									break;
+								case 214:
 									sprintf(cfg_avt, "cfg_avt_%d",214);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch3_acqRect_height;
-
+									break;
+								case 215:
 									sprintf(cfg_avt, "cfg_avt_%d",215);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch4_acqRect_height;
-
+									break;
+								case 216:
 									sprintf(cfg_avt, "cfg_avt_%d",216);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch5_acqRect_height;
-
+									break;
+								case 217:
 									sprintf(cfg_avt, "cfg_avt_%d",217);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch0_aim_width;
-
+									break;
+								case 218:
 									sprintf(cfg_avt, "cfg_avt_%d",218);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch1_aim_width;
-
+									break;
+								case 219:
 									sprintf(cfg_avt, "cfg_avt_%d",219);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch2_aim_width;
-
+									break;
+								case 220:
 									sprintf(cfg_avt, "cfg_avt_%d",220);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch3_aim_width;
-
+									break;
+								case 221:
 									sprintf(cfg_avt, "cfg_avt_%d",221);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch4_aim_width;
-
+									break;
+								case 222:
 									sprintf(cfg_avt, "cfg_avt_%d",222);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch5_aim_width;
-
+									break;
+								case 223:
 									sprintf(cfg_avt, "cfg_avt_%d",223);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch0_aim_height;
-
+									break;
+								case 224:
 									sprintf(cfg_avt, "cfg_avt_%d",224);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch1_aim_height;
-
+									break;
+								case 225:
 									sprintf(cfg_avt, "cfg_avt_%d",225);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch2_aim_height;
-
+									break;
+								case 226:
 									sprintf(cfg_avt, "cfg_avt_%d",226);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch3_aim_height;
-
+									break;
+								case 227:
 									sprintf(cfg_avt, "cfg_avt_%d",227);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch4_aim_height;
-
+									break;
+								case 228:
 									sprintf(cfg_avt, "cfg_avt_%d",228);
 									fr << cfg_avt  << m_ipc->ipc_OSD->ch5_aim_height;
-
+									break;
+								default:
+									break;
+									}
 									for(int i = 229; i < 241; i++){  //240
 										sprintf(cfg_avt, "cfg_avt_%d", i);
 										fr << cfg_avt << 0;
 									}
-									}//osd
-
+									//osd
 #endif
+
+
 			}else
 				return -1;
 		}
 	}
 
 	string cfgCameraFile;
-		int cfgId_Max = 671;
+		int cfgId_Max = 672;
 		char  cfg_camera[64] = "cfg_avt_";
 		cfgCameraFile = "camera_Profile_back.yml";
 		FILE *fp_camera = fopen(cfgCameraFile.c_str(), "rt");
@@ -1493,18 +1572,12 @@ void CMsgProcess::MSGAPI_ExtInputCtrl_AXIS()
 {
 	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
 	int TrkStat = sThis->m_ipc->ipc_status->AvtTrkStat;
-	// if( ! m_CurrStat.m_SecTrkStat && TrkStat == 0){
 
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickXInput, m_CurrStat.m_AxisXStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineXInput, m_CurrStat.m_AxisXStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickYInput, m_CurrStat.m_AxisYStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineYInput, m_CurrStat.m_AxisYStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
-	//  }
-//	 else if(m_CurrStat.m_SecTrkStat == 1 && sThis->m_ipc->ipc_status->AvtTrkStat == 1){
-//			m_pltInput.fTargetBoresightErrorX=this->m_ipc->trackposx;
-//			m_pltInput.fTargetBoresightErrorY=this->m_ipc->trackposy;
-	// }
-		printf("CMsgProcess ===== >TrkStat = %d\n", TrkStat);
+
 	 if(TrkStat) {
 		 	 	 TrkStat = 1;
 		      m_pltInput.iTrkAlgState= TrkStat + 1;
