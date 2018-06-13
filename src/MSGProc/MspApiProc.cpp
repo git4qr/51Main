@@ -212,8 +212,6 @@ void usd_MSGAPI_IPCConfigWrite_Save(long p)
 
 void usd_MSGAPI_IPCReadOSD(long p)
 {
-	printf("MspApiProc======>CROSS_AXIS_HEIGHT = %d\n",sThis->m_ipc->ipc_OSD->CROSS_AXIS_HEIGHT);
-	printf("MspApiProc======>CROSS_AXIS_WIDTH = %d\n",sThis->m_ipc->ipc_OSD->CROSS_AXIS_WIDTH);
 	sThis->m_ipc->IpcConfigOSD();
 }
 
@@ -319,6 +317,13 @@ void usd_MSGAPI_EXTINPUT_kboard(long p)
 
 }
 
+void usd_MSGAPI_EXTINPUT_OSD(long p)
+{
+	sThis->m_ipc->ipc_LKOSD = sThis->m_ipc->getLKOSDShareMem();
+	memcpy(sThis->m_ipc->ipc_LKOSD, &sThis->m_uart->osd_Param, sizeof(sThis->m_uart->osd_Param));
+	sThis->m_ipc->IPCLKOSD();
+}
+
 void usd_MSGAPI_ExtInpuCtrl_AXIS(long p)
 {
 	m_CurrStat.m_AxisXStat = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
@@ -381,6 +386,7 @@ int  MSGAPI_initial()
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_wordDisEnable,usd_MSGAPI_IPCwordDisEnable,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_config_Read,usd_MSGAPI_EXTINPUT_config_Read,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_kboard,usd_MSGAPI_EXTINPUT_kboard,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_OSD, usd_MSGAPI_EXTINPUT_OSD, 0);
 
     return 0;
 }

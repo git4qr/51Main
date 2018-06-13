@@ -74,6 +74,13 @@ UTCTRKSTATUS *CIPCProc::getUTCSharedMem()
 	assert(ipc_UTC != NULL);
 	return ipc_UTC;
 }
+
+LKOSDSTATUS* CIPCProc::getLKOSDShareMem()
+{
+	ipc_LKOSD = ipc_getlkosdstatus_p();
+	assert(ipc_LKOSD != NULL);
+	return ipc_LKOSD;
+}
 void CIPCProc::getIPCMsgProc()
 {
 	   int getx,gety;
@@ -407,5 +414,13 @@ int CIPCProc::IPCwordSize(int size)
 int CIPCProc::IPCwordDisEnable(int status)
 {
 	memset(test.param, 0, PARAMLEN);
+	return 0;
+}
+
+int CIPCProc::IPCLKOSD()
+{
+	memset(test.param, 0, PARAMLEN);
+	test.cmd_ID = read_shm_lkosd;
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
 	return 0;
 }

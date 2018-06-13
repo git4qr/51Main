@@ -464,6 +464,17 @@ void CUserBase::saveParameter()
    EnableSavePro();
 
 }
+void  CUserBase::osdDisplay()
+{
+	  uint8_t tempbuf[OSD_INFO_SIZE]={0};
+	  int n;
+      memset(&osd_Param,0,sizeof(osd_Param));
+      for(n=0;n<OSD_INFO_SIZE;n++)
+    	  tempbuf[0]=rcvBufQue.at(n+4);
+      memcpy(&osd_Param,tempbuf,OSD_INFO_SIZE);
+      EnableOSD();
+}
+
 int  CUserBase::prcRcvFrameBufQue()
 {
     int ret =  -1;
@@ -547,6 +558,9 @@ int  CUserBase::prcRcvFrameBufQue()
                             break;
                 case    0x22:
                 							 fontSize();
+                	       break;
+                case    0x23:
+                							 osdDisplay();
                 	       break;
                 case  0x24:
                 		                     fontDisplayCtrl();

@@ -38,10 +38,12 @@ public:
 		    int IPCwordType(int type);
 		    int IPCwordSize(int size);
 		    int IPCwordDisEnable(int status);
+		    int IPCLKOSD();
 
 		    IMGSTATUS  *getAvtStatSharedMem();
 		    OSDSTATUS *getOSDSharedMem();
 		    UTCTRKSTATUS *getUTCSharedMem();
+		    LKOSDSTATUS* getLKOSDShareMem();
 			  	unsigned int trackstatus;
 			  	int trackposx;
 			  	int trackposy;
@@ -57,6 +59,7 @@ public:
 			    IMGSTATUS *ipc_status;
 			    OSDSTATUS *ipc_OSD;
 			    UTCTRKSTATUS *ipc_UTC;
+			    LKOSDSTATUS 	*ipc_LKOSD;
 #if 0
 		      static Void  *IPCShamThrdFxn(Void * prm){
 		    	  CIPCProc *pThis = (CIPCProc*)prm;

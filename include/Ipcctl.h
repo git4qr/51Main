@@ -7,6 +7,7 @@
 #define _PATH3_ "/"
 #define _PATH4_ "/"
 #define _PATH5_ "/"
+#define _PATH6_ "/"
 
 #define SHMEMSTATUSSIZE 200
 #define SHMEMFRAMESIZE 10485760
@@ -45,6 +46,7 @@ typedef enum
     osdsize,/*26*/
     osdctrl,/*27*/
     acqBox,
+    read_shm_lkosd,
     invalid
 }CMD_ID;
 
@@ -80,6 +82,7 @@ typedef enum
     IPC_SHA,
     IPC_OSD_SHA,
     IPC_UTCTRK_SHA,
+    IPC_LKOSD_SHA,
     IPC_SEM,
     IPC_MAX
 }IPC_MTYPE;
@@ -175,13 +178,13 @@ typedef enum ipc_Dram_DispGradeStat
 
 typedef enum ipc_Dram_DispGradeColor
 {
-	ipc_ecolor_Default  = 0x0,
-	ipc_ecolor_Black = 0x1,
-	ipc_ecolor_White    = 0x2,
+	ipc_ecolor_Black = 0x01,
+	ipc_ecolor_White    = 0x02,
 	ipc_ecolor_Red = 0x03,
 	ipc_ecolor_Yellow = 0x04,
 	ipc_ecolor_Blue = 0x05,
 	ipc_ecolor_Green = 0x06,
+	ipc_ecolor_Default  = 0x07,
 } ipc_eOSDColor;
 
 typedef enum
@@ -321,23 +324,32 @@ typedef struct{
     volatile unsigned char ImgZoomStat;
 }CMD_ZOOM;
 
-typedef struct{
-    volatile unsigned char screenshot;//1:enable 2:disable
-    volatile unsigned char g_record;//1:enable record  2:disable record
-}CMD_SCREENSHOT;
 
 typedef struct{
-    volatile unsigned char screenh265;//1:enable 2:disable
-    volatile unsigned char g_record;//1:enable record  2:disable record
-}CMD_SCREENH265;
+    volatile unsigned char vframerate;
+    volatile unsigned char vfSensorStat;
+}CMD_VFRAMERATE;
 
 typedef struct{
-    volatile unsigned int framerate;
-}CMD_FRAMERATE;
+    volatile unsigned char vquality;
+    volatile unsigned char vqSensorStat;
+}CMD_VQUALITY;
 
 typedef struct{
-    volatile unsigned int datastream;
-}CMD_DATASTREAM;
+    volatile unsigned char color;
+}CMD_OSDCOLOR;
+
+typedef struct{
+    volatile unsigned char font;
+}CMD_OSDFONT;
+
+typedef struct{
+    volatile unsigned char size;
+}CMD_OSDSIZE;
+
+typedef struct{
+    volatile unsigned char ctrl;
+}CMD_OSDCTRL;
 
 typedef struct{
     unsigned char cmd_ID;
@@ -348,7 +360,6 @@ typedef struct{
 	unsigned int AimW;
 	unsigned int AimH;
 }AcqBoxWH;
-
 
 /** universal status **/
 typedef struct
@@ -559,6 +570,42 @@ typedef struct {
 
 }UTCTRKSTATUS;
 
+typedef struct{
+	unsigned int distance:1;
+	unsigned int speed:1;
+	unsigned int focus:1;
+	unsigned int time:1;
+	unsigned int plantAgle:1;
+	unsigned int targetPost:1;
+	unsigned int navDuration:1;
+	unsigned int commuDuration:1;
+
+	unsigned int  workPlace:1;
+	unsigned int softVer:1;
+	unsigned int reserve0:6;
+	
+	unsigned int   focusFeedBack:16;
+	unsigned int   speedInfo:8;
+	unsigned int   yearInfo:8;
+	unsigned int   monthInfo:8;
+	unsigned int   dayInfo:8;
+	unsigned int   timeHours:8;
+	unsigned int  timeMini:8;
+	unsigned int  timeSecnd:8;
+	unsigned int plantTilt1:8;
+	unsigned int plantTilt2:8;
+	unsigned int plantPan:16;
+	unsigned int lgitudeAgl:8;
+	unsigned int lgitudeMini:8;
+	unsigned int lgitudeSencd:8;
+  	unsigned int latitudeAgl:8;
+	unsigned int latitudeMini:8;
+	unsigned int latitudeSencd:8;
+	unsigned int distanceInfo:16;
+	unsigned int navDuratInfo1:8;
+	unsigned int navDuratInfo2:8;
+	unsigned int commuDuratInfo:16;
+}LKOSDSTATUS;
 
 
 typedef struct out_frame_angle
@@ -634,6 +681,7 @@ IMGSTATUS *ipc_getimgstatus_p();
 IMGSTATUS ipc_getimgstatus();
 OSDSTATUS *ipc_getosdstatus_p();
 UTCTRKSTATUS *ipc_getutstatus_p();
+LKOSDSTATUS *ipc_getlkosdstatus_p();
 
 
 #endif

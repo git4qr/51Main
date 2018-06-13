@@ -41,13 +41,38 @@ void CConnect::startRunning()
 														(void*)this);
 }
 
+int  CConnect::NETRecv(void *rcv_buf,int data_len)
+{
+		int fs_sel,len;
+		fd_set fd_netRead;
+		struct timeval timeout;
+		FD_ZERO(&fd_netRead);
+		FD_SET(m_connect,&fd_netRead);
+	    timeout.tv_sec = 3;
+		timeout.tv_usec = 0;
+		fs_sel = select(m_connect+1,&fd_netRead,NULL,NULL,&timeout);
+		if(fs_sel){
+			len = read(m_connect,rcv_buf,data_len);
+			return len;
+		}
+		else if(-1 == fs_sel){
+			printf("ERR: Uart Recv  select  Error!!\r\n");
+			return -1;
+		}
+		else if(0 == fs_sel){
+			//printf("Warning: Uart Recv  time  out!!\r\n");
+			return 0;
+		}
+}
+
 int  CConnect::RecvDataThread()
 {
 	int reVal;
 	char tmpNetRcvBuff[RECVSIZE];
 	memset(tmpNetRcvBuff,0,sizeof(tmpNetRcvBuff));
 	while(bConnecting){
-		    reVal = recvfrom(m_connect,tmpNetRcvBuff,RECVSIZE,0,0,0);
+		   // reVal = recvfrom(m_connect,tmpNetRcvBuff,RECVSIZE,0,0,0);
+		    reVal= NETRecv(tmpNetRcvBuff,RECVSIZE);
 		    if(errno ==EINTR){
 		    	continue;
 		    }

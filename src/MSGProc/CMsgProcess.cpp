@@ -304,6 +304,9 @@ void CMsgProcess::processMsg(int msg)
 						case Cmd_Mesg_jos_kboard:
 							MSGDRIV_send(MSGID_EXT_INPUT_kboard, 0);
 							break;
+						case Cmd_Mesg_Osd:
+							MSGDRIV_send(MSGID_EXT_INPUT_OSD, 0);
+							break;
 						default:
 							fprintf(stdout,"INFO: can not excute here\r\n");
 					}
@@ -1336,7 +1339,7 @@ int CMsgProcess::answerRead(int block, int field)
 		string cfgCameraFile;
 			int cfgId_Max = 671;
 			char  cfg_camera[64] = "cfg_avt_";
-			cfgCameraFile = "camera_Profile_back.yml";
+			cfgCameraFile = "camera_Profile.yml";
 			FILE *fp_camera = fopen(cfgCameraFile.c_str(), "rt");
 
 			if(fp_camera != NULL){

@@ -32,6 +32,7 @@ private:
 	 	   int readn(int fd, void *vptr, int n);
 	 	 	int  RecvDataThread();
 	 	 	int  SendDataThread();
+	 	 	int NETRecv(void *rcv_buf,int data_len);
 	 	 	CONNECT_IN		   m_connect;;
 	 		Sockaddress_IN	   m_addr;
 	 		OSA_ThrHndl        getDataThrID;

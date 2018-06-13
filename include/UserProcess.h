@@ -112,6 +112,45 @@ typedef struct
 }EXT_CtrlInput;
 
 typedef struct{
+	unsigned int distance:1;
+	unsigned int speed:1;
+	unsigned int focus:1;
+	unsigned int time:1;
+	unsigned int plantAgle:1;
+	unsigned int targetPost:1;
+	unsigned int navDuration:1;
+	unsigned int commuDuration:1;
+	//char 2
+	unsigned int  workPlace:1;
+	unsigned int softVer:1;
+	unsigned int reserve0:6;
+
+	unsigned int   focusFeedBack:16;
+	unsigned int   speedInfo:8;
+	unsigned int   yearInfo:8;
+	unsigned int   monthInfo:8;
+	unsigned int   dayInfo:8;
+	unsigned int   timeHours:8;
+	unsigned int  timeMini:8;
+	unsigned int  timeSecnd:8;
+	unsigned int plantTilt1:8;
+	unsigned int plantTilt2:8;
+	unsigned int plantPan:16;
+	unsigned int lgitudeAgl:8;
+	unsigned int lgitudeMini:8;
+	unsigned int lgitudeSencd:8;
+  	unsigned int latitudeAgl:8;
+	unsigned int latitudeMini:8;
+	unsigned int latitudeSencd:8;
+	unsigned int distanceInfo:16;
+	unsigned int navDuratInfo1:8;
+	unsigned int navDuratInfo2:8;
+	unsigned int commuDuratInfo:16;
+}OSD_INFO;
+
+#define   OSD_INFO_SIZE (27)
+
+typedef struct{
 	uint channel0:1;
 	uint channel1:1;
 	uint channel2:1;
@@ -165,16 +204,16 @@ public:
 	int errorOutPut[2];
 	int mainProStat[20];
 	systemSetting avtSetting;
-
+	OSD_INFO   osd_Param;
 	virtual int  Destroy(){
 		delete EXT_Ctrl;
 		delete Host_Ctrl;
 		return 0;
 	};
-	void EnableOSD()
-	{
-	//	SendMsg();
-	}
+		void EnableOSD()
+		{
+		SendMsg(Cmd_Mesg_Osd);
+		}
 		void Enableconfig()
 		{
 			SendMsg(Cmd_Mesg_config_Write);
@@ -444,6 +483,7 @@ private:
 	   void extExtraInputCtrl();
 	   void extFocusInputCtrl();
        void saveParameter();
+       void  osdDisplay();
           //response  receive  command
    void  startCheckAnswer(sendInfo * spBuf);
    void mainVedioChannel(sendInfo * spBuf);
