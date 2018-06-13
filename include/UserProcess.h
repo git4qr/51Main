@@ -179,6 +179,10 @@ public:
 		{
 			SendMsg(Cmd_Mesg_config_Write);
 		};
+		void EnableSavePro()
+		{
+			SendMsg(Cmd_Mesg_config_Write_Save);
+		};
 		void EnableTrk( )
 			{
 				SendMsg(Cmd_Mesg_TrkCtrl);
@@ -439,7 +443,7 @@ private:
 	   void readCurrentSetting();
 	   void extExtraInputCtrl();
 	   void extFocusInputCtrl();
-
+       void saveParameter();
           //response  receive  command
    void  startCheckAnswer(sendInfo * spBuf);
    void mainVedioChannel(sendInfo * spBuf);

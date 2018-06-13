@@ -459,8 +459,11 @@ void CUserBase::extFocusInputCtrl()
     extFocus=  (rcvBufQue.at(4)|rcvBufQue.at(5)<<8);
 
 }
+void CUserBase::saveParameter()
+{
+   EnableSavePro();
 
-
+}
 int  CUserBase::prcRcvFrameBufQue()
 {
     int ret =  -1;
@@ -556,6 +559,9 @@ int  CUserBase::prcRcvFrameBufQue()
                             break;
                 case  0x32:
                 							extExtraInputCtrl();
+                            break;
+                case  0x34:
+                							saveParameter();
                             break;
 
                 case  0x40:

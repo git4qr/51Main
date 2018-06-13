@@ -44,6 +44,7 @@ typedef enum _sys_msg_id_ {
     MSGID_EXT_INPUT_SwitchSensor,
     MSGID_EXT_INPUT_PresetCtrl,
     MSGID_EXT_INPUT_configWrite,
+    MSGID_EXT_INPUT_configWrite_Save,
     MSGID_EXT_INPUT_config_Read,
     MSGID_EXT_INPUT_kboard,
 
@@ -99,6 +100,7 @@ void usd_MSGAPI_EXTINPUT_kboard(long p);
 
 void usd_MSGAPI_IPCProfile(long p);
 void usd_MSGAPI_IPCConfigWrite(long p);
+void usd_MSGAPI_IPCConfigWrite_Save(long p);
 void usd_MSGAPI_IPCReadOSD(long p);
 void usd_MSGAPI_IPCReadUTC(long p);
 void usd_MSGAPI_IPCReadCamera(long p);

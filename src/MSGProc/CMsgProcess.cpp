@@ -256,6 +256,9 @@ void CMsgProcess::processMsg(int msg)
 						case Cmd_Mesg_config_Write:
 							MSGDRIV_send(MSGID_EXT_INPUT_configWrite, 0);
 							break;
+						case Cmd_Mesg_config_Write_Save:
+							MSGDRIV_send(MSGID_EXT_INPUT_configWrite_Save, 0);
+							break;
 						case Cmd_Mesg_MainElectronicZoom:
 							MSGDRIV_send(MSGID_IPC_MainElectronicZoom,0);
 							break;
@@ -621,7 +624,7 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value, Platform
 	Pprm = &m_pltParams;
 	m_cfgPprm = &m_cfgPlatParam;
 	int check = ((block -1) * 16 + field);
-	//cfg_value[check] = value;
+	cfg_value[check] = value;
 	switch(check)
 	{
 	case 1:
@@ -1047,7 +1050,7 @@ int CMsgProcess::updataProfile()
 				}
 #endif
 
-#if 1
+#if 0
 									{   // plat
 										sprintf(cfg_avt, "cfg_avt_%d",0);
 										fr << cfg_avt << 0;
@@ -1279,7 +1282,7 @@ int CMsgProcess::updataProfile()
 	}
 
 	string cfgCameraFile;
-		int cfgId_Max = 671;
+		int cfgId_Max = 672;
 		char  cfg_camera[64] = "cfg_avt_";
 		cfgCameraFile = "camera_Profile_back.yml";
 		FILE *fp_camera = fopen(cfgCameraFile.c_str(), "rt");
@@ -1493,18 +1496,12 @@ void CMsgProcess::MSGAPI_ExtInputCtrl_AXIS()
 {
 	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
 	int TrkStat = sThis->m_ipc->ipc_status->AvtTrkStat;
-	// if( ! m_CurrStat.m_SecTrkStat && TrkStat == 0){
 
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickXInput, m_CurrStat.m_AxisXStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineXInput, m_CurrStat.m_AxisXStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AcqJoystickYInput, m_CurrStat.m_AxisYStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
 		PlatformCtrl_VirtualInput(m_plt, DevUsr_AimpointRefineYInput, m_CurrStat.m_AxisYStat/32760.f, TrkStat, m_CurrStat.m_SecTrkStat);
-	//  }
-//	 else if(m_CurrStat.m_SecTrkStat == 1 && sThis->m_ipc->ipc_status->AvtTrkStat == 1){
-//			m_pltInput.fTargetBoresightErrorX=this->m_ipc->trackposx;
-//			m_pltInput.fTargetBoresightErrorY=this->m_ipc->trackposy;
-	// }
-		printf("CMsgProcess ===== >TrkStat = %d\n", TrkStat);
+
 	 if(TrkStat) {
 		 	 	 TrkStat = 1;
 		      m_pltInput.iTrkAlgState= TrkStat + 1;

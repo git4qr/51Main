@@ -15,7 +15,7 @@
 #include "ipcProc.h"
 #include "Ipcctl.h"
 #include <opencv2/core/core.hpp>
-#include "glut.h"
+//#include "glut.h"
 
 using namespace cv;
 using namespace std;

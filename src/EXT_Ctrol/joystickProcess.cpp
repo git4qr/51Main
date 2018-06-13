@@ -174,9 +174,11 @@ void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 					break;
 				case MSGID_INPUT_ImgEnh:
 					if(jse->value < -32760){
+						if(EXT_Ctrl[16] == 1)
 						EnableIMG();
 					}
 					else if(jse->value > 32760){
+						if(EXT_Ctrl[16] ==0)
 						EnableIMG();
 					}
 					break;
@@ -205,24 +207,18 @@ void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
 
 	switch (id) {
     		case MSGID_INPUT_TrkCtrl:
-    				printf("enter this MSGID_INPUT_TrkCtrl \n");
     				if(jse->value == 1){
     							EnableTrk();
-    					printf("EnableTrk \n");
     				}
     				break;
     		case MSGID_INPUT_Mtd:
-    				printf("enter this MSGID_INPUT_Mtd \n");
     				if(jse->value == 1){
     					EnableMtd();
-    					printf("EnableMtd \n");
     				}
     				break;
     		case MSGID_INPUT_ZoomLong:
-    				printf("enter this MSGID_INPUT_ZoomLong \n");
     				if(jse->value == 1){
     					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 1;
-    					printf("MSGID_INPUT_ZoomLong \n");
     				}
     				else{
     					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 0;
