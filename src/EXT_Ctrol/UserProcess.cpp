@@ -472,15 +472,12 @@ void  CUserBase::osdDisplay()
       for(n=0;n<OSD_INFO_SIZE;n++)
     	  tempbuf[n]=rcvBufQue.at(n+4);
       memcpy(&osd_Param,tempbuf,OSD_INFO_SIZE);
-<<<<<<< HEAD
+
       printf("UserProcess ====> speedinfo = %d\n", osd_Param.speedInfo);
       printf("UserProcess ====> distance = %d\n", osd_Param.distanceInfo);
       printf("UserProcess ====> speed = %d\n", osd_Param.speed);
-      //printf("UserProcess ====> distance = %d\n", osd_Param.distanceInfo);
-=======
-      printf("UserProcess ====> speed = %d\n", osd_Param.speedInfo);
       printf("UserProcess ====> distance = %d\n", osd_Param.distanceInfo);
->>>>>>> refs/remotes/eclipse_auto/master
+
       EnableOSD();
 }
 
