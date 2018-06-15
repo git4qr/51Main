@@ -321,12 +321,19 @@ void usd_MSGAPI_EXTINPUT_LKOSD(long p)
 {
 	sThis->m_ipc->ipc_LKOSD = sThis->m_ipc->getLKOSDShareMem();
 	memcpy(sThis->m_ipc->ipc_LKOSD, &(sThis->m_uart->osd_Param), sizeof(sThis->m_uart->osd_Param));
+<<<<<<< HEAD
     printf("MspApiProce IPC====> speedinfo = %d\n", sThis->m_ipc->ipc_LKOSD->speedInfo);
     printf("MspApiProce  IPC====> distance = %d\n", sThis->m_ipc->ipc_LKOSD->distanceInfo);
     printf("MspApiProce  IPC====> speed = %d\n", sThis->m_ipc->ipc_LKOSD->speed);
 
     printf("MspApiProce  OSD====> speed = %d\n", sThis->m_uart->osd_Param.speed);
     printf("MspApiProce OSD====> speedinfo = %d\n", sThis->m_uart->osd_Param.speedInfo);
+=======
+    printf("MspApiProce IPC====> speed = %d\n", sThis->m_ipc->ipc_LKOSD->speedInfo);
+    printf("MspApiProce  IPC====> distance = %d\n", sThis->m_ipc->ipc_LKOSD->distanceInfo);
+
+    printf("MspApiProce OSD====> speed = %d\n", sThis->m_uart->osd_Param.speedInfo);
+>>>>>>> refs/remotes/eclipse_auto/master
     printf("MspApiProce  OSD====> distance = %d\n", sThis->m_uart->osd_Param.distanceInfo);
 	sThis->m_ipc->IPCLKOSD();
 }
