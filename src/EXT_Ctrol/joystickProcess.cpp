@@ -69,7 +69,8 @@ int CJosStick::read_joystick_event(joy_event *jse)
         return 1;
 
 }
-
+# if 1
+//1080P
 int CJosStick::JosToWinX(int x)
 {
 	int m_WinX;
@@ -83,7 +84,22 @@ int CJosStick::JosToWinY(int y)
 	m_WinY = y/60 + ShowDPI[0][1]/2;
 	return m_WinY;
 }
+#else
+//720p
+int CJosStick::JosToWinX(int x)
+{
+	int m_WinX;
+	m_WinX = x/91 + ShowDPI[1][0]/2;
+	return m_WinX;
+}
 
+int CJosStick::JosToWinY(int y)
+{
+	int m_WinY;
+	m_WinY = y/113 + ShowDPI[1][1]/2;
+	return m_WinY;
+}
+#endif
 int  CJosStick::Stop()
 {
     close(joystick_fd);
@@ -217,13 +233,11 @@ void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
     				}
     				break;
     		case MSGID_INPUT_ZoomLong:
-    				if(jse->value == 1){
+    				if(jse->value == 1)
     					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 1;
-    				}
-    				else{
+    				else
     					EXT_Ctrl[MSGID_INPUT_ZoomLong ] = 0;
     				ZoomLongCtrl();
-    				}
     				break;
     		case MSGID_INPUT_ZoomShort:
     			if(jse->value == 1)

@@ -201,7 +201,7 @@ void usd_MSGAPI_IPCConfigWrite(long p)
 	int field = sThis->m_uart->Host_Ctrl[config_Wfield];
 	float value = sThis->m_uart->Host_Ctrl[config_Wvalue];
 	printf("block = %d, field = %d, value = %f\n", block, field, value);
-	sThis->modifierAVTProfile(block, field, value, NULL,NULL);
+	sThis->modifierAVTProfile(block, field, value, &(sThis->m_pltParams),&(sThis->m_cfgPlatParam), sThis->m_plt);
 	sThis->signalFeedBack(ACK_config_Write, ACK_config_Wblock, block, field);
 }
 
@@ -247,8 +247,8 @@ void usd_MSGAPI_IPCsaveAxis(long p)
 {
 	float x = float(sThis->m_ipc->ipc_status->opticAxisPosX[0]);
 	float y = float(sThis->m_ipc->ipc_status->opticAxisPosY[0]);
-	sThis->modifierAVTProfile(24, 0, x, NULL, NULL);
-	sThis->modifierAVTProfile(25, 0, y, NULL, NULL);
+	sThis->modifierAVTProfile(24, 0, x, NULL, NULL, NULL);
+	sThis->modifierAVTProfile(25, 0, y, NULL, NULL, NULL);
 	sThis->updataProfile();
 }
 
@@ -317,10 +317,17 @@ void usd_MSGAPI_EXTINPUT_kboard(long p)
 
 }
 
-void usd_MSGAPI_EXTINPUT_OSD(long p)
+void usd_MSGAPI_EXTINPUT_LKOSD(long p)
 {
 	sThis->m_ipc->ipc_LKOSD = sThis->m_ipc->getLKOSDShareMem();
-	memcpy(sThis->m_ipc->ipc_LKOSD, &sThis->m_uart->osd_Param, sizeof(sThis->m_uart->osd_Param));
+	memcpy(sThis->m_ipc->ipc_LKOSD, &(sThis->m_uart->osd_Param), sizeof(sThis->m_uart->osd_Param));
+    printf("MspApiProce IPC====> speedinfo = %d\n", sThis->m_ipc->ipc_LKOSD->speedInfo);
+    printf("MspApiProce  IPC====> distance = %d\n", sThis->m_ipc->ipc_LKOSD->distanceInfo);
+    printf("MspApiProce  IPC====> speed = %d\n", sThis->m_ipc->ipc_LKOSD->speed);
+
+    printf("MspApiProce  OSD====> speed = %d\n", sThis->m_uart->osd_Param.speed);
+    printf("MspApiProce OSD====> speedinfo = %d\n", sThis->m_uart->osd_Param.speedInfo);
+    printf("MspApiProce  OSD====> distance = %d\n", sThis->m_uart->osd_Param.distanceInfo);
 	sThis->m_ipc->IPCLKOSD();
 }
 
@@ -386,7 +393,7 @@ int  MSGAPI_initial()
     MSGDRIV_attachMsgFun(handle,MSGID_IPC_wordDisEnable,usd_MSGAPI_IPCwordDisEnable,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_config_Read,usd_MSGAPI_EXTINPUT_config_Read,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_kboard,usd_MSGAPI_EXTINPUT_kboard,0);
-    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_OSD, usd_MSGAPI_EXTINPUT_OSD, 0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_OSD, usd_MSGAPI_EXTINPUT_LKOSD, 0);
 
     return 0;
 }

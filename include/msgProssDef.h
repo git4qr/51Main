@@ -98,7 +98,7 @@ void usd_MSGAPI_EXTINPUTCtrl_Sensor(long p);
 void usd_MSGAPI_EXTINPUTCtrl_Preset(long p);
 void usd_MSGAPI_EXTINPUT_config_Read(long p);
 void usd_MSGAPI_EXTINPUT_kboard(long p);
-void usd_MSGAPI_EXTINPUT_OSD(long p);
+void usd_MSGAPI_EXTINPUT_LKOSD(long p);
 
 void usd_MSGAPI_IPCProfile(long p);
 void usd_MSGAPI_IPCConfigWrite(long p);

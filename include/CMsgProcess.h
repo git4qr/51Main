@@ -88,9 +88,12 @@ class CMsgProcess{
          	}test;
          	test aa;
          	test *ptest;
-         	void modifierAVTProfile(int block, int field, float value, PlatformCtrl_CreateParams *m_cfgPrm, configPlatParam_InitParams *m_cfgPprm);
+         	void modifierAVTProfile(int block, int field, float value, PlatformCtrl_CreateParams *m_cfgPrm, configPlatParam_InitParams *m_cfgPprm, HPLTCTRL  cfg_plt);
          	int updataProfile();
          	int answerRead(int block, int field);
+        	PlatformCtrl_CreateParams m_pltParams;
+        	configPlatParam_InitParams m_cfgPlatParam;
+        	HPLTCTRL   m_plt;
         private:
          	float *cfg_value;
 private:
@@ -110,10 +113,7 @@ private:
  protected:
 	ms_init_prm init_prm;
 	volatile int m_value;
-	HPLTCTRL   m_plt;
 	CPTZSpeedTransfer  m_ptzSpeed;
-	PlatformCtrl_CreateParams m_pltParams;
-	configPlatParam_InitParams m_cfgPlatParam;
 	PlatformFilter_InitParams m_cfgPlatFilter;
 	PLATFORMCTRL_TrackerInput m_pltInput;
 	PLATFORMCTRL_Output m_pltOutput;

@@ -466,19 +466,23 @@ void CUserBase::saveParameter()
 }
 void  CUserBase::osdDisplay()
 {
-	  uint8_t tempbuf[OSD_INFO_SIZE]={0};
+	  uint8_t tempbuf[OSD_INFO_SIZE];
 	  int n;
       memset(&osd_Param,0,sizeof(osd_Param));
       for(n=0;n<OSD_INFO_SIZE;n++)
-    	  tempbuf[0]=rcvBufQue.at(n+4);
+    	  tempbuf[n]=rcvBufQue.at(n+4);
       memcpy(&osd_Param,tempbuf,OSD_INFO_SIZE);
+      printf("UserProcess ====> speedinfo = %d\n", osd_Param.speedInfo);
+      printf("UserProcess ====> distance = %d\n", osd_Param.distanceInfo);
+      printf("UserProcess ====> speed = %d\n", osd_Param.speed);
+      //printf("UserProcess ====> distance = %d\n", osd_Param.distanceInfo);
       EnableOSD();
 }
 
 int  CUserBase::prcRcvFrameBufQue()
 {
     int ret =  -1;
-   // printf("INFO: prcocee Buff queue!!\r\n");
+  // printf("INFO: prcocee Buff queue!!\r\n");
 	int  cmdLength= rcvBufQue.at(2);
 	if(cmdLength<5) {
 		printf("Worning::  Invaild frame\r\n");
@@ -486,7 +490,7 @@ int  CUserBase::prcRcvFrameBufQue()
 		return ret;
 	}
 	u_int8_t checkSum = check_sum(cmdLength);
-	//printf("INFO: checksum %02x\r\n",checkSum);
+//	printf("INFO: checksum %02x\r\n",checkSum);
 	if(checkSum==rcvBufQue.at(cmdLength-1))
 	{
        switch(rcvBufQue.at(3)){

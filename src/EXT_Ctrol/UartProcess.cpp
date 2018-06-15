@@ -184,8 +184,8 @@ int  CUartProcess::UartRecv(void *rcv_buf,int data_len)
 		struct timeval timeout;
 		FD_ZERO(&fd_uartRead);
 		FD_SET(m_port,&fd_uartRead);
-	    timeout.tv_sec = 3;
-		timeout.tv_usec = 0;
+	    timeout.tv_sec = 0;
+		timeout.tv_usec = 50000;
 		fs_sel = select(m_port+1,&fd_uartRead,NULL,NULL,&timeout);
 		if(fs_sel){
 			len = read(m_port,rcv_buf,data_len);

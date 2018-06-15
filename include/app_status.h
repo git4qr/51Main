@@ -21,6 +21,6 @@ typedef enum {
 }eTrkAimSize;
 
 
-static int ShowDPI[2][2] = {{1920, 1080}, {1920, 1080}};
+static int ShowDPI[2][2] = {{1920, 1080}, {720, 576}};
 
 #endif

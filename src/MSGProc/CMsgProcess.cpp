@@ -620,12 +620,13 @@ int  CMsgProcess::configAvtFromFile()
 		m_uart->ReadProfile();
 	}
 
-void CMsgProcess::modifierAVTProfile(int block, int field, float value, PlatformCtrl_CreateParams *Pprm, configPlatParam_InitParams *m_cfgPprm)
+void CMsgProcess::modifierAVTProfile(int block, int field, float value, PlatformCtrl_CreateParams *Pprm, configPlatParam_InitParams *m_cfgPprm, HPLTCTRL  cfg_plt)
 {
 	m_ipc->ipc_OSD = m_ipc->getOSDSharedMem();
 	m_ipc->ipc_UTC = m_ipc->getUTCSharedMem();
-	Pprm = &m_pltParams;
-	m_cfgPprm = &m_cfgPlatParam;
+	//Pprm = &m_pltParams;
+	//m_cfgPprm = &m_cfgPlatParam;
+	//cfg_plt	= m_plt;
 	int check = ((block -1) * 16 + field);
 	cfg_value[check] = value;
 	switch(check)
@@ -1019,8 +1020,12 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value, Platform
 	default:
 		break;
 	}
-	if( check > 16 && check < 29)
-		PlatformFilter_CreateParams_Gettxt(&Pprm->platformFilterParam[0][0],&Pprm->platformFilterParam[0][1], &m_cfgPprm->m__cfg_platformFilterParam);
+	if( check > 0 && check < 29){
+		//PlatformFilter_CreateParams_Gettxt(&Pprm->platformFilterParam[0][0],&Pprm->platformFilterParam[0][1], &m_cfgPprm->m__cfg_platformFilterParam);
+		PlatformCtrl_CreateParams_Init(Pprm, m_cfgPprm);
+		cfg_plt = PlatformCtrl_Create(Pprm);
+		printf("modifier config is ok\n");
+	}
 	if( check >= 192 && check <= 228)
 		m_uart->ReadShmOSD();
 	else if(check >= 128 && check <= 184)
@@ -1033,7 +1038,7 @@ int CMsgProcess::updataProfile()
 	string cfgAvtFile;
 	int configId_Max = 256;
 	char  cfg_avt[64] = "cfg_avt_";
-	cfgAvtFile = "Profile_back.yml";
+	cfgAvtFile = "Profile.yml";
 	FILE *fp = fopen(cfgAvtFile.c_str(), "rt+");
 
 	if(fp != NULL){
@@ -1287,7 +1292,7 @@ int CMsgProcess::updataProfile()
 	string cfgCameraFile;
 		int cfgId_Max = 672;
 		char  cfg_camera[64] = "cfg_avt_";
-		cfgCameraFile = "camera_Profile_back.yml";
+		cfgCameraFile = "camera_Profile.yml";
 		FILE *fp_camera = fopen(cfgCameraFile.c_str(), "rt");
 
 		if(fp_camera != NULL){
