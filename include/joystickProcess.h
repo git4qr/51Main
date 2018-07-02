@@ -103,6 +103,8 @@ private:
    void  ProcEvent_Button(int  EventBtnNum, int EventValue);
     void Button_Event(u_int8_t  btnNum);
     void EventAixs(u_int8_t  axisNum);
+    void Y_CtrlIrisAndFocus(int value);
+    void X_CtrlMmtSelect(int value);
 	joy_event *jse;
 	static bool JosStart;
 	bool isTrackIn;

@@ -30,14 +30,15 @@ typedef enum _sys_msg_id_ {
     MSGID_EXT_INPUT_MTDCTRL,
     MSGID_EXT_INPUT_OPTICZOOMLONGCTRL,
     MSGID_EXT_INPUT_OPTICZOOMSHORTCTRL,
-    MSGID_EXT_INPUT_TRCKBOXSIZECTRL,
+    MSGID_EXT_INPUT_IrisAndFocusAndExit,
     MSGID_EXT_INPUT_TRACKSEARCHCTRL,
-    MSGID_EXT_INPUT_IRISUPCTRL,
+    MSGID_EXT_INPUT_FuncMenu,
     MSGID_EXT_INPUT_IRISDOWNCTRL,
     MSGID_EXT_INPUT_FOCUSFARCHCTRL,
     MSGID_EXT_INPUT_FOCUSNEARCTRL,
     MSGID_EXT_INPUT_IMGENHCTRL,
     MSGID_EXT_INPUT_MMTCRTL,
+    MSGID_EXT_INPUT_MMTSelect,
     MSGID_EXT_INPUT_AIMPOSXCTRL,
     MSGID_EXT_INPUT_AIMPOSYCTRL,
     MSGID_EXT_INPUT_PLATCTRL,
@@ -79,15 +80,15 @@ void MSGAPI_unInitial(MSGDRIV_Handle handle);
 //void MSGAPI_init_device(LPARAM lParam       /*=NULL*/);
 void usd_MSGAPI_ExtInpuCtrl_Track(long p);
 void usd_MSGAPI_ExtInpuCtrl_Mtd(long p);
-void usd_MSGAPI_ExtInpuCtrl_AcqBoxSize(long p);
+void usd_MSGAPI_ExtInpuCtrl_IrisAndFocusAndExit(long p);
 void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p);
-void usd_MSGAPI_ExtInpuCtrl_IrisUp(long p);
+void usd_MSGAPI_ExtInpuCtrl_FuncMenu(long p);
 void usd_MSGAPI_ExtInpuCtrl_IrisDwon(long p);
 void usd_MSGAPI_ExtInpuCtrl_FocusFar(long p);
 void usd_MSGAPI_ExtInpuCtrl_FocusNear(long p);
 void usd_MSGAPI_ExtInpuCtrl_ImgEnh(long p);
 void usd_MSGAPI_ExtInpuCtrl_Mmt(long p);
-void MSGAPI_ExtInputCtrl_MmtSelect(int msg);
+void usd_MSGAPI_ExtInputCtrl_MmtSelect( long p);
 void usd_MSGAPI_ExtInpuCtrl_AIMPOSX(long p);
 void usd_MSGAPI_ExtInpuCtrl_AIMPOSY(long p);
 void usd_MSGAPI_ExtInpuCtrl_ZoomLong(long p);
@@ -121,6 +122,7 @@ void usd_MSGAPI_IPCwordSize(long p);
 void usd_MSGAPI_IPCwordDisEnable(long p);
 
 void  MSGAPI_StatusConvertFunc(int msg);
+void MSGAPI_MmtLock();
 
 
 

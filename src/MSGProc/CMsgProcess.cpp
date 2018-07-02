@@ -91,6 +91,7 @@ int CMsgProcess::Create()
 	OSA_assert(m_plt != NULL);
 	m_ptz = new CPTZControl();
     m_ptz->Create();
+    printf("ptz create success!\n");
 
     m_jos->updateJosAxisMap();
     m_jos->updateJosKeyMap();
@@ -167,40 +168,31 @@ void CMsgProcess::processMsg(int msg)
 	sThis->m_ipc->ipc_status = sThis->m_ipc->getAvtStatSharedMem();
 					switch(msg){
 						case Cmd_Mesg_TrkCtrl:
-							if(sThis->m_ipc->ipc_status->MmtStat[0])
-								MSGAPI_ExtInputCtrl_MmtSelect(1);
+							if(sThis->m_ipc->ipc_status->MmtStat[0]){
+								MSGAPI_MmtLock();
+							printf("MmtLock send ok\n");
+							}
 							else
 								MSGDRIV_send(MSGID_EXT_INPUT_TRACKCTRL,0);
 							 break;
 						case Cmd_Mesg_Mtd:
-							if(sThis->m_ipc->ipc_status->MmtStat[0])
-							MSGAPI_ExtInputCtrl_MmtSelect(2);
-							else if(sThis->m_ipc->ipc_status->AvtTrkStat == 0)
+						  if(sThis->m_ipc->ipc_status->AvtTrkStat == 0)
 						MSGDRIV_send(MSGID_EXT_INPUT_MTDCTRL,0);
 							break;
 						case Cmd_Mesg_ZoomLong:
-							if(sThis->m_ipc->ipc_status->MmtStat[0])
-							MSGAPI_ExtInputCtrl_MmtSelect(3);
-							else
 						MSGDRIV_send(MSGID_EXT_INPUT_OPTICZOOMLONGCTRL,0);
 						break;
 						case Cmd_Mesg_ZoomShort:
-							if(sThis->m_ipc->ipc_status->MmtStat[0])
-							MSGAPI_ExtInputCtrl_MmtSelect(4);
-							else
 						MSGDRIV_send(MSGID_EXT_INPUT_OPTICZOOMSHORTCTRL,0);
 						break;
-						case Cmd_Mesg_AcqBoxCtrl:
-							if(sThis->m_ipc->ipc_status->MmtStat[0])
-							MSGAPI_ExtInputCtrl_MmtSelect(5);
-							else
-						MSGDRIV_send(MSGID_EXT_INPUT_TRCKBOXSIZECTRL,0);
+						case Cmd_Mesg_IrisAndFocusAndExit:
+						MSGDRIV_send(MSGID_EXT_INPUT_IrisAndFocusAndExit,0);
 							break;
 						case Cmd_Mesg_TrkSearch:
 							MSGDRIV_send(MSGID_EXT_INPUT_TRACKSEARCHCTRL,0);
 							break;
-						case Cmd_Mesg_IrisUp:
-							MSGDRIV_send(MSGID_EXT_INPUT_IRISUPCTRL,0);
+						case Cmd_Mesg_FuncMenu:
+							MSGDRIV_send(MSGID_EXT_INPUT_FuncMenu,0);
 								break;
 						case Cmd_Mesg_IrisDown:
 							MSGDRIV_send(MSGID_EXT_INPUT_IRISDOWNCTRL,0);
@@ -216,6 +208,9 @@ void CMsgProcess::processMsg(int msg)
 							break;
 						case Cmd_Mesg_Mmt:
 						MSGDRIV_send(MSGID_EXT_INPUT_MMTCRTL,0);
+							break;
+						case Cmd_Mesg_MmtSelect:
+							MSGDRIV_send(MSGID_EXT_INPUT_MMTSelect,0);
 							break;
 						case Cmd_Mesg_AIMPOS_X:
 							MSGDRIV_send(MSGID_EXT_INPUT_AIMPOSXCTRL,0);
@@ -318,7 +313,7 @@ int  CMsgProcess::configAvtFromFile()
 	m_ipc->ipc_UTC = m_ipc->getUTCSharedMem();
 
 	string cfgAvtFile;
-	int configId_Max = 256;
+	int configId_Max = 240;
 	char  cfg_avt[20] = "cfg_avt_";
 	cfgAvtFile = "Profile.yml";
 	FILE *fp = fopen(cfgAvtFile.c_str(), "rt");
@@ -592,7 +587,7 @@ int  CMsgProcess::configAvtFromFile()
 		}
 
 	string cfgCameraFile;
-		int cfgId_Max = 671;
+		int cfgId_Max = 672;
 		char  cfg_camera[20] = "cfg_avt_";
 		cfgCameraFile = "camera_Profile.yml";
 		FILE *fp_camera = fopen(cfgCameraFile.c_str(), "rt");
@@ -1036,7 +1031,7 @@ void CMsgProcess::modifierAVTProfile(int block, int field, float value, Platform
 int CMsgProcess::updataProfile()
 {
 	string cfgAvtFile;
-	int configId_Max = 256;
+	int configId_Max = 240;
 	char  cfg_avt[64] = "cfg_avt_";
 	cfgAvtFile = "Profile.yml";
 	FILE *fp = fopen(cfgAvtFile.c_str(), "rt+");
@@ -1436,13 +1431,17 @@ void CMsgProcess::MSGAPI_ExtInputCtrl_ZoomShort()
 }
 
 
-void CMsgProcess::MSGAPI_ExtInputCtrl_FocusFar()
+void CMsgProcess::MSGAPI_ExtInputCtrl_Focus(int stat)
 {
-
-	if(m_CurrStat.m_FoucusFarStat)
+	//printf("Focus ===> stat = %d\n", stat);
+	if(stat < 0)
 		m_ptz->m_iSetFocusFarSpeed = -1;
-	else
+	else if(stat > 0)
+		m_ptz->m_iSetFocusNearSpeed = 1;
+	else{
 		m_ptz->m_iSetFocusFarSpeed = 0;
+		m_ptz->m_iSetFocusNearSpeed = 0;
+	}
 	m_ptz->Move();
 }
 
@@ -1455,11 +1454,13 @@ void CMsgProcess::MSGAPI_ExtInputCtrlFocusNear()
 	m_ptz->Move();
 }
 
-void CMsgProcess::MSGAPI_ExtInputCtrl_IrisUp()
+void CMsgProcess::MSGAPI_ExtInputCtrl_Iris(int stat)
 {
-
-	if(m_CurrStat.m_IrisUpStat)
+	//printf(" IRis ==> stat = %d\n", stat);
+	if(stat < 0)
 		m_ptz->m_iSetIrisSpeed = -1;
+	else if(stat  > 0)
+		m_ptz->m_iSetIrisSpeed = 1;
 	else
 		m_ptz->m_iSetIrisSpeed = 0;
 	m_ptz->Move();
@@ -1484,6 +1485,7 @@ void CMsgProcess::MSGAPI_ExtInputCtrl_Preset()
 	m_ptz->Move();
 	printf("preset Move!!!\n");
 }
+#if 0
 void CMsgProcess::MSGAPI_IPCInputCtrl_Axis()
 {
 
@@ -1499,6 +1501,8 @@ void CMsgProcess::MSGAPI_IPCInputCtrl_Axis()
 		}
 
 }
+
+#endif
 
 void CMsgProcess::MSGAPI_ExtInputCtrl_AXIS()
 {

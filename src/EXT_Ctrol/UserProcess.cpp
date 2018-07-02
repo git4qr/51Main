@@ -206,7 +206,7 @@ void CUserBase::mutileTagartSelect()
             	            ZoomShortCtrl();
             	              break;
             case   0x5:
-            	             TrkBoxCtrl();
+            	             //TrkBoxCtrl();
             	             break;
          }
 }
@@ -378,8 +378,8 @@ void  CUserBase::irisCtrl()
             	IrisDown();
             	             break;
             case   0x2:
-            	EXT_Ctrl[Cmd_Mesg_IrisUp-1]=1;
-            	IrisUp();
+            	//EXT_Ctrl[Cmd_Mesg_IrisUp-1]=1;
+            	//IrisUp();
             	   break;
        }
 }

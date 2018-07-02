@@ -63,9 +63,9 @@ class CMsgProcess{
 		      int Run();
 		      void MSGAPI_ExtInputCtrl_ZoomLong();
 		      void MSGAPI_ExtInputCtrl_ZoomShort();
-		      void MSGAPI_ExtInputCtrl_FocusFar();
+		      void MSGAPI_ExtInputCtrl_Focus( int stat);
 		      void MSGAPI_ExtInputCtrlFocusNear();
-		      void MSGAPI_ExtInputCtrl_IrisUp();
+		      void MSGAPI_ExtInputCtrl_Iris(int stat);
 		      void MSGAPI_ExtInputCtrl_IrisDown();
 		      void MSGAPI_ExtInputCtrl_Preset();
 		      void MSGAPI_ExtInputCtrl_AXIS();

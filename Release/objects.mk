@@ -4,5 +4,5 @@
 
 USER_OBJS :=
 
-LIBS := -lipc -lopencv_core -lglut -lGL -lGLEW
+LIBS := -lipc -lpthread -lopencv_core
 

@@ -177,13 +177,19 @@ int  CIPCProc::ipcMutilTargetSelectCtrl(volatile unsigned char ImgMmtSelect)
 	//if(ImgMmtSelect != fr_img_cmd_mmtsel.ImgMmtSelect)
 	{
 		test.param[0]=ImgMmtSelect;
-	    	ipc_sendmsg(&test,IPC_TOIMG_MSG);
-	    	sThis->Change_avtStatus();
-	    	sThis->signalFeedBack(ACK_mmtSelectStatus, ACK_mmtSelect_value, ImgMmtSelect, 0);
-	    //	printf("MMTSelect = %d\n",ImgMmtSelect );
+	    	//ipc_sendmsg(&test,IPC_TOIMG_MSG);
 	}
-
 		return 0;
+}
+
+int CIPCProc::IpcMmtLockCtrl(int mmt_Select)
+{
+	memset(test.param,0,PARAMLEN);
+	test.cmd_ID = mmtLock;
+	ipc_sendmsg(&test,IPC_TOIMG_MSG);
+	sThis->Change_avtStatus();
+	sThis->signalFeedBack(ACK_mmtSelectStatus, ACK_mmtSelect_value, mmt_Select, 0);
+	return 0;
 }
 
 int CIPCProc::ipcImageEnhanceCtrl(volatile unsigned char ImgEnhStat) //1open 0close
@@ -278,6 +284,35 @@ int CIPCProc::IpcAcqDoorCtrl(AcqBoxSize *BoxSize)
 		ipc_sendmsg(&test, IPC_TOIMG_MSG);
 		sThis->Change_avtStatus();
 	}
+	return 0;
+}
+
+int CIPCProc::IpcIrisAndFocus(char sign)
+{
+	memset(test.param, 0, PARAMLEN);
+	switch(sign)
+	{
+	case Exit:
+		test.cmd_ID = exit_IrisAndFocus;
+		break;
+	case iris:
+		test.cmd_ID = Iris;
+		break;
+	case Focus:
+		test.cmd_ID = focus;
+		break;
+	}
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	return 0;
+}
+
+int CIPCProc::IpcFuncMenu(char sign)
+{
+	memset(test.param, 0, PARAMLEN);
+	test.cmd_ID = menu;
+	test.param[0] = sign;
+	ipc_sendmsg(&test, IPC_TOIMG_MSG);
+	printf("FuncMenu is success\n");
 	return 0;
 }
 

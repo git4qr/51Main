@@ -44,10 +44,10 @@ int CPTZControl::Create()
 	m_pResp = (LPPELCO_D_RESPPKT)recvBuffer;
 
     uart_open_params	mUartOpenParams;
-    char uartname[20];
-    int num = 2;
-    sprintf(uartname,"/dev/ttyTHS%d", num);
-    strcpy( mUartOpenParams.device, uartname );
+   // char uartname[20];
+  //  int num = 2;
+   // sprintf(uartname,"/dev/ttyTHS%d", num);
+    strcpy( mUartOpenParams.device, "/dev/ttyTHS2");
     mUartOpenParams.baudrate   = 4800;//4800;
     mUartOpenParams.databits   = 8;
     mUartOpenParams.parity	   = 'N';
@@ -67,7 +67,7 @@ int CPTZControl::Create()
     OSA_semCreate(&m_sem, 1, 0);
 
 	uiCurRecvLen = 0;
-	m_tResponse =PELCO_RESPONSE_General;// PELCO_RESPONSE_Null;
+	m_tResponse =PELCO_RESPONSE_Null;// PELCO_RESPONSE_Null;
 	m_nWait = 0;
     exitDataInThread = FALSE;
     //OSA_printf("%s: thrHandleDataIn create call... \n", __func__);
@@ -109,6 +109,7 @@ void CPTZControl::Destroy()
 
 void CPTZControl::dataInThrd()
 {
+	printf("PTZ dataInThrd is start\n");
     Int32 result;
     fd_set rd_set;
     Uint8 *buffer = NULL;
@@ -149,7 +150,7 @@ void CPTZControl::dataInThrd()
             OSA_assert(rlen > 0);
             for(i=0; i<rlen; i++)
             	RecvByte(buffer[i]);
-            //OSA_printf("%s: [%02x %02x %02x %02x %02x %02x %02x]",__func__, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
+            OSA_printf("%s: [%02x %02x %02x %02x %02x %02x %02x]",__func__, buffer[0], buffer[1], buffer[2], buffer[3], buffer[4], buffer[5], buffer[6]);
         }
     }
     free(buffer);
@@ -161,6 +162,7 @@ void CPTZControl::dataInThrd()
 
 void CPTZControl::RecvByte(unsigned char byRecv)
 {
+	printf("PTZ RecvByte is start\n");
 	if(uiCurRecvLen == 0){
 
 		if(byRecv == 0xFF){
@@ -179,9 +181,9 @@ void CPTZControl::RecvByte(unsigned char byRecv)
 		if(uiCurRecvLen == m_nWait){
 			if(recvBuffer[3] != 0x59 && recvBuffer[3] != 0x5B
 				&& recvBuffer[3] != 0x5D && recvBuffer[3] != 0x63){
-				//OSA_printf("PTZ R> %d %02X %02X %02X %02X %02X %02X %02X\n", uiCurRecvLen,
-				//	recvBuffer[0], recvBuffer[1], recvBuffer[2], recvBuffer[3],
-				//	recvBuffer[4], recvBuffer[5], recvBuffer[6]);
+				OSA_printf("PTZ R> %d %02X %02X %02X %02X %02X %02X %02X\n", uiCurRecvLen,
+					recvBuffer[0], recvBuffer[1], recvBuffer[2], recvBuffer[3],
+					recvBuffer[4], recvBuffer[5], recvBuffer[6]);
 			}
 
 			switch(recvBuffer[3])
@@ -190,24 +192,25 @@ void CPTZControl::RecvByte(unsigned char byRecv)
 				m_iPanPos = recvBuffer[4];
 				m_iPanPos <<= 8;
 				m_iPanPos += recvBuffer[5];
-				//fprintf(stdout, "INFO: m_iPanPos is %d",m_iPanPos);
+				fprintf(stdout, "INFO: m_iPanPos is %d",m_iPanPos);
 				break;
 			case 0x5B:
 				m_iTiltPos = recvBuffer[4];
 				m_iTiltPos <<= 8;
 				m_iTiltPos += recvBuffer[5];
-				//printf("INFO: m_iTiltPos is %d",m_iTiltPos);
+				printf("INFO: m_iTiltPos is %d",m_iTiltPos);
 				break;
 			case 0x5D:
 				m_iZoomPos = recvBuffer[4];
 				m_iZoomPos <<= 8;
 				m_iZoomPos += recvBuffer[5];
-			//	printf("INFO: zoompos is %d",m_iZoomPos);
+				printf("INFO: zoompos is %d",m_iZoomPos);
 				break;
 			case 0x63:
 				m_iMagnification = recvBuffer[4];
 				m_iMagnification <<= 8;
 				m_iMagnification += recvBuffer[5];
+				printf("INFO: Magnification is %d",m_iMagnification);
 				break;
 			}
 
@@ -319,7 +322,6 @@ int CPTZControl::MoveSync()
 
 				if(m_iCurFocusNearSpeed > 0){
 					m_cmd2Code |= 0x80;
-					//printf("This is Focus Near\n");
 							}
 
 				if(m_iCurPanSpeed>0)

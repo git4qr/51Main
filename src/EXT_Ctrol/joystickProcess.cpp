@@ -1,6 +1,10 @@
 
 #include "joystickProcess.h"
 int joystick_fd = -1;
+int IrisAndFocus_Ret = 0;
+int MmtSelect_Ret = 0;
+bool Mmt_sign = true;
+#define MmtMax 6;
 
 bool CJosStick::JosStart = true;
 
@@ -69,7 +73,7 @@ int CJosStick::read_joystick_event(joy_event *jse)
         return 1;
 
 }
-# if 1
+# if 0
 //1080P
 int CJosStick::JosToWinX(int x)
 {
@@ -130,6 +134,7 @@ int  CJosStick::Run()
 
 void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 {
+
 #if 1
 	if(mjosNum > 6 || mjosNum == 4)
 		return ;
@@ -153,12 +158,24 @@ void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 	switch(id){
 
 			case MSGID_INPUT_AXISX:
+				if(EXT_Ctrl[MSGID_INPUT_IrisAndFocusAndExit] == 0 &&  EXT_Ctrl[Cmd_Mesg_Mmt - 1] == 0){
 				EXT_Ctrl[14] = jse->value;
 					AXIS_X();
+				}
+				else if(EXT_Ctrl[Cmd_Mesg_Mmt - 1] == 1){
+					X_CtrlMmtSelect(jse->value);
+					EnableMmtSelect();
+				}
 					break;
 				case MSGID_INPUT_AXISY:
+					if(EXT_Ctrl[MSGID_INPUT_IrisAndFocusAndExit] == 0 && EXT_Ctrl[Cmd_Mesg_Mmt - 1] == 0){
 					EXT_Ctrl[15] = jse->value;
 					AXIS_Y();
+					}
+					else {
+						Y_CtrlIrisAndFocus(jse->value);
+						ENableIrisAndFocusAndExit();
+					}
 					break;
 				case MSGID_INPUT__POVX:
 					if(jse->value == 0){
@@ -204,6 +221,41 @@ void CJosStick::procJosEvent_Axis(UINT8  mjosNum )
 
 }
 
+void CJosStick::X_CtrlMmtSelect(int value)
+{
+	if(Mmt_sign){
+		if(value > 10000){
+			MmtSelect_Ret = (MmtSelect_Ret + 1) % MmtMax;
+		if(MmtSelect_Ret == 0)
+			MmtSelect_Ret = 1;
+		Mmt_sign = false;
+		}
+	}
+
+	if(value < 2000 && value > -2000)
+		Mmt_sign = true;
+
+	if(Mmt_sign){
+		if(value < -10000){
+			MmtSelect_Ret = (MmtSelect_Ret - 1) % MmtMax;
+			if(MmtSelect_Ret == 0)
+				MmtSelect_Ret = 5;
+			Mmt_sign = false;
+		}
+
+	}
+	EXT_Ctrl[14] = MmtSelect_Ret;
+}
+
+void CJosStick::Y_CtrlIrisAndFocus(int value)
+{
+	if(value < -10000)
+		EXT_Ctrl[15] = -1;
+	else if(value > 20000)
+		EXT_Ctrl[15] = 1;
+	else
+		EXT_Ctrl[15] = 0;
+}
 
 void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
 {
@@ -246,9 +298,11 @@ void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
     				EXT_Ctrl[MSGID_INPUT_ZoomShort ] = 0;
     			ZoomShortCtrl();
     			break;
-    		case MSGID_INPUT_TrkBoxCtrl:
+    		case MSGID_INPUT_IrisAndFocusAndExit:
     			if(jse->value == 1){
-    					TrkBoxCtrl();
+    				IrisAndFocus_Ret =  (IrisAndFocus_Ret + 1) % 3;
+    				EXT_Ctrl[MSGID_INPUT_IrisAndFocusAndExit] =IrisAndFocus_Ret;
+    				ENableIrisAndFocusAndExit();
     			}
     			break;
     		case MSGID_INPUT_TrkSearch:
@@ -261,14 +315,14 @@ void CJosStick::ProcJosEvent_Button(UINT8  njosNum)
     				EXT_Ctrl[MSGID_INPUT_TrkSearch ] = 0;
     			}
     			break;
-    		case MSGID_INPUT_IrisUp:
+    		case MSGID_INPUT_FuncMenu:
     			if(jse->value == 1){
-    				EXT_Ctrl[MSGID_INPUT_IrisUp ] = 1;
-    					IrisUp();
+    				EXT_Ctrl[MSGID_INPUT_FuncMenu] = 1;
+    				EnableFuncMenu();
     			}
     			else{
-    				EXT_Ctrl[MSGID_INPUT_IrisUp] = 0;
-    					IrisUp();
+    				EXT_Ctrl[MSGID_INPUT_FuncMenu] = 0;
+    				EnableFuncMenu();
     			}
     			break;
     		case MSGID_INPUT_IrisDown:

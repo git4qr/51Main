@@ -210,6 +210,10 @@ public:
 		delete Host_Ctrl;
 		return 0;
 	};
+		void EnableMmtSelect()
+		{
+			SendMsg(Cmd_Mesg_MmtSelect);
+		}
 		void EnableOSD()
 		{
 		SendMsg(Cmd_Mesg_Osd);
@@ -230,17 +234,17 @@ public:
 			{
 				SendMsg(Cmd_Mesg_Mtd);
 			};
-			void TrkBoxCtrl()
+			void ENableIrisAndFocusAndExit()
 			{
-				SendMsg(Cmd_Mesg_AcqBoxCtrl);
+				SendMsg(Cmd_Mesg_IrisAndFocusAndExit);
 			};
 			 void EnableTrkSearch( )
 			{
 				SendMsg(Cmd_Mesg_TrkSearch);
 			};
-			 void IrisUp()
+			 void EnableFuncMenu()
 			{
-				SendMsg(Cmd_Mesg_IrisUp);
+				SendMsg(Cmd_Mesg_FuncMenu);
 			};
 			 void IrisDown( )
 			{

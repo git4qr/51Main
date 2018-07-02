@@ -15,12 +15,15 @@ public:
 		    int  ipcTrackCtrl(volatile unsigned char AvtTrkStat);
 		    int  ipcMutilTargetDetecCtrl(volatile unsigned char ImgMmtStat);//1:open 0:close
 		    int ipcMutilTargetSelectCtrl(volatile unsigned char ImgMmtSelect);
+		    int IpcMmtLockCtrl(int mmt_Select);
 		    int  ipcImageEnhanceCtrl(volatile unsigned char ImgEnhStat); //1open 0close
 		    int ipcMoveTatgetDetecCtrl(volatile unsigned char ImgMtdStat);
 		    int ipcSecTrkCtrl(selectTrack *m_selcTrak);
 		    int IpcSensorSwitch(volatile unsigned char ImgSenchannel);
 		    int IpcpinpCtrl(volatile unsigned char ImgPipStat);
 		    int IpcAcqDoorCtrl(AcqBoxSize *BoxSize);
+		    int IpcIrisAndFocus(char sign);
+		    int IpcFuncMenu(char sign);
 		    int IpcTrkPosMoveCtrl(POSMOVE * avtMove);
 		    int IpcElectronicZoom(int zoom);
 		    int IpcConfig();

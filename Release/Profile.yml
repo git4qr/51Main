@@ -1,7 +1,7 @@
 %YAML:1.0
 cfg_avt_0: 0
 cfg_avt_1: 2
-cfg_avt_2: 3.9999999105930328e-02
+cfg_avt_2: 0.010000
 cfg_avt_3: 0.011111
 cfg_avt_4: 9999.000000
 cfg_avt_5: -9999.000000
@@ -12,23 +12,23 @@ cfg_avt_9: 7
 cfg_avt_10: 0
 cfg_avt_11: 0
 cfg_avt_12: 1
-cfg_avt_13: 320
-cfg_avt_14: 180
+cfg_avt_13: 350
+cfg_avt_14: 200
 cfg_avt_15: 0
 
 cfg_avt_16: 0
-cfg_avt_17: 1.0
+cfg_avt_17: 1
 cfg_avt_18: 0
 cfg_avt_19: 0
 cfg_avt_20: 0
 cfg_avt_21: 0
-cfg_avt_22: 3.5
-cfg_avt_23: 1.0
+cfg_avt_22: 8
+cfg_avt_23: 1
 cfg_avt_24: 0
 cfg_avt_25: 0
 cfg_avt_26: 0
 cfg_avt_27: 0
-cfg_avt_28: 3.5
+cfg_avt_28: 5.5
 cfg_avt_29: 0
 cfg_avt_30: 0
 cfg_avt_31: 0
@@ -39,8 +39,8 @@ cfg_avt_34: 0.500000
 cfg_avt_35: 1.43
 cfg_avt_36: 1.43
 cfg_avt_37: 0.15
-cfg_avt_38: 14.000000
-cfg_avt_39: 12.000000
+cfg_avt_38: 25.000000
+cfg_avt_39: 20.000000
 cfg_avt_40: 0
 cfg_avt_41: 0
 cfg_avt_42: 0
@@ -51,8 +51,8 @@ cfg_avt_46: 0
 cfg_avt_47: 0
 
 cfg_avt_48: 0
-cfg_avt_49: 1
-cfg_avt_50: 11
+cfg_avt_49: 0
+cfg_avt_50: 1
 cfg_avt_51: 2
 cfg_avt_52: 3
 cfg_avt_53: 4
@@ -62,7 +62,7 @@ cfg_avt_56: 7
 cfg_avt_57: 8
 cfg_avt_58: 9
 cfg_avt_59: 10
-cfg_avt_60: 0
+cfg_avt_60: 11
 cfg_avt_61: 0
 cfg_avt_62: 0
 cfg_avt_63: 0
@@ -150,7 +150,7 @@ cfg_avt_139: 10
 cfg_avt_140: 10
 cfg_avt_141: 500
 cfg_avt_142: 400
-cfg_avt_143: 1
+cfg_avt_143: 0
 
 cfg_avt_144: 384
 cfg_avt_145: 192
@@ -212,18 +212,18 @@ cfg_avt_197: 0
 cfg_avt_198: 16
 cfg_avt_199: 1
 cfg_avt_200: 2
-cfg_avt_201: 200
-cfg_avt_202: 200
+cfg_avt_201: 80
+cfg_avt_202: 80
 cfg_avt_203: 100
 cfg_avt_204: 100
-cfg_avt_205: 200
+cfg_avt_205: 80
 cfg_avt_206: 200
 cfg_avt_207: 200
 
 cfg_avt_208: 200
 cfg_avt_209: 200
 cfg_avt_210: 200
-cfg_avt_211: 200
+cfg_avt_211: 80
 cfg_avt_212: 200
 cfg_avt_213: 200
 cfg_avt_214: 200
@@ -253,22 +253,4 @@ cfg_avt_236: 0
 cfg_avt_237: 0
 cfg_avt_238: 0
 cfg_avt_239: 0
-
-cfg_avt_240: 0
-cfg_avt_241: 0
-cfg_avt_242: 0
-cfg_avt_243: 0
-cfg_avt_244: 0
-cfg_avt_245: 0
-cfg_avt_246: 0
-cfg_avt_247: 0
-cfg_avt_248: 0
-cfg_avt_249: 0
-cfg_avt_250: 0
-cfg_avt_251: 0
-cfg_avt_252: 0
-cfg_avt_253: 0
-cfg_avt_254: 0
-cfg_avt_255: 0
-
 

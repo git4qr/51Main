@@ -7,9 +7,9 @@ typedef enum ButtonEvent{
 	MSGID_INPUT_Mtd,					//2
 	MSGID_INPUT_ZoomLong,		//3
 	MSGID_INPUT_ZoomShort,		//4
-	MSGID_INPUT_TrkBoxCtrl,		//5
+	MSGID_INPUT_IrisAndFocusAndExit,		//5
 	MSGID_INPUT_TrkSearch,		//6
-	MSGID_INPUT_IrisUp,				//7
+	MSGID_INPUT_FuncMenu,				//7
 	MSGID_INPUT_IrisDown,			//8
 	MSGID_INPUT_FocusFar,			//9
 	MSGID_INPUT_FocusNear, 	//10
@@ -34,9 +34,9 @@ Cmd_Mesg_TrkCtrl = 1, 		//1
 Cmd_Mesg_Mtd,					//2
 Cmd_Mesg_ZoomLong,		//3
 Cmd_Mesg_ZoomShort,		//4
-Cmd_Mesg_AcqBoxCtrl,		//5
+Cmd_Mesg_IrisAndFocusAndExit,		//5
 Cmd_Mesg_TrkSearch,			//6
-Cmd_Mesg_IrisUp,				//7
+Cmd_Mesg_FuncMenu,				//7
 Cmd_Mesg_IrisDown,			//8
 Cmd_Mesg_FocusFar,			//9
 Cmd_Mesg_FocusNear, 		//10
@@ -89,6 +89,7 @@ Cmd_Mesg_EnhMode,
 
 //com 
 //local
+Cmd_Mesg_MmtSelect,
 }Cmd_Mesg_ID_Gather;
 
 typedef enum {
@@ -173,4 +174,23 @@ typedef enum{
 	NAK_wordSize_value,		//
 	ACK_jos_Kboard_value,		//
 }ACK_Host_Value;
+
+typedef enum {
+	Exit = 0,
+	iris,
+	Focus
+}IrisAndFocusAndExit;
+
+typedef enum {
+	mmt_v1 = 1,
+	mmt_v2,
+	mmt_v3,
+	mmt_v4,
+	mmt_v5,
+	mmt_MAX
+}MmtValue;
+
+
+
+
 #endif

@@ -21,7 +21,7 @@ typedef struct
 
 extern float PlatforCtrl_GetDevInputValue(void * handle, eDEVUSER_InputSrcType type, int iNumber);
 
-/* »ñµÃÄ£¿é±êÊ¾ÐòºÅ£¬·µ»Ø£ºÄ£¿é±êÊ¾ÐòºÅ */
+/* ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½Ø£ï¿½Ä£ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ */
 int DeviceUser_GetIndex(HDEVUSR hDevUsr)
 {
     DeviceUser_Obj *pObj = (DeviceUser_Obj*)hDevUsr;
@@ -32,7 +32,7 @@ int DeviceUser_GetIndex(HDEVUSR hDevUsr)
     return pObj->params.iIndex;
 }
 
-/* ´´½¨Ä£¿éÊµÀý£¬·µ»Ø£ºÊµÀý¾ä±ú */
+/* ï¿½ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Êµï¿½ï¿½Ø£ï¿½Êµï¿½ï¿½ï¿½ï¿½ */
 HDEVUSR DeviceUser_Create(DeviceUser_CreateParams *pPrm, void *pUser)
 {
     DeviceUser_Obj *pObj;
@@ -54,7 +54,7 @@ HDEVUSR DeviceUser_Create(DeviceUser_CreateParams *pPrm, void *pUser)
     return pObj;
 }
 
-/* ¶¯Ì¬ÉèÖÃ²ÎÊý */
+/* ï¿½ï¿½Ì¬ï¿½ï¿½ï¿½Ã²ï¿½ï¿½ï¿½ */
 int DeviceUser_SetParam(HDEVUSR hDevUsr, DeviceUser_CreateParams *pPrm)
 {
     DeviceUser_Obj *pObj = (DeviceUser_Obj*)hDevUsr;
@@ -67,7 +67,7 @@ int DeviceUser_SetParam(HDEVUSR hDevUsr, DeviceUser_CreateParams *pPrm)
     return 0;
 }
 
-/* Ïú»ÙÄ£¿éÊµÀý */
+/* ï¿½ï¿½ï¿½Ä£ï¿½ï¿½Êµï¿½ï¿½ */
 void DeviceUser_Delete(HDEVUSR hDevUsr)
 {
     DeviceUser_Obj *pObj = (DeviceUser_Obj*)hDevUsr;
@@ -78,7 +78,7 @@ void DeviceUser_Delete(HDEVUSR hDevUsr)
     free(pObj);
 }
 
-/* ÖØÖÃ */
+/* ï¿½ï¿½ï¿½ï¿½ */
 void DeviceUser_Reset(HDEVUSR hDevUsr)
 {
     DeviceUser_Obj *pObj = (DeviceUser_Obj*)hDevUsr;
@@ -89,7 +89,7 @@ void DeviceUser_Reset(HDEVUSR hDevUsr)
     pObj->curValue = 0.0f;
 }
 
-/* »ñµÃµ±Ç°½á¹û */
+/* ï¿½ï¿½Ãµï¿½Ç°ï¿½ï¿½ï¿½ */
 float DeviceUser_Get(HDEVUSR hDevUsr)
 {
     float ret = 0.0;
@@ -102,10 +102,12 @@ float DeviceUser_Get(HDEVUSR hDevUsr)
 
     if(pObj->params.inputMethod == DEVUSER_InputMethod_Incremental)
     {
-        if(pObj->params.gainType == DEVUSER_GainType_Incremental)
+        if(pObj->params.gainType == DEVUSER_GainType_Incremental){
             pObj->curValue += ret * pObj->params.fGain;
-        else
+        }
+        else{
             pObj->curValue += ret;
+        }
     }
     else
     {

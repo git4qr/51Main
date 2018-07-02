@@ -18,7 +18,7 @@ static int m_valuey;
 char  m_AvtTrkAimSize;
 char m_eSenserStat;
 char iRet = -1;
-int acqAIM[5][5] = {{50,50}, {60,60}, {80,80}, {120,120}, {200,200}};
+int acqAIM[5][5] = {{10,10}, {20,20}, {30,30}, {40,40}, {50,50}};
 char pip_channel;
 void  MSGAPI_StatusConvertFunc(int msg)
 {
@@ -30,11 +30,13 @@ void  MSGAPI_StatusConvertFunc(int msg)
 	case Cmd_Mesg_Mtd:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->MtdState[0]);
 		break;
+		/*
 	case Cmd_Mesg_AcqBoxCtrl:
 		iRet = (iRet +1)%Trk_SizeMax;
 		m_acqBox_Size.AcqBoxW[0] = acqAIM[iRet][0];
 		m_acqBox_Size.AcqBoxH[0] = acqAIM[iRet][1];
 		break;
+		*/
 	case Cmd_Mesg_ImgEnh:
 		sThis->m_jos->EXT_Ctrl[msg - 1] = !(sThis->m_ipc->ipc_status->ImgEnhStat[0]);
 		break;
@@ -77,10 +79,22 @@ void usd_MSGAPI_ExtInpuCtrl_ZoomShort(long p)
 	sThis->MSGAPI_ExtInputCtrl_ZoomShort();
 }
 
-void usd_MSGAPI_ExtInpuCtrl_AcqBoxSize(long p)
+void usd_MSGAPI_ExtInpuCtrl_IrisAndFocusAndExit(long p)
 {
-	MSGAPI_StatusConvertFunc(Cmd_Mesg_AcqBoxCtrl);
-	sThis->m_ipc->IpcAcqDoorCtrl(&m_acqBox_Size);
+	//MSGAPI_StatusConvertFunc(Cmd_Mesg_IrisAndFocusAndExit);
+	char sign = sThis->GetExtIputCtrlValue(Cmd_Mesg_IrisAndFocusAndExit);
+	int up_down = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISY);
+	sThis->m_ipc->IpcIrisAndFocus(sign);
+	switch(sign)
+	{
+	case iris:
+			sThis->MSGAPI_ExtInputCtrl_Iris(up_down);
+		break;
+	case Focus:
+		sThis->MSGAPI_ExtInputCtrl_Focus(up_down);
+		break;
+	}
+
 }
 
 
@@ -125,10 +139,12 @@ void usd_MSGAPI_ExtInpuCtrl_TrkSearch(long p)
 	}
 	shieldInitTrkSearchBit =true;
 }
-void usd_MSGAPI_ExtInpuCtrl_IrisUp(long p)
+void usd_MSGAPI_ExtInpuCtrl_FuncMenu(long p)
 {
-	m_CurrStat.m_IrisUpStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_IrisUp);
-	sThis->MSGAPI_ExtInputCtrl_IrisUp();
+	int sign = sThis->GetExtIputCtrlValue(Cmd_Mesg_FuncMenu);
+	sThis->m_ipc->IpcFuncMenu(sign);
+	//m_CurrStat.m_IrisUpStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_IrisUp);
+	//sThis->MSGAPI_ExtInputCtrl_IrisUp();
 }
 void usd_MSGAPI_ExtInpuCtrl_IrisDwon(long p)
 {
@@ -138,7 +154,7 @@ void usd_MSGAPI_ExtInpuCtrl_IrisDwon(long p)
 void usd_MSGAPI_ExtInpuCtrl_FocusFar(long p)
 {
 	m_CurrStat.m_FoucusFarStat=sThis->GetExtIputCtrlValue(Cmd_Mesg_FocusFar);
-	sThis->MSGAPI_ExtInputCtrl_FocusFar();
+	//sThis->MSGAPI_ExtInputCtrl_FocusFar();
 }
 void usd_MSGAPI_ExtInpuCtrl_FocusNear(long p)
 {
@@ -156,12 +172,17 @@ void usd_MSGAPI_ExtInpuCtrl_Mmt(long p)
 	sThis->m_ipc->ipcMutilTargetDetecCtrl((unsigned char)sThis->m_jos->EXT_Ctrl[Cmd_Mesg_Mmt - 1]);
 }
 
-void MSGAPI_ExtInputCtrl_MmtSelect(int msg)
+void usd_MSGAPI_ExtInputCtrl_MmtSelect(long p)
 {
-	m_CurrStat.m_MmtSelectNum = msg;
-	sThis->m_ipc->ipcMutilTargetSelectCtrl((unsigned char) m_CurrStat.m_MmtSelectNum);
+	p = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);  //X Select Aim
+	sThis->m_ipc->ipcMutilTargetSelectCtrl((unsigned char) p);
 }
 
+void MSGAPI_MmtLock()
+{
+	 int mmt_value = sThis->GetExtIputCtrlValue(Cmd_Mesg_AXISX);
+	sThis->m_ipc->IpcMmtLockCtrl(mmt_value);
+}
 void usd_MSGAPI_ExtInpuCtrl_AIMPOSX(long p)
 {
 	m_avtMove.AvtMoveX = sThis->GetExtIputCtrlValue(Cmd_Mesg_AIMPOS_X);
@@ -359,14 +380,15 @@ int  MSGAPI_initial()
     memset(handle->msgTab, 0, sizeof(MSGTAB_Class) * MAX_MSG_NUM);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_TRACKCTRL,usd_MSGAPI_ExtInpuCtrl_Track,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_MTDCTRL,usd_MSGAPI_ExtInpuCtrl_Mtd,0);
-    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_TRCKBOXSIZECTRL,usd_MSGAPI_ExtInpuCtrl_AcqBoxSize,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_IrisAndFocusAndExit,usd_MSGAPI_ExtInpuCtrl_IrisAndFocusAndExit,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_TRACKSEARCHCTRL,usd_MSGAPI_ExtInpuCtrl_TrkSearch,0);
-    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_IRISUPCTRL,usd_MSGAPI_ExtInpuCtrl_IrisUp,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_FuncMenu,usd_MSGAPI_ExtInpuCtrl_FuncMenu,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_IRISDOWNCTRL,usd_MSGAPI_ExtInpuCtrl_IrisDwon,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_FOCUSFARCHCTRL,usd_MSGAPI_ExtInpuCtrl_FocusFar,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_FOCUSNEARCTRL,usd_MSGAPI_ExtInpuCtrl_FocusNear,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_IMGENHCTRL,usd_MSGAPI_ExtInpuCtrl_ImgEnh,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_MMTCRTL,usd_MSGAPI_ExtInpuCtrl_Mmt,0);
+    MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_MMTSelect,usd_MSGAPI_ExtInputCtrl_MmtSelect,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_AIMPOSXCTRL,usd_MSGAPI_ExtInpuCtrl_AIMPOSX,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_AIMPOSYCTRL,usd_MSGAPI_ExtInpuCtrl_AIMPOSY,0);
     MSGDRIV_attachMsgFun(handle,MSGID_EXT_INPUT_OPTICZOOMLONGCTRL,usd_MSGAPI_ExtInpuCtrl_ZoomLong,0);
